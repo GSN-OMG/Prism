@@ -5,6 +5,7 @@ import os
 from contextlib import asynccontextmanager
 from typing import Any
 
+import httpx
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -14,6 +15,14 @@ from devrel.agents.response import draft_response, draft_response_llm, draft_res
 from devrel.agents.types import Issue, IssueType, Priority, ResponseStrategy
 from devrel.llm.client import LlmClient
 from devrel.search.rag_client import RAGClient
+
+GITHUB_REPO = os.getenv("GITHUB_REPO", "GSN-OMG/Prism")
+
+
+class IssueCreateInput(BaseModel):
+    title: str
+    body: str
+    labels: list[str] = []
 
 
 class IssueInput(BaseModel):
@@ -110,6 +119,50 @@ async def health():
         "status": "ok",
         "rag_available": _rag_client is not None,
         "llm_available": _llm_client is not None,
+        "github_token_set": bool(os.getenv("GITHUB_TOKEN")),
+    }
+
+
+@app.post("/api/github/issues")
+async def create_github_issue(input: IssueCreateInput):
+    """Create a new GitHub issue in the target repository."""
+    github_token = os.getenv("GITHUB_TOKEN")
+    if not github_token:
+        raise HTTPException(status_code=503, detail="GITHUB_TOKEN not configured")
+
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/issues"
+    headers = {
+        "Authorization": f"Bearer {github_token}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+    }
+    payload = {
+        "title": input.title,
+        "body": input.body,
+    }
+    if input.labels:
+        payload["labels"] = input.labels
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(url, json=payload, headers=headers)
+
+    if response.status_code not in (200, 201):
+        raise HTTPException(
+            status_code=response.status_code,
+            detail=f"GitHub API error: {response.text}",
+        )
+
+    issue_data = response.json()
+    return {
+        "number": issue_data["number"],
+        "title": issue_data["title"],
+        "body": issue_data.get("body", ""),
+        "labels": [label["name"] for label in issue_data.get("labels", [])],
+        "html_url": issue_data["html_url"],
+        "user": {
+            "login": issue_data["user"]["login"],
+            "avatar_url": issue_data["user"]["avatar_url"],
+        },
     }
 
 

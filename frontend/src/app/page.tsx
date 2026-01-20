@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import {
   GitHubIssue,
   IssuePipelineState,
@@ -11,6 +11,7 @@ import {
 } from '@/types';
 import { AgentPipeline } from '@/components/AgentPipeline';
 
+const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || 'http://localhost:8000';
 const agentOrder: AgentType[] = ['issue_analysis', 'assignment', 'response', 'docs_gap', 'promotion'];
 
 function createInitialAgentState(): Record<AgentType, AgentResult> {
@@ -21,30 +22,15 @@ function createInitialAgentState(): Record<AgentType, AgentResult> {
 }
 
 export default function Home() {
-  const [issues, setIssues] = useState<GitHubIssue[]>([]);
-  const [selectedIssue, setSelectedIssue] = useState<GitHubIssue | null>(null);
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [labels, setLabels] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [createdIssue, setCreatedIssue] = useState<GitHubIssue | null>(null);
   const [pipeline, setPipeline] = useState<IssuePipelineState | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isRunning, setIsRunning] = useState(false);
   const [currentAgentIndex, setCurrentAgentIndex] = useState(-1);
-
-  // Fetch issues on mount
-  useEffect(() => {
-    fetchIssues();
-  }, []);
-
-  const fetchIssues = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch('/api/issues');
-      const data = await response.json();
-      setIssues(data);
-    } catch (error) {
-      console.error('Failed to fetch issues:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [error, setError] = useState<string | null>(null);
 
   // Run a single agent
   const runAgent = useCallback(async (issue: GitHubIssue, agent: AgentType): Promise<AgentResult> => {
@@ -66,7 +52,6 @@ export default function Home() {
 
   // Start the pipeline for an issue
   const startPipeline = useCallback(async (issue: GitHubIssue) => {
-    setSelectedIssue(issue);
     setIsRunning(true);
     setCurrentAgentIndex(0);
 
@@ -80,14 +65,12 @@ export default function Home() {
     };
     setPipeline(initialPipeline);
 
-    // Run agents sequentially
     let currentPipeline = initialPipeline;
 
     for (let i = 0; i < agentOrder.length; i++) {
       const agent = agentOrder[i];
       setCurrentAgentIndex(i);
 
-      // Update agent to running
       currentPipeline = {
         ...currentPipeline,
         agents: {
@@ -98,10 +81,8 @@ export default function Home() {
       };
       setPipeline({ ...currentPipeline });
 
-      // Run the agent
       const result = await runAgent(issue, agent);
 
-      // Update agent result
       currentPipeline = {
         ...currentPipeline,
         agents: {
@@ -113,7 +94,6 @@ export default function Home() {
       setPipeline({ ...currentPipeline });
     }
 
-    // All agents completed
     currentPipeline = {
       ...currentPipeline,
       status: 'awaiting_feedback',
@@ -123,6 +103,66 @@ export default function Home() {
     setIsRunning(false);
     setCurrentAgentIndex(-1);
   }, [runAgent]);
+
+  // Create issue and start pipeline
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title.trim()) return;
+
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      // Create issue via FastAPI backend
+      const response = await fetch(`${BACKEND_API_URL}/api/github/issues`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: title.trim(),
+          body: body.trim(),
+          labels: labels.split(',').map(l => l.trim()).filter(Boolean),
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to create issue');
+      }
+
+      const issueData = await response.json();
+
+      const issue: GitHubIssue = {
+        number: issueData.number,
+        title: issueData.title,
+        body: issueData.body || '',
+        labels: issueData.labels || [],
+        html_url: issueData.html_url,
+        user: issueData.user,
+        created_at: new Date().toISOString(),
+        state: 'open',
+      };
+
+      setCreatedIssue(issue);
+
+      // Start agent pipeline
+      await startPipeline(issue);
+
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create issue');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Reset form
+  const handleReset = () => {
+    setTitle('');
+    setBody('');
+    setLabels('');
+    setCreatedIssue(null);
+    setPipeline(null);
+    setError(null);
+  };
 
   // Handle feedback submission
   const handleFeedbackSubmit = (agent: AgentType, approved: boolean, comment: string) => {
@@ -157,7 +197,7 @@ export default function Home() {
                 <span>🤖</span> DevRel Agent Pipeline
               </h1>
               <p className="text-sm text-gray-500 mt-1">
-                Phase 2 - Transparent AI Agent Orchestration with Human-in-the-Loop
+                Phase 2 - AI Agent Orchestration
               </p>
             </div>
             <div className="flex items-center gap-4">
@@ -231,92 +271,141 @@ export default function Home() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Issue Selection Panel */}
+          {/* Issue Creation Form */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
               <div className="px-6 py-4 bg-gray-50 border-b">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-gray-900">GitHub Issues</h3>
-                  <button
-                    onClick={fetchIssues}
-                    disabled={isLoading}
-                    className="text-sm text-indigo-600 hover:text-indigo-800 disabled:opacity-50"
-                  >
-                    Refresh
-                  </button>
+                  <h3 className="font-semibold text-gray-900">
+                    {createdIssue ? '✅ Issue Created' : '📝 Create New Issue'}
+                  </h3>
+                  {createdIssue && (
+                    <button
+                      onClick={handleReset}
+                      className="text-sm text-indigo-600 hover:text-indigo-800"
+                    >
+                      New Issue
+                    </button>
+                  )}
                 </div>
                 <p className="text-xs text-gray-500 mt-1">
-                  Select an issue to run the agent pipeline
+                  {createdIssue
+                    ? `Issue #${createdIssue.number} created successfully`
+                    : 'Fill out the form to create a GitHub issue'
+                  }
                 </p>
               </div>
 
-              <div className="divide-y max-h-[600px] overflow-y-auto">
-                {isLoading ? (
-                  <div className="p-8 text-center text-gray-500">
-                    <div className="animate-spin w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full mx-auto mb-2" />
-                    Loading issues...
+              {createdIssue ? (
+                <div className="p-6">
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-lg">📋</span>
+                      <span className="font-medium text-gray-900">
+                        #{createdIssue.number}
+                      </span>
+                      {pipeline?.status === 'completed' && (
+                        <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                          ✓ Done
+                        </span>
+                      )}
+                      {isRunning && (
+                        <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded animate-pulse">
+                          Running
+                        </span>
+                      )}
+                    </div>
+                    <h4 className="font-medium text-gray-800 mb-2">
+                      {createdIssue.title}
+                    </h4>
+                    {createdIssue.body && (
+                      <p className="text-sm text-gray-600 whitespace-pre-wrap">
+                        {createdIssue.body.slice(0, 200)}
+                        {createdIssue.body.length > 200 && '...'}
+                      </p>
+                    )}
                   </div>
-                ) : issues.length === 0 ? (
-                  <div className="p-8 text-center text-gray-500">
-                    No open issues found
+                  <a
+                    href={createdIssue.html_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-800"
+                  >
+                    View on GitHub →
+                  </a>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="p-6 space-y-4">
+                  {error && (
+                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                      {error}
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Title <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Bug: Something is not working"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      required
+                      disabled={isSubmitting}
+                    />
                   </div>
-                ) : (
-                  issues.map((issue) => {
-                    const isSelected = selectedIssue?.number === issue.number;
-                    return (
-                      <div
-                        key={issue.number}
-                        className={`p-4 cursor-pointer transition-colors ${
-                          isSelected
-                            ? 'bg-indigo-50 border-l-4 border-indigo-500'
-                            : 'hover:bg-gray-50'
-                        }`}
-                        onClick={() => !isRunning && startPipeline(issue)}
-                      >
-                        <div className="flex items-start justify-between mb-2">
-                          <div className="flex items-center gap-2">
-                            <span className="text-lg">📋</span>
-                            <span className="font-medium text-gray-900">
-                              #{issue.number}
-                            </span>
-                          </div>
-                          {isSelected && !isRunning && pipeline?.status === 'completed' && (
-                            <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
-                              ✓ Done
-                            </span>
-                          )}
-                          {isSelected && isRunning && (
-                            <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded animate-pulse">
-                              Running
-                            </span>
-                          )}
-                        </div>
-                        <h4 className="font-medium text-gray-800 text-sm line-clamp-2 mb-2">
-                          {issue.title}
-                        </h4>
-                        <div className="flex flex-wrap gap-1">
-                          {issue.labels.slice(0, 3).map((label, idx) => (
-                            <span
-                              key={idx}
-                              className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded"
-                            >
-                              {label}
-                            </span>
-                          ))}
-                        </div>
-                        <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
-                          <img
-                            src={issue.user.avatar_url}
-                            alt={issue.user.login}
-                            className="w-4 h-4 rounded-full"
-                          />
-                          <span>@{issue.user.login}</span>
-                        </div>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Description
+                    </label>
+                    <textarea
+                      value={body}
+                      onChange={(e) => setBody(e.target.value)}
+                      placeholder="Describe the issue in detail..."
+                      rows={6}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Labels
+                    </label>
+                    <input
+                      type="text"
+                      value={labels}
+                      onChange={(e) => setLabels(e.target.value)}
+                      placeholder="bug, help wanted (comma separated)"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      disabled={isSubmitting}
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Separate multiple labels with commas
+                    </p>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !title.trim()}
+                    className="w-full py-3 px-4 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <span className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                        Creating Issue...
+                      </>
+                    ) : (
+                      <>
+                        🚀 Create Issue & Run Agents
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
             </div>
           </div>
 
@@ -331,11 +420,11 @@ export default function Home() {
               <div className="bg-white rounded-xl shadow-lg p-12 text-center">
                 <div className="text-6xl mb-4">👈</div>
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                  Select an Issue to Start
+                  Create an Issue to Start
                 </h3>
                 <p className="text-gray-500 max-w-md mx-auto">
-                  Click on an issue from the left panel to trigger the agent pipeline.
-                  All 5 agents will analyze the issue in sequence.
+                  Fill out the form on the left to create a GitHub issue.
+                  Once created, all 5 agents will analyze it.
                 </p>
                 <div className="mt-8 grid grid-cols-5 gap-2">
                   {agentOrder.map((agent) => (
@@ -361,7 +450,7 @@ export default function Home() {
             DevRel Agent Pipeline • Phase 2 Hackathon Demo
           </p>
           <p className="text-gray-500 text-xs mt-2">
-            Issue triggers 5 agents in parallel • Human-in-the-loop feedback • Transparent decision traces
+            LLM-Powered Responses • Human-in-the-Loop Feedback
           </p>
         </div>
       </footer>
