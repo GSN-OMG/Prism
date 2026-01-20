@@ -11,6 +11,14 @@ if str(SRC_DIR) not in sys.path:
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+from tests.helpers.dotenv import load_dotenv  # noqa: E402
+
+load_dotenv(
+    PROJECT_ROOT.parent.parent / ".env",
+    PROJECT_ROOT.parent / ".env",
+    PROJECT_ROOT / ".env",
+)
+
 from devrel.agents.assignment import analyze_issue, recommend_assignee  # noqa: E402
 from devrel.agents.docs import detect_doc_gaps, to_doc_gap_output  # noqa: E402
 from devrel.agents.promotion import evaluate_promotion  # noqa: E402

@@ -6,6 +6,7 @@ from dataclasses import dataclass
 import pytest
 
 from devrel.agents.types import Issue, IssueAnalysisOutput
+from tests.helpers.dotenv import load_dotenv
 
 
 @dataclass(frozen=True, slots=True)
@@ -16,6 +17,12 @@ class JudgeResult:
 
 
 def _llm_judge_enabled() -> bool:
+    tests_dir = Path(__file__).resolve().parent.parent
+    project_root = tests_dir.parent
+    phase2_root = project_root.parent
+    repo_root = phase2_root.parent
+    load_dotenv(repo_root / ".env", phase2_root / ".env", project_root / ".env")
+
     if os.getenv("RUN_LLM_JUDGE", "0") not in ("1", "true", "TRUE", "yes", "YES"):
         return False
     return bool(os.getenv("OPENAI_API_KEY"))
@@ -78,4 +85,3 @@ def judge_response_text(*, issue: Issue, analysis: IssueAnalysisOutput, response
 
     data = json.loads(raw)
     return JudgeResult(passed=bool(data["passed"]), score=int(data["score"]), feedback=str(data["feedback"]))
-
