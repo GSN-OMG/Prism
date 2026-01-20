@@ -5,16 +5,16 @@ OMG (Oh My GPT)
 # 프로젝트
 
 ### Prism: Self-Evolving DevRel OS
-<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/94202945-8b1d-4d75-a16b-6769e09577f2" />
+<img width="250" height="250" alt="image" src="https://github.com/user-attachments/assets/94202945-8b1d-4d75-a16b-6769e09577f2" />
 
+> **"조직의 DNA를 복제하여 전문성을 스케일링하다."**
+
+> Prism은 Closed 데이터에서 조직의 협업 패턴을 추출하고, 멀티 에이전트 기반의 '회고 법정(Retrospective Court)'을 통해 스스로 성능을 고도화하는 기업용 DevRel 운영 자동화 플랫폼입니다.
 
 # 데모
 
 URL: [Prism: Self-Evolving DevRel OS Demo Video](https://drive.google.com/file/d/113XJM26LzezM00laSdarMALvds_6ErSj/view?usp=sharing)
 
-> **"조직의 DNA를 복제하여 전문성을 스케일링하다."**
-
-> Prism은 Closed 데이터에서 조직의 협업 패턴을 추출하고, 멀티 에이전트 기반의 '회고 법정(Retrospective Court)'을 통해 스스로 성능을 고도화하는 기업용 DevRel 운영 자동화 플랫폼입니다.
 
 ---
 
@@ -48,6 +48,9 @@ Prism은 세 가지 핵심 레이어를 통해 DevRel 워크플로우를 만들�
 
 신규 이슈 발생 시, 전문화된 에이전트 군단이 유기적으로 협업합니다.
 
+<img width="2594" height="1474" alt="image" src="https://github.com/user-attachments/assets/c77a2448-283f-409a-a557-f7466e6534b9" />
+
+
 1. **Issue Analysis**: 기술적 핵심 파악 및 긴급도 분류.
 2. **Assignment**: 기여 히스토리 기반 최적의 담당자 추천.
 3. **Drafting**: 조직의 가이드라인을 준수한 고품질 답변 초안 생성.
@@ -55,6 +58,11 @@ Prism은 세 가지 핵심 레이어를 통해 DevRel 워크플로우를 만들�
 5. **Impact Evaluation**: 기여자의 활동 가치를 정량적으로 평가.
 
 ### 3단계: Retrospective Court (Self-Evolution & Quality Assurance)
+
+<img width="1324" height="1268" alt="image" src="https://github.com/user-attachments/assets/5c2179c5-3305-475b-80f5-349b3b75b88c" />
+
+<img width="1306" height="1172" alt="image" src="https://github.com/user-attachments/assets/c63a2a0f-42b7-4702-8ca1-7d12cbea1930" />
+
 
 * **기능**: 에이전트의 수행 결과와 사용자의 피드백을 기반으로 '검사-변호사-판사' 에이전트가 공방(Debate)을 벌입니다.
 * **결과물**: 결과의 오류를 스스로 교정하고, '프롬프트 개선안'을 도출하여 다음 이슈 처리 시 반영합니다. 이는 인간의 개입을 최소화하면서도 시스템이 시간이 갈수록 정교해지는 **Self-evolving 구조**를 실현합니다.
