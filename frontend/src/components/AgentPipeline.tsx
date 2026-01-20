@@ -11,13 +11,21 @@ import {
   ResponseOutput,
   DocGapOutput,
   PromotionOutput,
-  DecisionStep
+  DecisionStep,
+  CourtResult,
+  HumanFeedback,
+  CourtStageStatus,
 } from '@/types';
 import { FeedbackForm } from './FeedbackForm';
+import { CourtSection } from './CourtSection';
 
 interface AgentPipelineProps {
   pipeline: IssuePipelineState;
+  courtStageStatus?: Partial<Record<AgentType, CourtStageStatus>>;
   onFeedbackSubmit: (agent: AgentType, approved: boolean, comment: string) => void;
+  onRunCourt: (agent: AgentType) => void;
+  onApprovePromptUpdate?: (agent: AgentType, updateIndex: number) => void;
+  onRejectPromptUpdate?: (agent: AgentType, updateIndex: number) => void;
 }
 
 const agentOrder: AgentType[] = ['issue_analysis', 'assignment', 'response', 'docs_gap', 'promotion'];
@@ -220,8 +228,30 @@ function DecisionTraceView({ steps }: { steps: DecisionStep[] }) {
   );
 }
 
-// Single agent section
-function AgentSection({ agentType, result, isLast }: { agentType: AgentType; result: AgentResult; isLast: boolean }) {
+// Single agent section with court integration
+function AgentSection({
+  agentType,
+  result,
+  isLast,
+  feedback,
+  courtResult,
+  courtRunning,
+  courtStageStatus,
+  onRunCourt,
+  onApprovePromptUpdate,
+  onRejectPromptUpdate,
+}: {
+  agentType: AgentType;
+  result: AgentResult;
+  isLast: boolean;
+  feedback: HumanFeedback | undefined;
+  courtResult: CourtResult | undefined;
+  courtRunning: boolean;
+  courtStageStatus?: CourtStageStatus;
+  onRunCourt: () => void;
+  onApprovePromptUpdate?: (updateIndex: number) => void;
+  onRejectPromptUpdate?: (updateIndex: number) => void;
+}) {
   const [expanded, setExpanded] = useState(result.status === 'completed' || result.status === 'running');
   const agentInfo = AGENTS[agentType];
 
@@ -241,6 +271,8 @@ function AgentSection({ agentType, result, isLast }: { agentType: AgentType; res
   };
 
   const getBorderColor = () => {
+    if (courtResult) return 'border-purple-400';
+    if (feedback) return 'border-yellow-400';
     switch (result.status) {
       case 'running':
         return 'border-blue-400';
@@ -278,6 +310,16 @@ function AgentSection({ agentType, result, isLast }: { agentType: AgentType; res
               <span className="text-xs text-gray-400">{(result.durationMs / 1000).toFixed(2)}s</span>
             )}
             {getStatusBadge()}
+            {feedback && (
+              <span className={`px-2 py-0.5 text-xs rounded-full ${feedback.approved ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                {feedback.approved ? '✓ Approved' : '✗ Rejected'}
+              </span>
+            )}
+            {courtResult && (
+              <span className="px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full">
+                ⚖️ Court Done
+              </span>
+            )}
             <span className={`transform transition-transform ${expanded ? 'rotate-180' : ''}`}>
               ▼
             </span>
@@ -328,6 +370,21 @@ function AgentSection({ agentType, result, isLast }: { agentType: AgentType; res
                 Waiting for previous agents to complete...
               </div>
             )}
+
+            {/* Court Section - shows after human feedback */}
+            {feedback && (
+              <div className="px-4 pb-4">
+                <CourtSection
+                  agent={agentType}
+                  courtResult={courtResult || null}
+                  isRunning={courtRunning}
+                  stageStatus={courtStageStatus}
+                  onRunCourt={onRunCourt}
+                  onApprovePromptUpdate={onApprovePromptUpdate}
+                  onRejectPromptUpdate={onRejectPromptUpdate}
+                />
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -335,7 +392,14 @@ function AgentSection({ agentType, result, isLast }: { agentType: AgentType; res
   );
 }
 
-export function AgentPipeline({ pipeline, onFeedbackSubmit }: AgentPipelineProps) {
+export function AgentPipeline({
+  pipeline,
+  courtStageStatus,
+  onFeedbackSubmit,
+  onRunCourt,
+  onApprovePromptUpdate,
+  onRejectPromptUpdate,
+}: AgentPipelineProps) {
   const [feedbackAgent, setFeedbackAgent] = useState<AgentType | null>(null);
 
   const completedCount = agentOrder.filter(
@@ -364,6 +428,11 @@ export function AgentPipeline({ pipeline, onFeedbackSubmit }: AgentPipelineProps
       default:
         return 'Unknown';
     }
+  };
+
+  // Helper to get feedback for an agent
+  const getFeedbackForAgent = (agent: AgentType): HumanFeedback | undefined => {
+    return pipeline.feedbacks.find((f) => f.agent === agent);
   };
 
   return (
@@ -405,6 +474,8 @@ export function AgentPipeline({ pipeline, onFeedbackSubmit }: AgentPipelineProps
         </div>
         <p className="text-xs text-gray-500 mt-2">
           {completedCount} of {agentOrder.length} agents completed
+          {pipeline.feedbacks.length > 0 && ` • ${pipeline.feedbacks.length} reviewed`}
+          {Object.keys(pipeline.courtResults || {}).length > 0 && ` • ${Object.keys(pipeline.courtResults || {}).length} court sessions`}
         </p>
       </div>
 
@@ -416,6 +487,13 @@ export function AgentPipeline({ pipeline, onFeedbackSubmit }: AgentPipelineProps
             agentType={agentType}
             result={pipeline.agents[agentType] || { agent: agentType, status: 'pending' }}
             isLast={index === agentOrder.length - 1}
+            feedback={getFeedbackForAgent(agentType)}
+            courtResult={pipeline.courtResults?.[agentType]}
+            courtRunning={pipeline.courtRunning?.[agentType] || false}
+            courtStageStatus={courtStageStatus?.[agentType]}
+            onRunCourt={() => onRunCourt(agentType)}
+            onApprovePromptUpdate={onApprovePromptUpdate ? (idx) => onApprovePromptUpdate(agentType, idx) : undefined}
+            onRejectPromptUpdate={onRejectPromptUpdate ? (idx) => onRejectPromptUpdate(agentType, idx) : undefined}
           />
         ))}
       </div>
@@ -428,64 +506,30 @@ export function AgentPipeline({ pipeline, onFeedbackSubmit }: AgentPipelineProps
             <h4 className="font-semibold text-yellow-800">Human Review Required</h4>
           </div>
           <p className="text-sm text-yellow-700 mb-4">
-            All agents have completed. Please review the results and provide feedback.
+            All agents have completed. Please review each agent's output, then run the retrospective court.
           </p>
           <div className="flex flex-wrap gap-2">
             {agentOrder.map((agentType) => {
               const hasFeedback = pipeline.feedbacks.some((f) => f.agent === agentType);
+              const hasCourt = pipeline.courtResults?.[agentType];
               return (
                 <button
                   key={agentType}
                   onClick={() => setFeedbackAgent(agentType)}
                   disabled={hasFeedback}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                    hasFeedback
+                    hasCourt
+                      ? 'bg-purple-100 text-purple-700 cursor-not-allowed'
+                      : hasFeedback
                       ? 'bg-green-100 text-green-700 cursor-not-allowed'
                       : 'bg-white border border-yellow-300 text-yellow-700 hover:bg-yellow-100'
                   }`}
                 >
                   {AGENTS[agentType].icon} {AGENTS[agentType].name}
-                  {hasFeedback && ' ✓'}
+                  {hasCourt ? ' ⚖️' : hasFeedback ? ' ✓' : ''}
                 </button>
               );
             })}
-          </div>
-        </div>
-      )}
-
-      {/* Feedback Summary */}
-      {pipeline.feedbacks.length > 0 && (
-        <div className="px-6 py-4 border-t bg-gray-50">
-          <h4 className="font-semibold text-gray-700 mb-3">Feedback Summary</h4>
-          <div className="space-y-2">
-            {pipeline.feedbacks.map((feedback, idx) => (
-              <div
-                key={idx}
-                className={`p-3 rounded-lg border ${
-                  feedback.approved
-                    ? 'bg-green-50 border-green-200'
-                    : 'bg-red-50 border-red-200'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-medium text-sm">
-                    {AGENTS[feedback.agent].icon} {AGENTS[feedback.agent].name}
-                  </span>
-                  <span
-                    className={`text-xs font-semibold px-2 py-1 rounded ${
-                      feedback.approved
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-red-100 text-red-700'
-                    }`}
-                  >
-                    {feedback.approved ? 'Approved' : 'Rejected'}
-                  </span>
-                </div>
-                {feedback.comment && (
-                  <p className="text-xs text-gray-600">{feedback.comment}</p>
-                )}
-              </div>
-            ))}
           </div>
         </div>
       )}

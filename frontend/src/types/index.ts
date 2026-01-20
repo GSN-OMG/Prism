@@ -168,6 +168,8 @@ export interface IssuePipelineState {
   overallProgress: number; // 0-100
   status: 'idle' | 'running' | 'awaiting_feedback' | 'completed';
   feedbacks: HumanFeedback[];
+  courtResults: Partial<Record<AgentType, CourtResult>>;
+  courtRunning: Partial<Record<AgentType, boolean>>;
   startTime?: string;
   endTime?: string;
 }
@@ -198,5 +200,81 @@ export const AGENTS: Record<AgentType, { name: string; icon: string; description
     name: 'Promotion',
     icon: '🚀',
     description: 'Evaluate contributor promotion candidates',
+  },
+};
+
+// ============================================
+// Phase 3: Retrospective Court Types
+// ============================================
+
+// Court stage output (prosecutor, defense, jury, judge)
+export interface CourtStageOutput {
+  stage: string;
+  content: string;
+  reasoning: string;
+}
+
+// Prompt update proposal from judge
+export interface PromptUpdateProposal {
+  role: string;
+  from_version: number | null;
+  proposal: string;
+  reason: string;
+  status: 'proposed' | 'approved' | 'rejected' | 'applied';
+}
+
+// Lesson learned from court
+export interface CourtLesson {
+  role: string;
+  polarity: 'do' | 'do_not';
+  title: string;
+  content: string;
+}
+
+// Full court result for an agent
+export interface CourtResult {
+  agent: AgentType;
+  case_id: string;
+  court_run_id: string;
+  status: 'running' | 'completed' | 'error';
+  stages: {
+    prosecutor: CourtStageOutput;
+    defense: CourtStageOutput;
+    jury: CourtStageOutput;
+    judge: CourtStageOutput;
+  };
+  lessons: CourtLesson[];
+  prompt_updates: PromptUpdateProposal[];
+}
+
+// Court stage status for streaming
+export interface CourtStageStatus {
+  prosecutor: 'pending' | 'running' | 'completed';
+  defense: 'pending' | 'running' | 'completed';
+  jury: 'pending' | 'running' | 'completed';
+  judge: 'pending' | 'running' | 'completed';
+}
+
+// Court stage definitions for display
+export const COURT_STAGES: Record<string, { name: string; icon: string; role: string }> = {
+  prosecutor: {
+    name: 'Prosecutor',
+    icon: '⚖️',
+    role: 'Criticizes agent output and identifies issues',
+  },
+  defense: {
+    name: 'Defense',
+    icon: '🛡️',
+    role: 'Defends agent output and highlights strengths',
+  },
+  jury: {
+    name: 'Jury',
+    icon: '👥',
+    role: 'Observes and provides neutral assessment',
+  },
+  judge: {
+    name: 'Judge',
+    icon: '👨‍⚖️',
+    role: 'Delivers final verdict and recommendations',
   },
 };

@@ -8,6 +8,8 @@ import {
   AgentResult,
   AGENTS,
   HumanFeedback,
+  CourtResult,
+  CourtStageStatus,
 } from '@/types';
 import { AgentPipeline } from '@/components/AgentPipeline';
 
@@ -31,6 +33,7 @@ export default function Home() {
   const [isRunning, setIsRunning] = useState(false);
   const [currentAgentIndex, setCurrentAgentIndex] = useState(-1);
   const [error, setError] = useState<string | null>(null);
+  const [courtStageStatus, setCourtStageStatus] = useState<Partial<Record<AgentType, CourtStageStatus>>>({});
 
   // Run a single agent
   const runAgent = useCallback(async (issue: GitHubIssue, agent: AgentType): Promise<AgentResult> => {
@@ -61,6 +64,8 @@ export default function Home() {
       overallProgress: 0,
       status: 'running',
       feedbacks: [],
+      courtResults: {},
+      courtRunning: {},
       startTime: new Date().toISOString(),
     };
     setPipeline(initialPipeline);
@@ -178,13 +183,180 @@ export default function Home() {
 
     const updatedFeedbacks = [...pipeline.feedbacks, feedback];
     const allReviewed = updatedFeedbacks.length === agentOrder.length;
+    const allCourtDone = Object.keys(pipeline.courtResults || {}).length === agentOrder.length;
 
     setPipeline({
       ...pipeline,
       feedbacks: updatedFeedbacks,
-      status: allReviewed ? 'completed' : 'awaiting_feedback',
+      status: allReviewed && allCourtDone ? 'completed' : 'awaiting_feedback',
     });
   };
+
+  // Run retrospective court for an agent with streaming
+  const handleRunCourt = useCallback(async (agent: AgentType) => {
+    if (!pipeline || !createdIssue) return;
+
+    const feedback = pipeline.feedbacks.find(f => f.agent === agent);
+    if (!feedback) return;
+
+    // Set court as running and initialize stage status
+    setPipeline(prev => prev ? {
+      ...prev,
+      courtRunning: { ...prev.courtRunning, [agent]: true },
+    } : null);
+    setCourtStageStatus(prev => ({
+      ...prev,
+      [agent]: { prosecutor: 'pending', defense: 'pending', jury: 'pending', judge: 'pending' },
+    }));
+
+    try {
+      // Use streaming endpoint
+      const response = await fetch(`${BACKEND_API_URL}/api/court/run/stream`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          agent,
+          agent_output: pipeline.agents[agent]?.output || {},
+          human_feedback: {
+            approved: feedback.approved,
+            comment: feedback.comment,
+          },
+          issue: {
+            number: createdIssue.number,
+            title: createdIssue.title,
+            body: createdIssue.body,
+            labels: createdIssue.labels,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to run court stream');
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error('No response body');
+
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const event = JSON.parse(line.slice(6));
+
+              if (event.type === 'stage_start') {
+                const stage = event.stage as keyof CourtStageStatus;
+                setCourtStageStatus(prev => ({
+                  ...prev,
+                  [agent]: {
+                    ...(prev[agent] || { prosecutor: 'pending', defense: 'pending', jury: 'pending', judge: 'pending' }),
+                    [stage]: 'running',
+                  },
+                }));
+              } else if (event.type === 'stage_complete') {
+                const stage = event.stage as keyof CourtStageStatus;
+                setCourtStageStatus(prev => ({
+                  ...prev,
+                  [agent]: {
+                    ...(prev[agent] || { prosecutor: 'pending', defense: 'pending', jury: 'pending', judge: 'pending' }),
+                    [stage]: 'completed',
+                  },
+                }));
+              } else if (event.type === 'complete') {
+                const courtResult: CourtResult = event.result;
+
+                // Update pipeline with court result
+                setPipeline(prev => {
+                  if (!prev) return null;
+                  const updatedCourtResults = { ...prev.courtResults, [agent]: courtResult };
+                  const allReviewed = prev.feedbacks.length === agentOrder.length;
+                  const allCourtDone = Object.keys(updatedCourtResults).length === agentOrder.length;
+
+                  return {
+                    ...prev,
+                    courtResults: updatedCourtResults,
+                    courtRunning: { ...prev.courtRunning, [agent]: false },
+                    status: allReviewed && allCourtDone ? 'completed' : 'awaiting_feedback',
+                  };
+                });
+              }
+            } catch (parseError) {
+              console.warn('Failed to parse SSE event:', line);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Court run failed:', err);
+      setPipeline(prev => prev ? {
+        ...prev,
+        courtRunning: { ...prev.courtRunning, [agent]: false },
+      } : null);
+    }
+  }, [pipeline, createdIssue]);
+
+  // Handle prompt update approval
+  const handleApprovePromptUpdate = useCallback((agent: AgentType, updateIndex: number) => {
+    if (!pipeline?.courtResults?.[agent]) return;
+
+    setPipeline(prev => {
+      if (!prev?.courtResults?.[agent]) return prev;
+
+      const courtResult = prev.courtResults[agent];
+      const updatedPromptUpdates = [...courtResult.prompt_updates];
+      updatedPromptUpdates[updateIndex] = {
+        ...updatedPromptUpdates[updateIndex],
+        status: 'approved',
+      };
+
+      return {
+        ...prev,
+        courtResults: {
+          ...prev.courtResults,
+          [agent]: {
+            ...courtResult,
+            prompt_updates: updatedPromptUpdates,
+          },
+        },
+      };
+    });
+  }, [pipeline]);
+
+  // Handle prompt update rejection
+  const handleRejectPromptUpdate = useCallback((agent: AgentType, updateIndex: number) => {
+    if (!pipeline?.courtResults?.[agent]) return;
+
+    setPipeline(prev => {
+      if (!prev?.courtResults?.[agent]) return prev;
+
+      const courtResult = prev.courtResults[agent];
+      const updatedPromptUpdates = [...courtResult.prompt_updates];
+      updatedPromptUpdates[updateIndex] = {
+        ...updatedPromptUpdates[updateIndex],
+        status: 'rejected',
+      };
+
+      return {
+        ...prev,
+        courtResults: {
+          ...prev.courtResults,
+          [agent]: {
+            ...courtResult,
+            prompt_updates: updatedPromptUpdates,
+          },
+        },
+      };
+    });
+  }, [pipeline]);
 
   return (
     <main className="min-h-screen bg-gray-100">
@@ -197,7 +369,7 @@ export default function Home() {
                 <span>🤖</span> DevRel Agent Pipeline
               </h1>
               <p className="text-sm text-gray-500 mt-1">
-                Phase 2 - AI Agent Orchestration
+                Phase 2 - AI Agent Orchestration + Phase 3 - Retrospective Court
               </p>
             </div>
             <div className="flex items-center gap-4">
@@ -234,6 +406,8 @@ export default function Home() {
               const agentInfo = AGENTS[agent];
               const isActive = currentAgentIndex === idx;
               const isCompleted = pipeline?.agents[agent]?.status === 'completed';
+              const hasFeedback = pipeline?.feedbacks.some(f => f.agent === agent);
+              const hasCourtResult = pipeline?.courtResults?.[agent];
 
               return (
                 <div
@@ -241,6 +415,10 @@ export default function Home() {
                   className={`p-3 rounded-lg transition-all ${
                     isActive
                       ? 'bg-white/30 ring-2 ring-white'
+                      : hasCourtResult
+                      ? 'bg-purple-400/30'
+                      : hasFeedback
+                      ? 'bg-yellow-400/30'
                       : isCompleted
                       ? 'bg-white/20'
                       : 'bg-white/10'
@@ -256,6 +434,10 @@ export default function Home() {
                         <span className="inline-block w-1.5 h-1.5 bg-white rounded-full animate-pulse" />
                         Running
                       </span>
+                    ) : hasCourtResult ? (
+                      '⚖️ Court Done'
+                    ) : hasFeedback ? (
+                      '✓ Reviewed'
                     ) : isCompleted ? (
                       '✓ Completed'
                     ) : (
@@ -333,6 +515,27 @@ export default function Home() {
                   >
                     View on GitHub →
                   </a>
+
+                  {/* Court Progress Summary */}
+                  {pipeline && pipeline.feedbacks.length > 0 && (
+                    <div className="mt-6 pt-4 border-t">
+                      <h5 className="text-sm font-semibold text-gray-700 mb-2">Court Progress</h5>
+                      <div className="space-y-1">
+                        {agentOrder.map(agent => {
+                          const hasFeedback = pipeline.feedbacks.some(f => f.agent === agent);
+                          const hasCourtResult = pipeline.courtResults?.[agent];
+                          return (
+                            <div key={agent} className="flex items-center justify-between text-xs">
+                              <span className="text-gray-600">{AGENTS[agent].icon} {AGENTS[agent].name}</span>
+                              <span className={hasCourtResult ? 'text-purple-600' : hasFeedback ? 'text-yellow-600' : 'text-gray-400'}>
+                                {hasCourtResult ? '⚖️ Done' : hasFeedback ? '👤 Reviewed' : '...'}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="p-6 space-y-4">
@@ -414,7 +617,11 @@ export default function Home() {
             {pipeline ? (
               <AgentPipeline
                 pipeline={pipeline}
+                courtStageStatus={courtStageStatus}
                 onFeedbackSubmit={handleFeedbackSubmit}
+                onRunCourt={handleRunCourt}
+                onApprovePromptUpdate={handleApprovePromptUpdate}
+                onRejectPromptUpdate={handleRejectPromptUpdate}
               />
             ) : (
               <div className="bg-white rounded-xl shadow-lg p-12 text-center">
@@ -426,16 +633,29 @@ export default function Home() {
                   Fill out the form on the left to create a GitHub issue.
                   Once created, all 5 agents will analyze it.
                 </p>
-                <div className="mt-8 grid grid-cols-5 gap-2">
-                  {agentOrder.map((agent) => (
-                    <div
-                      key={agent}
-                      className="p-3 bg-gray-50 rounded-lg text-center"
-                    >
-                      <span className="text-2xl block mb-1">{AGENTS[agent].icon}</span>
-                      <span className="text-xs text-gray-600">{AGENTS[agent].name}</span>
-                    </div>
-                  ))}
+                <div className="mt-8">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3">Pipeline Flow</h4>
+                  <div className="flex items-center justify-center gap-2">
+                    {agentOrder.map((agent, idx) => (
+                      <div key={agent} className="flex items-center">
+                        <div className="p-2 bg-gray-50 rounded-lg text-center">
+                          <span className="text-xl block">{AGENTS[agent].icon}</span>
+                          <span className="text-xs text-gray-600">{AGENTS[agent].name}</span>
+                        </div>
+                        {idx < agentOrder.length - 1 && (
+                          <span className="text-gray-300 mx-1">→</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center justify-center gap-2 mt-4">
+                    <span className="text-2xl">👤</span>
+                    <span className="text-gray-400">→</span>
+                    <span className="text-2xl">⚖️</span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Human Review → Retrospective Court (for each agent)
+                  </p>
                 </div>
               </div>
             )}
@@ -447,10 +667,10 @@ export default function Home() {
       <footer className="bg-gray-800 text-white py-8 mt-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-gray-400 text-sm">
-            DevRel Agent Pipeline • Phase 2 Hackathon Demo
+            DevRel Agent Pipeline • Phase 2 + Phase 3 Hackathon Demo
           </p>
           <p className="text-gray-500 text-xs mt-2">
-            LLM-Powered Responses • Human-in-the-Loop Feedback
+            LLM-Powered Responses • Human-in-the-Loop Feedback • Retrospective Court
           </p>
         </div>
       </footer>
