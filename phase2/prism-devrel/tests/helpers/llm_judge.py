@@ -2,11 +2,13 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
+from pathlib import Path
 
 import pytest
 
 from devrel.agents.types import Issue, IssueAnalysisOutput
 from tests.helpers.dotenv import load_dotenv
+from devrel.llm.model_selector import LlmTask, model_for
 
 
 @dataclass(frozen=True, slots=True)
@@ -34,11 +36,13 @@ def judge_response_text(*, issue: Issue, analysis: IssueAnalysisOutput, response
 
     from openai import OpenAI
 
-    model = os.getenv("OPENAI_JUDGE_MODEL", "gpt-4.1-mini")
+    model = os.getenv("OPENAI_JUDGE_MODEL") or model_for(LlmTask.JUDGE)
     client = OpenAI()
 
-    schema = {
+    text_format = {
+        "type": "json_schema",
         "name": "judge_result",
+        "strict": True,
         "schema": {
             "type": "object",
             "additionalProperties": False,
@@ -49,7 +53,6 @@ def judge_response_text(*, issue: Issue, analysis: IssueAnalysisOutput, response
             },
             "required": ["passed", "score", "feedback"],
         },
-        "strict": True,
     }
 
     system = (
@@ -77,7 +80,7 @@ def judge_response_text(*, issue: Issue, analysis: IssueAnalysisOutput, response
             {"role": "system", "content": system},
             {"role": "user", "content": user},
         ],
-        text={"format": {"type": "json_schema", "json_schema": schema}},
+        text={"format": text_format},
     )
 
     raw = resp.output_text
