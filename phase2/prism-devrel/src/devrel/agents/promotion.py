@@ -96,7 +96,10 @@ def evaluate_promotion_llm(llm: LlmClient, contributor: Contributor) -> Promotio
 
     system = (
         "You are a DevRel agent that evaluates contributor promotion readiness.\n"
-        "Use only the provided metrics. Return JSON only."
+        "Use only the provided metrics.\n"
+        "Return a single JSON object with keys: is_candidate,current_stage,suggested_stage,confidence,evidence,recommendation.\n"
+        "evidence must be an array of objects: {criterion,status,detail}.\n"
+        "Do not wrap the result in another object and do not return plain-text."
     )
     payload = {
         "login": contributor.login,
@@ -106,7 +109,13 @@ def evaluate_promotion_llm(llm: LlmClient, contributor: Contributor) -> Promotio
         "reviews": contributor.reviews,
     }
     user = f"Contributor:\n{json.dumps(payload, ensure_ascii=False)}"
-    data = llm.generate_json(task=LlmTask.PROMOTION, system=system, user=user, json_schema=schema)
+    data = llm.generate_json(
+        task=LlmTask.PROMOTION,
+        system=system,
+        user=user,
+        json_schema=schema,
+        max_output_tokens=1500,
+    )
     return promotion_output_from_dict(data)
 
 

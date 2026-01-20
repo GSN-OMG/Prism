@@ -172,15 +172,20 @@ def doc_gap_output_from_dict(data: dict[str, object]) -> DocGapOutput:
 def promotion_output_from_dict(data: dict[str, object]) -> PromotionOutput:
     evidence_raw = data.get("evidence", []) or []
     evidence: list[PromotionEvidence] = []
-    for e in evidence_raw:  # type: ignore[assignment]
-        ee = e  # type: ignore[assignment]
-        evidence.append(
-            PromotionEvidence(
-                criterion=str(ee["criterion"]),
-                status=str(ee["status"]),
-                detail=str(ee["detail"]),
-            )
-        )
+    if isinstance(evidence_raw, str):
+        evidence.append(PromotionEvidence(criterion="summary", status="info", detail=evidence_raw))
+    elif isinstance(evidence_raw, list):
+        for e in evidence_raw:
+            if isinstance(e, dict) and {"criterion", "status", "detail"} <= set(e.keys()):
+                evidence.append(
+                    PromotionEvidence(
+                        criterion=str(e["criterion"]),
+                        status=str(e["status"]),
+                        detail=str(e["detail"]),
+                    )
+                )
+            elif isinstance(e, str):
+                evidence.append(PromotionEvidence(criterion="note", status="info", detail=e))
     return PromotionOutput(
         is_candidate=bool(data.get("is_candidate", False)),
         current_stage=str(data.get("current_stage", "")),

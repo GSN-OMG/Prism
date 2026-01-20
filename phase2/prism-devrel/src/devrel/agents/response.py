@@ -72,7 +72,8 @@ def draft_response_llm(
     system = (
         "You are a DevRel agent responding on GitHub issues.\n"
         "Be accurate, concise, and avoid hallucinating versions/links.\n"
-        "If needs_more_info=true, ask for concrete reproduction/environment/logs."
+        "If needs_more_info=true, ask for concrete reproduction/environment/logs.\n"
+        "Keep response_text short (<= 180 words)."
     )
     payload = {
         "issue": {"number": issue.number, "title": issue.title, "body": issue.body, "labels": list(issue.labels)},
@@ -88,5 +89,11 @@ def draft_response_llm(
         "references": references or [],
     }
     user = f"Input:\n{json.dumps(payload, ensure_ascii=False)}"
-    data = llm.generate_json(task=LlmTask.RESPONSE, system=system, user=user, json_schema=schema)
+    data = llm.generate_json(
+        task=LlmTask.RESPONSE,
+        system=system,
+        user=user,
+        json_schema=schema,
+        max_output_tokens=1200,
+    )
     return response_output_from_dict(data)
