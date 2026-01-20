@@ -1,0 +1,28 @@
+.DS_Store
+
+# Secrets / local env
+.env
+.env.*
+!.env.example
+
+# Exclude existing local-only files/dirs from sync
+.codex/
+AGENTS.md
+CODEX.md
+Makefile
+docs/
+
+# Node
+node_modules/
+dist/
+build/
+.next/
+coverage/
+
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+
+# Misc
+.reports/
