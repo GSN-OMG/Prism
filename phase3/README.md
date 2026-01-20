@@ -64,6 +64,60 @@ npm run dev
 - 프롬프트 권고안 리뷰/적용(HITL): `POST /prompt-updates/:id/review`, `POST /prompt-updates/:id/apply`
 - JSON API는 동일 리소스를 `/cases`, `/cases/:id/events`, `/prompt-updates` 등으로 제공합니다.
 
+## 기능 테스트(수동)
+
+### 1) 인메모리 데모(GUI)
+
+```bash
+make setup
+cd phase3
+npm run dev
+```
+
+1. `http://localhost:3000/gui` 접속 → Case 클릭
+2. **Timeline**에서 이벤트를 펼쳐 `Content / Usage / Meta`가 보이는지 확인
+3. **Judge prompt update review (proposed)** 에서 `Approve`
+4. 아래 **approved** 섹션으로 이동했는지 확인 후 `Apply`
+5. 적용 후 `prompt_updates.status=applied`, `role_prompts`가 새 버전으로 생성/활성화되는지 확인
+
+### 2) API 스모크 테스트(curl)
+
+서버가 켜져있다고 가정합니다(`npm run dev`).
+
+```bash
+# 1) 첫 Case / 첫 proposed prompt_update 선택
+CASE_ID=$(curl -s http://localhost:3000/cases | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['id'])")
+PU_ID=$(curl -s "http://localhost:3000/prompt-updates?case_id=$CASE_ID&status=proposed" | python3 -c "import sys,json; print(json.load(sys.stdin)[0]['id'])")
+
+# 2) 레댁션 가드 확인(민감정보가 들어가면 400)
+curl -i -X POST "http://localhost:3000/prompt-updates/$PU_ID/review" \
+  -H 'Content-Type: application/json' \
+  -d '{"action":"approve","comment":"leak sk-proj-1234567890abcdefghijklmnopqrstuv"}'
+
+# 3) 승인 → 적용
+curl -s -X POST "http://localhost:3000/prompt-updates/$PU_ID/review" \
+  -H 'Content-Type: application/json' \
+  -d '{"action":"approve","reviewer":"local-test"}'
+
+curl -s -X POST "http://localhost:3000/prompt-updates/$PU_ID/apply" \
+  -H 'Content-Type: application/json' \
+  -d '{}'
+```
+
+### 3) Postgres 모드(데이터 유지 확인)
+
+```bash
+cd phase3
+cp .env.example .env
+# .env에서 DATABASE_URL 설정
+
+python3 -m prism.storage.migrate
+npm run seed
+npm run dev
+```
+
+- 서버를 재시작해도 Case/Timeline/Prompt updates가 유지되는지 확인합니다.
+
 ## Python 유틸리티 (MVP)
 
 - 레댁션 실행(디폴트 정책 + 리포트): `python3 -m prism.phase3.redaction_pipeline --report < input.json > redacted.json`
