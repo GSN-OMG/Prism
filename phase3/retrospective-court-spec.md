@@ -1,4 +1,4 @@
-# 회고 법정 모듈 스펙 (v0.7)
+# 회고 법정 모듈 스펙 (v0.8)
 
 목표: 인간/AI의 활동 기록(컨텍스트)을 “사건(Case)”으로 재구성하고, 멀티 에이전트 회고(판사/검사/변호사/배심원)를 통해 **역할(Role)별 교훈(Lesson)** 을 도출·선별하여 PostgreSQL에 축적한다. 축적된 교훈은 검색/추천에 활용되며, 필요 시 **역할별 기본 프롬프트(Base Prompt)** 업데이트(진화)를 트리거한다.
 
@@ -42,7 +42,101 @@
     - 사건 요약/핵심 쟁점
     - 역할/대상별 교훈(텍스트 + 구조화 메타 + 임베딩)
     - 판결 기록(왜 저장/보류했는지)
-    - 프롬프트 업데이트 제안 및 적용 이력(HITL)
+	    - 프롬프트 업데이트 제안 및 적용 이력(HITL)
+
+## 2.1) GitHub 사건 매핑 (Issue/PR, DevRel Subagents)
+
+이 모듈이 주로 다루는 사건은 **GitHub Issue/PR에서 상주하는 DevRel 직무 관련 subagent들의 활동 이력**이다. 따라서 `ContextBundle`은 “Issue 1건” 또는 “PR 1건”을 1개의 사건으로 구성하는 것을 권장한다.
+
+### Case 경계(권장)
+
+- **Issue Case**: `owner/repo#issue_number` 1건 = 1 case
+- **PR Case**: `owner/repo#pr_number` 1건 = 1 case
+- 이벤트가 긴 경우(장기 이슈/대형 PR)는 “기간” 또는 “마일스톤” 기준으로 여러 `ContextBundle`로 분할할 수 있다(단, 사건 식별자는 동일하게 유지하거나 `parent_case_id` 같은 확장 메타를 둔다).
+
+### 권장 메타 필드 (source/metadata)
+
+- `source.system`: `github`
+- `source.repo`: `owner/repo`
+- `metadata.github` (권장)
+  - `type`: `issue|pull_request`
+  - `number`: issue/pr 번호
+  - `url`: 웹 URL
+  - `state`: `open|closed|merged`(PR의 경우)
+  - `labels`: 라벨 목록
+  - `assignees`: 할당자
+  - `author`: 작성자(로그인)
+  - (PR) `base_branch`, `head_branch`, `head_sha`
+  - (선택) `milestone`, `project`, `linked_issues`
+
+### Agents(DevRel Subagents) 기록 방식
+
+- `agents[]`에 “사건에 연루된” subagent를 모두 나열한다.
+  - 예: `devrel-triage`, `devrel-reproducer`, `devrel-pr-reviewer`, `devrel-docs-writer`, `devrel-community-manager`
+- 각 항목은 최소 `id`를 포함한다. 가능하면 다음을 포함:
+  - `role`(자유 입력), `prompt.content`(현재 프롬프트 기준선), `meta`(모델/버전/설정)
+
+### Result(사건 결과) 추천 필드/지표
+
+- `result.status`: `success|failure|partial` (운영 목적에 맞게 자유 확장)
+- `result.summary`: 사건 결과 한 줄 요약
+- `result.metrics` (권장, DevRel 운영 지표)
+  - `time_to_first_response_sec`
+  - `time_to_close_sec` / `time_to_merge_sec`
+  - `num_comments`, `num_review_comments`
+  - `num_review_roundtrips` (changes requested 횟수 등)
+  - `num_ci_failures` / `num_ci_retries`
+  - `num_force_pushes` / `num_syncs`
+  - (선택) `user_sentiment`(휴먼 입력 기반이면 OK)
+- `result.artifacts`: 링크/스냅샷(예: 로그 URL, 빌드 링크, 릴리즈 노트)
+
+### Feedback(사건 피드백) 추천
+
+- `feedback.summary`: 사건 회고용 요약(사용자/내부 리뷰어 관점)
+- `feedback.items[]`: 구조화 객체 권장(예: `{ "author": "...", "type": "review", "content": "...", "severity": "low|med|high" }`)
+
+### Events(컨텍스트 타임라인) 권장 규칙
+
+- 정렬: `events[].ts` 우선, 없으면 `events[].seq`로 순서를 보장
+- `actor_type` 권장 매핑
+  - GitHub 사용자/리뷰어: `human`
+  - DevRel subagent: `ai`
+  - GitHub/CI/자동화: `system`
+  - GitHub API 호출/임베딩/DB 작업 등: `tool`
+- `event_type` 네이밍 권장(필터링/분석/GUI에 유리)
+  - GitHub 원천 이벤트: `github.issue.*`, `github.pull_request.*`, `github.review.*`, `github.ci.*`
+  - 에이전트 내부 이벤트: `agent.plan`, `agent.message`, `agent.decision`, `agent.action`
+  - 운영/관측 이벤트: `tool_call`, `tool_result`, `model_call`, `model_result`, `error`, `artifact`
+- `meta`에 GitHub 식별자/링크를 넣어 “원문은 짧게, 참조는 풍부하게”
+  - 예: `meta.github.comment_id`, `meta.github.url`, `meta.github.diff_hunk`, `meta.github.review_state`
+- `usage`에는 운영 정보를 넣는다(토큰/비용/지연/재시도/레이트리밋 등).
+
+### 이벤트 타입 예시 (GitHub)
+
+- Issue
+  - `github.issue.opened`, `github.issue.labeled`, `github.issue.assigned`, `github.issue.comment.created`, `github.issue.closed`, `github.issue.reopened`
+- Pull Request
+  - `github.pull_request.opened`, `github.pull_request.synchronized`, `github.pull_request.ready_for_review`, `github.pull_request.review.submitted`, `github.pull_request.review_comment.created`, `github.pull_request.merged`, `github.pull_request.closed`
+- CI/Automation
+  - `github.ci.check_run.completed`, `github.ci.workflow_run.completed`
+
+## 2.2) GitHub → ContextBundle 예시(간단)
+
+```json
+{
+  "version": "0.1",
+  "source": { "system": "github", "repo": "owner/repo", "tags": ["pull_request"] },
+  "metadata": { "github": { "type": "pull_request", "number": 42, "url": "...", "state": "merged" } },
+  "agents": [{ "id": "devrel-pr-reviewer-1", "role": "devrel-pr-reviewer" }],
+  "result": { "status": "success", "summary": "PR merged", "metrics": { "time_to_merge_sec": 86400 } },
+  "feedback": { "summary": "Review was helpful", "items": [] },
+  "events": [
+    { "id": "e1", "ts": "2026-01-20T04:00:00Z", "actor_type": "human", "actor_id": "contributor", "event_type": "github.pull_request.opened", "content": "Opened PR #42", "meta": { "github": { "url": "..." } } },
+    { "id": "e2", "ts": "2026-01-20T04:10:00Z", "actor_type": "ai", "actor_id": "devrel-pr-reviewer-1", "role": "devrel-pr-reviewer", "event_type": "agent.plan", "content": "Plan review steps", "usage": { "model": "gpt-4.1", "latency_ms": 1200, "input_tokens": 1200, "output_tokens": 250 } },
+    { "id": "e3", "ts": "2026-01-20T04:12:00Z", "actor_type": "tool", "actor_id": "github_api", "event_type": "tool_call", "content": "GET PR files", "meta": { "endpoint": "GET /repos/{owner}/{repo}/pulls/{pull_number}/files" }, "usage": { "rate_limit_remaining": 4980 } }
+  ]
+}
+```
 
 ## 3) 멀티 에이전트 워크플로우 (Court)
 
