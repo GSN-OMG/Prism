@@ -62,13 +62,13 @@
 ### 예시(초안) — JSON
 ```json
 {
-  "version": "0.2",
+  "version": "0.3",
   "rules": [
     {
       "name": "openai_api_key_like",
       "category": "secret",
       "action": "partial",
-      "pattern": "\\bsk-[A-Za-z0-9]{20,}\\b"
+      "pattern": "\\bsk-(?:proj-)?[A-Za-z0-9_\\-]{20,}\\b"
     },
     {
       "name": "bearer_token",
