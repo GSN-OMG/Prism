@@ -29,8 +29,8 @@ This repository contains lightweight, standard-library Python scripts for ingest
   - `python3 scripts/export_repo_work_item_views.py --raw-http-dir raw/.../raw_http --out-dir out_views`
 - Build bounded repo insights (recommended input to prompt-refiners; do **not** feed raw_http directly):
   - `python3 scripts/build_repo_insights.py --raw-http-dir raw/.../raw_http --out-dir out_insights --max-cards 30 --max-evidence 5 --max-statement-chars 240`
-- Generate per-agent prompt drafts (LLM-free; deterministic):
-  - `python3 scripts/generate_prompt_updates_from_insights.py --agents-summary AGENTS_SUMMARY.md --repo-insights out_insights/repo_insights.json --out-dir out_prompts --max-cards-per-agent 15`
+- Generate per-agent prompt drafts (LLM-based; OpenAI):
+  - `OPENAI_API_KEY=... python3 scripts/generate_prompt_updates_from_insights.py --agents-summary AGENTS_SUMMARY.md --repo-insights out_insights/repo_insights.json --out-dir out_prompts --max-cards-per-agent 15`
 - Run tests:
   - `python3 -m unittest discover -s tests -q`
 - Quick syntax check:

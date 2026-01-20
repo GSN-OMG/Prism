@@ -36,9 +36,10 @@ python3 scripts/build_repo_insights.py --raw-http-dir raw/.../raw_http --out-dir
 
 ## generate_prompt_updates_from_insights.py
 
-`AGENTS_SUMMARY.md` + `repo_insights.json`을 입력으로, 에이전트별 시스템 프롬프트 초안을 생성합니다(현재 프롬프트 뒤에 Repo-Specific Context 블록을 append).
+`AGENTS_SUMMARY.md` + `repo_insights.json`을 입력으로, 에이전트별 시스템 프롬프트 초안을 생성합니다(OpenAI LLM으로 **시스템 프롬프트를 리라이트**, `OPENAI_API_KEY` 필요).
 
 ```bash
+export OPENAI_API_KEY="..."
 python3 scripts/generate_prompt_updates_from_insights.py \\
   --agents-summary AGENTS_SUMMARY.md \\
   --repo-insights out_insights/repo_insights.json \\

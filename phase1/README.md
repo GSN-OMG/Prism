@@ -23,6 +23,8 @@ This folder contains lightweight, standard-library Python scripts to:
   - `GITHUB_TOKEN` or `GH_TOKEN`
 - OpenAI API key for embeddings:
   - `OPENAI_API_KEY`
+- OpenAI API key for prompt updates (optional workflow):
+  - `OPENAI_API_KEY`
 
 ## Quickstart
 
@@ -115,4 +117,3 @@ LIMIT 20;
 python3 -m unittest discover -s tests -q
 python3 -m py_compile scripts/*.py
 ```
-

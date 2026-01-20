@@ -3,8 +3,15 @@ import argparse
 import datetime as dt
 import json
 import os
+import random
 import re
 import sys
+import time
+import urllib.error
+import urllib.request
+
+
+OPENAI_CHAT_COMPLETIONS_URL = "https://api.openai.com/v1/chat/completions"
 
 
 def parse_args() -> argparse.Namespace:
@@ -14,6 +21,10 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--out-dir", default="out_prompts", help="Output directory (default: out_prompts).")
     p.add_argument("--max-cards-per-agent", type=int, default=15, help="Max insight cards to inject per agent.")
     p.add_argument("--language", default="ko", choices=["ko", "en"], help="Language for injected context block.")
+    p.add_argument("--model", default=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"), help="OpenAI model (default: env OPENAI_MODEL or gpt-4o-mini).")
+    p.add_argument("--temperature", type=float, default=0.0, help="LLM temperature (default: 0.0).")
+    p.add_argument("--max-output-tokens", type=int, default=1400, help="LLM max output tokens (default: 1400).")
+    p.add_argument("--timeout-seconds", type=float, default=90.0, help="HTTP timeout seconds (default: 90).")
     return p.parse_args()
 
 
@@ -130,6 +141,135 @@ def inject_block_into_prompt(prompt: str, block: str) -> str:
     return prompt.rstrip() + marker + block + "\n"
 
 
+def openai_chat_completion(
+    *,
+    api_key: str,
+    model: str,
+    system: str,
+    user: str,
+    temperature: float,
+    max_output_tokens: int,
+    timeout_seconds: float,
+) -> tuple[str, dict]:
+    body = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ],
+        "temperature": float(temperature),
+        "max_tokens": int(max_output_tokens),
+    }
+    data = json.dumps(body).encode("utf-8")
+    req = urllib.request.Request(
+        OPENAI_CHAT_COMPLETIONS_URL,
+        data=data,
+        method="POST",
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+    )
+
+    attempt = 0
+    while True:
+        attempt += 1
+        try:
+            with urllib.request.urlopen(req, timeout=float(timeout_seconds)) as resp:
+                payload = json.loads(resp.read().decode("utf-8"))
+            choices = payload.get("choices") or []
+            if not isinstance(choices, list) or not choices:
+                raise RuntimeError("Missing choices in OpenAI response.")
+            msg = (choices[0] or {}).get("message") or {}
+            content = msg.get("content")
+            if not isinstance(content, str) or not content.strip():
+                raise RuntimeError("Missing message.content in OpenAI response.")
+            return content.rstrip() + "\n", payload
+        except urllib.error.HTTPError as e:
+            status = getattr(e, "code", 0) or 0
+            body_text = ""
+            try:
+                body_text = e.read().decode("utf-8", errors="replace")
+            except Exception:
+                pass
+            if status in (429, 500, 502, 503, 504) and attempt <= 8:
+                sleep_s = min(2 ** (attempt - 1), 60) + random.random()
+                time.sleep(sleep_s)
+                continue
+            raise RuntimeError(f"OpenAI HTTP {status}: {body_text[:500]}") from e
+        except Exception:
+            if attempt <= 5:
+                time.sleep(min(2 ** (attempt - 1), 30) + random.random())
+                continue
+            raise
+
+
+def build_llm_system_message(*, language: str) -> str:
+    if language == "en":
+        return (
+            "You are a prompt refiner. You rewrite system prompts so an agent behaves in a repo-specific, evidence-based way.\n"
+            "Rules:\n"
+            "- Output ONLY the updated system prompt (markdown). No preamble.\n"
+            "- Do not invent repo facts. Only use provided insights.\n"
+            "- Prefer concise, actionable rules.\n"
+            "- If insights are weak/uncertain, add clarifying-question behavior instead of hard rules.\n"
+        )
+    return (
+        "당신은 시스템 프롬프트 리파이너입니다. 에이전트가 레포 맥락에 맞게, 증거 기반으로 동작하도록 시스템 프롬프트를 재작성합니다.\n"
+        "규칙:\n"
+        "- 출력은 업데이트된 시스템 프롬프트(마크다운)만. 설명/머리말 금지.\n"
+        "- 레포 사실을 꾸며내지 말고 제공된 인사이트만 사용.\n"
+        "- 간결하고 실행 가능한 규칙을 우선.\n"
+        "- 근거가 약하면 규칙으로 단정하지 말고, 확인 질문/불확실성 처리 규칙을 추가.\n"
+    )
+
+
+def build_llm_user_message(
+    *,
+    agent_id: str,
+    purpose: str,
+    current_prompt: str,
+    repo_full_name: str,
+    injected_block: str,
+    language: str,
+) -> str:
+    if language == "en":
+        return (
+            f"Agent ID: {agent_id}\n"
+            f"Repo: {repo_full_name}\n"
+            f"Purpose: {purpose}\n\n"
+            "Current system prompt (markdown):\n"
+            "-----\n"
+            f"{current_prompt.strip()}\n"
+            "-----\n\n"
+            "Repo insights to incorporate (bounded, evidence-based):\n"
+            "-----\n"
+            f"{injected_block.strip()}\n"
+            "-----\n\n"
+            "Task:\n"
+            "- Rewrite the system prompt to incorporate the insights.\n"
+            "- Include a 'Repo-Specific Context' section.\n"
+            "- Preserve the agent's mission/purpose.\n"
+        )
+    return (
+        f"Agent ID: {agent_id}\n"
+        f"Repo: {repo_full_name}\n"
+        f"Purpose: {purpose}\n\n"
+        "현재 시스템 프롬프트(마크다운):\n"
+        "-----\n"
+        f"{current_prompt.strip()}\n"
+        "-----\n\n"
+        "반영할 레포 인사이트(증거 기반, bounded):\n"
+        "-----\n"
+        f"{injected_block.strip()}\n"
+        "-----\n\n"
+        "요청:\n"
+        "- 인사이트를 반영해 시스템 프롬프트를 재작성하세요.\n"
+        "- 'Repo-Specific Context' 섹션을 반드시 포함하세요.\n"
+        "- 에이전트의 미션/목적은 유지하세요.\n"
+    )
+
+
 def main() -> int:
     args = parse_args()
     if not os.path.isfile(args.agents_summary):
@@ -153,6 +293,11 @@ def main() -> int:
 
     ensure_dir(args.out_dir)
 
+    api_key = os.environ.get("OPENAI_API_KEY") or ""
+    if not api_key:
+        print("Missing OPENAI_API_KEY env var (required for prompt updates).", file=sys.stderr)
+        return 2
+
     summary_rows = []
     for a in agents:
         agent_id = str(a.get("agent_id") or "").strip()
@@ -161,7 +306,24 @@ def main() -> int:
 
         sel = select_cards_for_agent(cards, purpose=purpose, max_cards=args.max_cards_per_agent)
         block = render_injected_block(sel, repo_full_name=repo_full_name, language=args.language)
-        updated = inject_block_into_prompt(current, block)
+        system_msg = build_llm_system_message(language=args.language)
+        user_msg = build_llm_user_message(
+            agent_id=agent_id,
+            purpose=purpose,
+            current_prompt=current,
+            repo_full_name=repo_full_name,
+            injected_block=block,
+            language=args.language,
+        )
+        updated, raw_llm = openai_chat_completion(
+            api_key=api_key,
+            model=args.model,
+            system=system_msg,
+            user=user_msg,
+            temperature=args.temperature,
+            max_output_tokens=args.max_output_tokens,
+            timeout_seconds=args.timeout_seconds,
+        )
 
         safe_id = slugify_agent_id(agent_id)
         out_prompt = os.path.join(args.out_dir, f"{safe_id}.system.prompt.md")
@@ -176,6 +338,13 @@ def main() -> int:
             "agent_id": agent_id,
             "repo_full_name": repo_full_name,
             "generated_at_utc": dt.datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
+            "generation_mode": "openai_chat_completions",
+            "llm": {
+                "model": args.model,
+                "temperature": args.temperature,
+                "max_output_tokens": args.max_output_tokens,
+                "response_id": str((raw_llm or {}).get("id") or ""),
+            },
             "selected_card_ids": [str(c.get("id") or "") for c in sel if isinstance(c, dict) and c.get("id")],
             "evidence_urls": sorted(
                 set(
@@ -188,7 +357,7 @@ def main() -> int:
             "policy": {
                 "max_cards_per_agent": args.max_cards_per_agent,
                 "evidence_urls_per_card_cap": 3,
-                "injection_style": "append_with_hr",
+                "injection_style": "llm_rewrite",
             },
         }
         with open(out_changes, "w", encoding="utf-8") as f:
@@ -205,4 +374,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
