@@ -16,6 +16,13 @@ cd phase2/prism-devrel
 python scripts/run_fixtures.py
 ```
 
+LLM으로 실제 에이전트 출력 생성(과금 발생):
+
+```bash
+export USE_LLM=1
+python scripts/run_fixtures.py
+```
+
 LLM-as-a-judge를 켜려면:
 
 ```bash
