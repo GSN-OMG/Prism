@@ -13,9 +13,8 @@ OMG (Oh My GPT)
 
 # 데모
 
-URL: [Prism: Self-Evolving DevRel OS Demo Video](https://drive.google.com/file/d/113XJM26LzezM00laSdarMALvds_6ErSj/view?usp=sharing)
+🎥 URL: [Prism: Self-Evolving DevRel OS Demo Video](https://drive.google.com/file/d/113XJM26LzezM00laSdarMALvds_6ErSj/view?usp=sharing)
 ![2026-01-206 11 57-ezgif com-video-to-gif-converter](https://github.com/user-attachments/assets/91618dc0-34ab-4c4b-b18c-b3ecc6b89da8)
-
 
 
 ---
