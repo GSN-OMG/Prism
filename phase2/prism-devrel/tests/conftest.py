@@ -1,19 +1,11 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 import pytest
 
 from tests.helpers.dotenv import load_dotenv
-
-
-def pytest_addoption(parser: pytest.Parser) -> None:
-    parser.addoption(
-        "--llm-judge",
-        action="store_true",
-        default=False,
-        help="Enable LLM-as-a-judge tests (will call OpenAI if configured).",
-    )
 
 
 def pytest_configure() -> None:
@@ -30,9 +22,10 @@ def pytest_configure() -> None:
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
-    if config.getoption("--llm-judge"):
+    _ = config
+    if os.getenv("OPENAI_API_KEY"):
         return
-    skip = pytest.mark.skip(reason="LLM judge disabled (use --llm-judge to enable).")
+    skip = pytest.mark.skip(reason="OPENAI_API_KEY not set (live LLM tests skipped).")
     for item in items:
-        if "llm_judge" in item.keywords:
+        if "llm_judge" in item.keywords or "llm_live" in item.keywords:
             item.add_marker(skip)

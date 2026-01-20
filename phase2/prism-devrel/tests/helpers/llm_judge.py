@@ -25,8 +25,6 @@ def _llm_judge_enabled() -> bool:
     repo_root = phase2_root.parent
     load_dotenv(repo_root / ".env", phase2_root / ".env", project_root / ".env")
 
-    if os.getenv("RUN_LLM_JUDGE", "0") not in ("1", "true", "TRUE", "yes", "YES"):
-        return False
     return bool(os.getenv("OPENAI_API_KEY"))
 
 
