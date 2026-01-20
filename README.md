@@ -97,7 +97,7 @@ graph TD
         Court --> Def[Defense Agent]
         Pros & Def --> Judge[Judge Agent]
         Judge --> Optimize[Prompt Optimizer]
-        Optimize -->|Update| PC
+        
     end
 
     %% Connections
