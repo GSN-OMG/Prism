@@ -1,0 +1,212 @@
+{
+  "metadata": {
+    "generated_at": "2026-01-20T14:45:20.130156",
+    "repo": "openai/openai-agents-python",
+    "total_contributors": 58,
+    "active_contributors_used": 5
+  },
+  "input": {
+    "issue": {
+      "number": 2314,
+      "title": "OAuth token refresh not working with custom providers",
+      "body": "When using a custom OAuth provider, the token refresh fails with 401 errors.",
+      "labels": [
+        "bug",
+        "auth"
+      ]
+    },
+    "contributors": [
+      {
+        "login": "HemanthIITJ",
+        "areas": [
+          "community",
+          "development"
+        ],
+        "merged_prs": 9,
+        "reviews": 0,
+        "recent_activity_score": 1.0
+      },
+      {
+        "login": "chatgpt-codex-connector",
+        "areas": [
+          "code-review",
+          "community"
+        ],
+        "merged_prs": 0,
+        "reviews": 53,
+        "recent_activity_score": 5.9
+      },
+      {
+        "login": "github-actions",
+        "areas": [
+          "community",
+          "development"
+        ],
+        "merged_prs": 11,
+        "reviews": 0,
+        "recent_activity_score": 5.8
+      },
+      {
+        "login": "github-actions[bot]",
+        "areas": [
+          "development"
+        ],
+        "merged_prs": 11,
+        "reviews": 0,
+        "recent_activity_score": 1.1
+      },
+      {
+        "login": "gustavz",
+        "areas": [
+          "code-review",
+          "development"
+        ],
+        "merged_prs": 2,
+        "reviews": 9,
+        "recent_activity_score": 1.3
+      }
+    ]
+  },
+  "results": {
+    "rule_based": {
+      "issue_analysis": {
+        "issue_type": "bug",
+        "priority": "medium",
+        "required_skills": [
+          "debugging",
+          "auth"
+        ],
+        "keywords": [
+          "oauth",
+          "auth"
+        ],
+        "summary": "OAuth token refresh not working with custom providers",
+        "needs_more_info": false,
+        "suggested_action": "direct_answer"
+      },
+      "assignment": {
+        "recommended_assignee": "github-actions",
+        "confidence": 0.54,
+        "alternative_assignees": [
+          "chatgpt-codex-connector",
+          "github-actions[bot]"
+        ],
+        "context_for_assignee": "Issue type: bug\nPriority: medium\nKeywords: oauth, auth\nSuggested action: direct_answer\n",
+        "reasons": [
+          {
+            "factor": "recent_activity",
+            "explanation": "recent_activity_score=5.8",
+            "score": 1.0
+          },
+          {
+            "factor": "merged_prs",
+            "explanation": "merged_prs=11",
+            "score": 0.55
+          }
+        ]
+      },
+      "promotion": {
+        "contributor": "HemanthIITJ",
+        "is_candidate": false,
+        "current_stage": "REGULAR",
+        "suggested_stage": "REGULAR",
+        "confidence": 0.4,
+        "recommendation": "No promotion suggested for @HemanthIITJ.",
+        "evidence": [
+          {
+            "criterion": "recent_activity",
+            "status": "not_met",
+            "detail": "recent_activity_score=1.0"
+          },
+          {
+            "criterion": "merged_prs",
+            "status": "met",
+            "detail": "merged_prs=9"
+          },
+          {
+            "criterion": "reviews",
+            "status": "not_met",
+            "detail": "reviews=0"
+          }
+        ]
+      }
+    },
+    "llm_based": {
+      "issue_analysis": {
+        "issue_type": "bug",
+        "priority": "high",
+        "required_skills": [
+          "OAuth",
+          "authentication",
+          "API",
+          "security"
+        ],
+        "keywords": [
+          "OAuth",
+          "token refresh",
+          "custom provider",
+          "401 error"
+        ],
+        "summary": "Token refresh fails with 401 errors when using custom OAuth providers.",
+        "needs_more_info": true,
+        "suggested_action": "request_info"
+      },
+      "assignment": {
+        "recommended_assignee": "HemanthIITJ",
+        "confidence": 0.75,
+        "alternative_assignees": [
+          "gustavz",
+          "github-actions"
+        ],
+        "context_for_assignee": "This high-priority bug relates to OAuth token refresh failures (401 error) with custom providers. Initial action is to request more information from the reporter to proceed with troubleshooting. Please ensure any relevant logs are requested and verify the provider configuration.",
+        "reasons": [
+          {
+            "factor": "Relevant skills/areas",
+            "explanation": "HemanthIITJ's expertise in both community and development makes them likely to have experience with OAuth and authentication-related bugs. Their development background aligns with debugging and requesting further information from reporters.",
+            "score": 0.3
+          },
+          {
+            "factor": "Recent activity",
+            "explanation": "HemanthIITJ has a max score of 1.0 for recent development activity among human contributors relevant to this issue. While several bots are more active, assigning non-bot maintainers is preferable for requesting information and follow-up.",
+            "score": 0.2
+          },
+          {
+            "factor": "Merged PRs",
+            "explanation": "With 9 merged PRs, HemanthIITJ is a proven contributor, indicating familiarity with project processes and likely codebase knowledge.",
+            "score": 0.25
+          }
+        ]
+      },
+      "promotion": {
+        "contributor": "HemanthIITJ",
+        "is_candidate": false,
+        "current_stage": "Contributor",
+        "suggested_stage": "Contributor",
+        "confidence": 0.58,
+        "recommendation": "Not yet a promotion candidate. To progress toward a reviewer/maintainer path, begin performing and documenting code reviews, participate in issue triage, and continue submitting quality PRs. For the community track, take visible roles in discussions and onboarding. Reassess once a sustained review history is established.",
+        "evidence": [
+          {
+            "criterion": "recent_activity_score",
+            "status": "strong",
+            "detail": "Recent activity score is 1.0, indicating very high current engagement."
+          },
+          {
+            "criterion": "merged_prs",
+            "status": "good",
+            "detail": "9 merged PRs show consistent development contributions."
+          },
+          {
+            "criterion": "reviews",
+            "status": "insufficient",
+            "detail": "0 reviews; no demonstrated peer-review or gatekeeping activity."
+          },
+          {
+            "criterion": "areas",
+            "status": "broad",
+            "detail": "Active in both community and development areas."
+          }
+        ]
+      }
+    }
+  }
+}
