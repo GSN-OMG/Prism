@@ -42,7 +42,7 @@
       "name": "phone_like",
       "category": "pii",
       "action": "mask",
-      "pattern": "\\b\\+?\\d[\\d\\s\\-()]{7,}\\d\\b"
+      "pattern": "\\b(?!\\d{4}-\\d{2}-\\d{2}\\b)\\+?\\d[\\d\\s\\-()]{7,}\\d\\b"
     }
   ]
 }
