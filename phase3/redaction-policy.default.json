@@ -1,0 +1,48 @@
+{
+  "version": "0.2",
+  "description": "Default redaction policy for the Retrospective Court module.",
+  "rules": [
+    {
+      "name": "openai_api_key_like",
+      "category": "secret",
+      "action": "partial",
+      "pattern": "\\bsk-[A-Za-z0-9]{20,}\\b"
+    },
+    {
+      "name": "bearer_token",
+      "category": "secret",
+      "action": "mask",
+      "pattern": "(?i)\\bBearer\\s+[A-Za-z0-9\\-\\._~\\+/]+=*\\b"
+    },
+    {
+      "name": "jwt_like",
+      "category": "secret",
+      "action": "mask",
+      "pattern": "\\beyJ[A-Za-z0-9_\\-]{10,}\\.[A-Za-z0-9_\\-]{10,}\\.[A-Za-z0-9_\\-]{10,}\\b"
+    },
+    {
+      "name": "github_token_like",
+      "category": "secret",
+      "action": "partial",
+      "pattern": "\\bgh[pousr]_[A-Za-z0-9]{30,}\\b"
+    },
+    {
+      "name": "private_key_block",
+      "category": "secret",
+      "action": "drop",
+      "pattern": "-----BEGIN [A-Z0-9 ]+ PRIVATE KEY-----[\\s\\S]*?-----END [A-Z0-9 ]+ PRIVATE KEY-----"
+    },
+    {
+      "name": "email",
+      "category": "pii",
+      "action": "mask",
+      "pattern": "\\b[^\\s@]+@[^\\s@]+\\.[^\\s@]+\\b"
+    },
+    {
+      "name": "phone_like",
+      "category": "pii",
+      "action": "mask",
+      "pattern": "\\b\\+?\\d[\\d\\s\\-()]{7,}\\b"
+    }
+  ]
+}

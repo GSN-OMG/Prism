@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ContextBundle",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["events"],
+  "properties": {
+    "version": {
+      "type": "string"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "system": { "type": "string" },
+        "project": { "type": "string" },
+        "repo": { "type": "string" },
+        "branch": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "events": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/event"
+      }
+    }
+  },
+  "$defs": {
+    "event": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id", "actor_type", "event_type", "content"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "ts": { "type": "string", "format": "date-time" },
+        "actor_type": {
+          "type": "string",
+          "enum": ["human", "ai", "tool", "system"]
+        },
+        "actor_id": { "type": "string" },
+        "role": { "type": "string", "description": "Optional: role name for ai actors." },
+        "event_type": { "type": "string", "minLength": 1 },
+        "content": { "type": "string" },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    }
+  }
+}
