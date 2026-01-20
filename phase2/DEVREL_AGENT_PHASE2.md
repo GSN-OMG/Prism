@@ -9,6 +9,11 @@
 - 외부 의존성(GitHub/LLM/Vector)은 이후 Phase에서 주입/연결
 - 파일 단위 커밋으로 협업 충돌 최소화
 
+## 전제 (Vector DB)
+
+- Vector DB는 Chroma 대신 **Postgres + pgvector**를 사용합니다.
+- Phase 2에서는 Vector 연동 코드는 작성하지 않고, 이후 Phase에서 주입/연결합니다.
+
 ## 디렉토리
 
 - `phase2/prism-devrel/src/devrel/agents/`
