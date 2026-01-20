@@ -1,0 +1,14 @@
+.DS_Store
+*.pyc
+__pycache__/
+
+# Generated ingestion outputs / exports
+raw/
+out*/
+out_*/
+
+# Generated prompt/insight artifacts
+out_insights/
+out_prompts/
+out_views/
+out_tmp_*/
