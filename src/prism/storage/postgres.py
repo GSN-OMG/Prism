@@ -184,7 +184,8 @@ class PostgresStorage:
         artifacts_redacted: Mapping[str, Any] | None,
     ) -> None:
         rid = _uuid(court_run_id)
-        assert_no_sensitive_data(artifacts_redacted, policy=self.redaction_policy)
+        artifacts_payload: Mapping[str, Any] = artifacts_redacted or {}
+        assert_no_sensitive_data(artifacts_payload, policy=self.redaction_policy)
 
         with self._connect() as conn, conn.cursor() as cur:
             cur.execute(
@@ -197,9 +198,7 @@ class PostgresStorage:
                 """,
                 (
                     status,
-                    Jsonb(artifacts_redacted)
-                    if artifacts_redacted is not None
-                    else None,
+                    Jsonb(dict(artifacts_payload)),
                     rid,
                 ),
             )
