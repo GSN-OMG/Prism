@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import json
+
+from devrel.llm.client import JsonSchema, LlmClient
+from devrel.llm.model_selector import LlmTask
+
 from .types import (
     AssignmentOutput,
     AssignmentReason,
@@ -9,6 +14,8 @@ from .types import (
     IssueType,
     Priority,
     ResponseStrategy,
+    assignment_output_from_dict,
+    issue_analysis_from_dict,
 )
 
 
@@ -53,6 +60,48 @@ def analyze_issue(issue: Issue) -> IssueAnalysisOutput:
     )
 
 
+def analyze_issue_llm(llm: LlmClient, issue: Issue) -> IssueAnalysisOutput:
+    schema = JsonSchema(
+        name="issue_analysis_output",
+        schema={
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "issue_type": {"type": "string", "enum": [t.value for t in IssueType]},
+                "priority": {"type": "string", "enum": [p.value for p in Priority]},
+                "required_skills": {"type": "array", "items": {"type": "string"}},
+                "keywords": {"type": "array", "items": {"type": "string"}},
+                "summary": {"type": "string"},
+                "needs_more_info": {"type": "boolean"},
+                "suggested_action": {"type": "string", "enum": [s.value for s in ResponseStrategy]},
+            },
+            "required": [
+                "issue_type",
+                "priority",
+                "required_skills",
+                "keywords",
+                "summary",
+                "needs_more_info",
+                "suggested_action",
+            ],
+        },
+    )
+
+    system = (
+        "You are a DevRel agent that triages GitHub issues.\n"
+        "Return only the requested JSON schema.\n"
+        "If information is missing, set needs_more_info=true and suggested_action=request_info."
+    )
+    user = (
+        f"Issue number: {issue.number}\n"
+        f"Title: {issue.title}\n"
+        f"Body: {issue.body}\n"
+        f"Labels: {list(issue.labels)}\n"
+    )
+    data = llm.generate_json(task=LlmTask.ISSUE_TRIAGE, system=system, user=user, json_schema=schema)
+    return issue_analysis_from_dict(data)
+
+
 def recommend_assignee(
     issue_analysis: IssueAnalysisOutput,
     contributors: list[Contributor],
@@ -94,6 +143,86 @@ def recommend_assignee(
         context_for_assignee=context,
         alternative_assignees=alternatives,
     )
+
+
+def recommend_assignee_llm(
+    llm: LlmClient,
+    *,
+    issue: Issue,
+    issue_analysis: IssueAnalysisOutput,
+    contributors: list[Contributor],
+    limit: int = 3,
+) -> AssignmentOutput:
+    schema = JsonSchema(
+        name="assignment_output",
+        schema={
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "recommended_assignee": {"type": "string"},
+                "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+                "reasons": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "properties": {
+                            "factor": {"type": "string"},
+                            "explanation": {"type": "string"},
+                            "score": {"type": "number", "minimum": 0, "maximum": 1},
+                        },
+                        "required": ["factor", "explanation", "score"],
+                    },
+                },
+                "context_for_assignee": {"type": "string"},
+                "alternative_assignees": {"type": "array", "items": {"type": "string"}},
+            },
+            "required": [
+                "recommended_assignee",
+                "confidence",
+                "reasons",
+                "context_for_assignee",
+                "alternative_assignees",
+            ],
+        },
+    )
+
+    system = (
+        "You are a DevRel assignment agent.\n"
+        "Pick the best assignee among the provided candidates.\n"
+        "Return only JSON and do not invent contributors outside the list."
+    )
+    payload = {
+        "issue": {"number": issue.number, "title": issue.title, "body": issue.body, "labels": list(issue.labels)},
+        "analysis": {
+            "issue_type": issue_analysis.issue_type.value,
+            "priority": issue_analysis.priority.value,
+            "required_skills": list(issue_analysis.required_skills),
+            "keywords": list(issue_analysis.keywords),
+            "summary": issue_analysis.summary,
+            "needs_more_info": issue_analysis.needs_more_info,
+            "suggested_action": issue_analysis.suggested_action.value,
+        },
+        "contributors": [
+            {
+                "login": c.login,
+                "areas": list(c.areas),
+                "recent_activity_score": c.recent_activity_score,
+                "merged_prs": c.merged_prs,
+                "reviews": c.reviews,
+            }
+            for c in contributors
+        ],
+        "limit": limit,
+    }
+    user = f"Input:\n{json.dumps(payload, ensure_ascii=False)}"
+    data = llm.generate_json(task=LlmTask.ASSIGNMENT, system=system, user=user, json_schema=schema)
+    out = assignment_output_from_dict(data)
+
+    allowed = {c.login for c in contributors}
+    if out.recommended_assignee and out.recommended_assignee not in allowed:
+        return recommend_assignee(issue_analysis, contributors, limit=limit)
+    return out
 
 
 def _infer_priority(issue_type: IssueType, text: str) -> Priority:

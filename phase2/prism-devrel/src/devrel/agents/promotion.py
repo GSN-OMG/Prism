@@ -1,6 +1,12 @@
 from __future__ import annotations
 
+import json
+
+from devrel.llm.client import JsonSchema, LlmClient
+from devrel.llm.model_selector import LlmTask
+
 from .types import Contributor, PromotionEvidence, PromotionOutput
+from .types import promotion_output_from_dict
 
 
 def evaluate_promotion(contributor: Contributor) -> PromotionOutput:
@@ -49,6 +55,59 @@ def evaluate_promotion(contributor: Contributor) -> PromotionOutput:
         evidence=tuple(evidence),
         recommendation=recommendation,
     )
+
+
+def evaluate_promotion_llm(llm: LlmClient, contributor: Contributor) -> PromotionOutput:
+    schema = JsonSchema(
+        name="promotion_output",
+        schema={
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "is_candidate": {"type": "boolean"},
+                "current_stage": {"type": "string"},
+                "suggested_stage": {"type": "string"},
+                "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+                "evidence": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "properties": {
+                            "criterion": {"type": "string"},
+                            "status": {"type": "string"},
+                            "detail": {"type": "string"},
+                        },
+                        "required": ["criterion", "status", "detail"],
+                    },
+                },
+                "recommendation": {"type": "string"},
+            },
+            "required": [
+                "is_candidate",
+                "current_stage",
+                "suggested_stage",
+                "confidence",
+                "evidence",
+                "recommendation",
+            ],
+        },
+    )
+
+    system = (
+        "You are a DevRel agent that evaluates contributor promotion readiness.\n"
+        "Use only the provided metrics. Return JSON only."
+    )
+    payload = {
+        "login": contributor.login,
+        "areas": list(contributor.areas),
+        "recent_activity_score": contributor.recent_activity_score,
+        "merged_prs": contributor.merged_prs,
+        "reviews": contributor.reviews,
+    }
+    user = f"Contributor:\n{json.dumps(payload, ensure_ascii=False)}"
+    data = llm.generate_json(task=LlmTask.PROMOTION, system=system, user=user, json_schema=schema)
+    return promotion_output_from_dict(data)
 
 
 def _infer_stage(contributor: Contributor) -> str:

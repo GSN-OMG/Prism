@@ -113,3 +113,79 @@ class AgentOutput:
     title: str
     body: str
     metadata: dict[str, object] | None = None
+
+
+def issue_analysis_from_dict(data: dict[str, object]) -> IssueAnalysisOutput:
+    return IssueAnalysisOutput(
+        issue_type=IssueType(str(data["issue_type"])),
+        priority=Priority(str(data["priority"])),
+        required_skills=tuple(data.get("required_skills", []) or []),  # type: ignore[arg-type]
+        keywords=tuple(data.get("keywords", []) or []),  # type: ignore[arg-type]
+        summary=str(data.get("summary", "")),
+        needs_more_info=bool(data.get("needs_more_info", False)),
+        suggested_action=ResponseStrategy(str(data["suggested_action"])),
+    )
+
+
+def assignment_output_from_dict(data: dict[str, object]) -> AssignmentOutput:
+    reasons_raw = data.get("reasons", []) or []
+    reasons: list[AssignmentReason] = []
+    for r in reasons_raw:  # type: ignore[assignment]
+        rr = r  # type: ignore[assignment]
+        reasons.append(
+            AssignmentReason(
+                factor=str(rr["factor"]),
+                explanation=str(rr["explanation"]),
+                score=float(rr["score"]),
+            )
+        )
+    return AssignmentOutput(
+        recommended_assignee=str(data.get("recommended_assignee", "")),
+        confidence=float(data.get("confidence", 0.0)),
+        reasons=tuple(reasons),
+        context_for_assignee=str(data.get("context_for_assignee", "")),
+        alternative_assignees=tuple(data.get("alternative_assignees", []) or []),  # type: ignore[arg-type]
+    )
+
+
+def response_output_from_dict(data: dict[str, object]) -> ResponseOutput:
+    return ResponseOutput(
+        strategy=ResponseStrategy(str(data["strategy"])),
+        response_text=str(data.get("response_text", "")),
+        confidence=float(data.get("confidence", 0.0)),
+        references=tuple(data.get("references", []) or []),  # type: ignore[arg-type]
+        follow_up_needed=bool(data.get("follow_up_needed", False)),
+    )
+
+
+def doc_gap_output_from_dict(data: dict[str, object]) -> DocGapOutput:
+    return DocGapOutput(
+        has_gap=bool(data.get("has_gap", False)),
+        gap_topic=str(data.get("gap_topic", "")),
+        affected_issues=tuple(data.get("affected_issues", []) or []),  # type: ignore[arg-type]
+        suggested_doc_path=str(data.get("suggested_doc_path", "")),
+        suggested_outline=tuple(data.get("suggested_outline", []) or []),  # type: ignore[arg-type]
+        priority=Priority(str(data["priority"])),
+    )
+
+
+def promotion_output_from_dict(data: dict[str, object]) -> PromotionOutput:
+    evidence_raw = data.get("evidence", []) or []
+    evidence: list[PromotionEvidence] = []
+    for e in evidence_raw:  # type: ignore[assignment]
+        ee = e  # type: ignore[assignment]
+        evidence.append(
+            PromotionEvidence(
+                criterion=str(ee["criterion"]),
+                status=str(ee["status"]),
+                detail=str(ee["detail"]),
+            )
+        )
+    return PromotionOutput(
+        is_candidate=bool(data.get("is_candidate", False)),
+        current_stage=str(data.get("current_stage", "")),
+        suggested_stage=str(data.get("suggested_stage", "")),
+        confidence=float(data.get("confidence", 0.0)),
+        evidence=tuple(evidence),
+        recommendation=str(data.get("recommendation", "")),
+    )

@@ -1,8 +1,13 @@
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
 
+from devrel.llm.client import JsonSchema, LlmClient
+from devrel.llm.model_selector import LlmTask
+
 from .types import DocGapOutput, Issue, Priority
+from .types import doc_gap_output_from_dict
 
 
 @dataclass(frozen=True, slots=True)
@@ -79,3 +84,40 @@ def to_doc_gap_output(candidate: DocGapCandidate) -> DocGapOutput:
 def summarize_doc_gap(candidate: DocGapCandidate) -> str:
     numbers = ", ".join(f"#{n}" for n in candidate.evidence_issue_numbers)
     return f"Topic={candidate.topic}, evidence={numbers}, rationale={candidate.rationale}"
+
+
+def detect_doc_gaps_llm(llm: LlmClient, issues: list[Issue]) -> DocGapOutput:
+    schema = JsonSchema(
+        name="doc_gap_output",
+        schema={
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "has_gap": {"type": "boolean"},
+                "gap_topic": {"type": "string"},
+                "affected_issues": {"type": "array", "items": {"type": "integer"}},
+                "suggested_doc_path": {"type": "string"},
+                "suggested_outline": {"type": "array", "items": {"type": "string"}},
+                "priority": {"type": "string", "enum": [p.value for p in Priority]},
+            },
+            "required": [
+                "has_gap",
+                "gap_topic",
+                "affected_issues",
+                "suggested_doc_path",
+                "suggested_outline",
+                "priority",
+            ],
+        },
+    )
+
+    system = (
+        "You are a DevRel agent that detects documentation gaps from GitHub issues.\n"
+        "Return only JSON. Do not hallucinate issue numbers not provided."
+    )
+    payload = [
+        {"number": i.number, "title": i.title, "body": i.body, "labels": list(i.labels)} for i in issues
+    ]
+    user = f"Issues:\n{json.dumps(payload, ensure_ascii=False)}"
+    data = llm.generate_json(task=LlmTask.DOCS, system=system, user=user, json_schema=schema)
+    return doc_gap_output_from_dict(data)
