@@ -22,3 +22,12 @@
 - [ ] `.env` 파일이 git에 올라가지 않는지 확인
 - [ ] `case_events`에 원문 시크릿이 저장되지 않는지 샘플 케이스로 확인
 - [ ] GUI/로그 출력이 redacted 데이터만 사용하는지 확인
+
+## 구현 메모(현재 레포 기준)
+
+- `.env`는 `.gitignore`로 차단되어야 한다(커밋 금지).
+- Python CLI들은 로컬 `.env`를 자동 로드한다: `prism.env.load_dotenv`.
+- DB 저장은 “unredacted 감지 후 실패”를 우선으로 한다:
+  - Python: `prism.redaction.guard.assert_no_sensitive_data` (예: `prism.storage.postgres.PostgresStorage`)
+  - GUI(TS): `src/redaction/*` + `/prompt-updates/:id/review` 입력 검증(민감정보 포함 시 400)
+- 서버 에러 로그는 redaction을 거친 문자열만 출력한다: `src/app.ts`의 error middleware.
