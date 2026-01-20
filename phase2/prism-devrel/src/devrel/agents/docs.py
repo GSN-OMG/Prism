@@ -19,13 +19,15 @@ def detect_doc_gaps(issues: list[Issue]) -> list[DocGapCandidate]:
         title_lower = issue.title.lower()
         body_lower = issue.body.lower()
 
-        if "documentation" in labels or "docs" in title_lower:
-            key = "documentation"
-        elif "redis" in title_lower or "redis" in body_lower:
+        key: str | None = None
+        if "redis" in title_lower or "redis" in body_lower:
             key = "redis"
         elif "logging" in title_lower or "debug" in title_lower or "logging" in body_lower:
             key = "logging"
-        else:
+        elif "documentation" in labels or "docs" in title_lower:
+            key = "documentation"
+
+        if key is None:
             continue
         candidates.setdefault(key, []).append(issue.number)
 
