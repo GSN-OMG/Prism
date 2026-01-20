@@ -162,7 +162,7 @@ GITHUB_TOKEN=ghp_xxxxx
 TAVILY_API_KEY=tvly-xxxxx
 
 # LLM 설정
-OPENAI_JUDGE_MODEL=gpt-4.1-mini
+OPENAI_JUDGE_MODEL=gpt-4o-mini
 RUN_LLM_JUDGE=1
 ```
 
