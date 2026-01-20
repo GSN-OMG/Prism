@@ -1,4 +1,4 @@
-# 회고 법정 모듈 스펙 (v0.6)
+# 회고 법정 모듈 스펙 (v0.7)
 
 목표: 인간/AI의 활동 기록(컨텍스트)을 “사건(Case)”으로 재구성하고, 멀티 에이전트 회고(판사/검사/변호사/배심원)를 통해 **역할(Role)별 교훈(Lesson)** 을 도출·선별하여 PostgreSQL에 축적한다. 축적된 교훈은 검색/추천에 활용되며, 필요 시 **역할별 기본 프롬프트(Base Prompt)** 업데이트(진화)를 트리거한다.
 
@@ -23,6 +23,7 @@
 - **민감정보 처리**: 정의서를 별도로 둔다. 초기에는 디폴트 정책(JSON)을 제공하고 사용자가 업데이트 가능하도록 한다. (`phase3/sensitive-info-spec.md`)
 - **민감정보 정책 업데이트(MVP)**: 정책은 **파일 기반(JSON)** 으로 시작하고, 변경 사항은 **재시작 시 반영**한다(DB 즉시 갱신/핫리로드는 추후).
 - **원문 저장(MVP)**: DB에는 **마스킹된 원문만 저장**한다. 마스킹 전 원문은 저장하지 않는다.
+- **리뷰 수준(HITL)**: 인간 리뷰/승인은 **판사의 최종 프롬프트 권고안만** 대상으로 한다(검사/변호사/배심원 출력은 열람 전용).
 
 ## 2) 시스템 입력/출력
 
@@ -76,6 +77,24 @@
   - `search_lessons(role, query)`: 유사 교훈 검색(중복/충돌 검사용)
   - `propose_prompt_update(role, proposal, reason)`: 프롬프트 업데이트 제안 기록
 
+### GUI (HITL + 감사/운영 관측)
+
+목표: 각 공방(run) 결과를 사람이 빠르게 리뷰하고, **판사의 최종 권고안만 승인/반려**할 수 있게 한다. 또한 court 및 사건 진행 중 생성된 **운영 정보(툴콜/토큰/비용/에러/지연)** 를 시계열로 확인한다.
+
+- 필수 화면(MVP)
+  - Case 목록: `cases` + 최신 `court_runs` 상태
+  - Case 상세:
+    - 타임라인(시계열): `case_events`를 `ts`(없으면 `seq`)로 정렬, 필터(actor/role/event_type)
+    - 공방 결과 탭: Prosecutor/Defense/Jury/Judge의 구조화 출력(JSON)
+    - Judge 권고안 리뷰: `prompt_updates(status=proposed)` 리스트 + diff/전체 프롬프트 보기
+    - 승인/반려(HITL): `prompt_updates.status`를 `approved` 또는 `rejected`로 변경 + 코멘트 저장(선택)
+- 운영 정보 표시(타임라인 이벤트 예시)
+  - `tool_call` / `tool_result` (도구명, 인자/결과 요약, 실패 시 에러)
+  - `model_call` / `model_result` (모델명, latency, token usage, cost)
+  - `error` (스택/원인 요약, 재시도 여부)
+  - `artifact` (링크/파일 경로/출력 요약)
+  - 모든 텍스트/아티팩트는 **redacted 상태만** UI에 노출
+
 ### 각 에이전트 출력 형식(권장: JSON)
 모든 에이전트는 **근거(evidence)** 를 컨텍스트 이벤트 ID로 참조해야 하며, 사건에 없는 내용을 “추정”으로 표기한다.
 
@@ -98,7 +117,10 @@
   - `id`, `created_at`, `source`, `summary`, `status`
   - (선택) `redaction_policy_id`, `redaction_policy_version`
 - `case_events`
-  - `id`, `case_id`, `ts`, `actor_type`(human/ai/tool), `actor_id`, `event_type`, `content`(redacted), `meta`(jsonb)
+  - `id`, `case_id`, `ts`, `seq`(bigint, optional), `ingested_at`
+  - `actor_type`(human/ai/tool/system), `actor_id`, `role`(optional)
+  - `event_type`, `content`(redacted), `meta`(jsonb)
+  - (선택) `court_run_id` (공방 실행과 연결)
 - `court_runs`
   - `id`, `case_id`, `model`, `started_at`, `ended_at`, `status`, `artifacts`(jsonb: redacted 응답/토큰/비용 등)
 - `lessons`
@@ -115,6 +137,7 @@
   - `status`(proposed/approved/applied/rejected), `created_at`, `approved_at`, `applied_at`
   - (선택) `approved_by`(human identifier)
   - (선택) `agent_id`(사건 입력의 에이전트 식별자)
+  - (선택) `review_comment`
 
 - `redaction_policies`
   - `id`, `version`, `policy`(jsonb), `created_at`, `is_active`

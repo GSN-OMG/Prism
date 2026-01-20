@@ -1,4 +1,4 @@
-# 민감정보 정의서 (v0.5)
+# 민감정보 정의서 (v0.6)
 
 목표: 회고 법정 모듈이 입력 컨텍스트를 수집/저장/모델에 전달하기 전에 **민감정보(Secrets/PII 등)** 를 일관되게 식별·마스킹하여 유출/재노출 위험을 낮춘다. 초기에는 **디폴트 정책**을 제공하고, 사용자가 **정책을 업데이트**할 수 있어야 한다.
 
@@ -7,6 +7,7 @@
 - `ContextBundle` 원문(대화/툴콜/로그/코드 조각/에러 메시지)
 - `ContextBundle.agents[].prompt` (사건 입력에 포함되는 경우)
 - `ContextBundle.result`, `ContextBundle.feedback` (사건 결과/피드백 원문)
+- 이벤트 메타/운영 정보(`events[].meta`, `events[].usage`)에 포함된 도구 인자/결과/에러도 동일하게 마스킹
 - DB 저장 데이터(`case_events.content`, `court_runs.artifacts`, `lessons.*`)
 - 에이전트 입력(검사/변호사/배심원/판사에게 전달되는 컨텍스트)
 

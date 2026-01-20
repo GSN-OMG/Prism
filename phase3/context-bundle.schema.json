@@ -117,6 +117,11 @@
       "required": ["id", "actor_type", "event_type", "content"],
       "properties": {
         "id": { "type": "string", "minLength": 1 },
+        "seq": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Optional ordering key when ts is missing."
+        },
         "ts": { "type": "string", "format": "date-time" },
         "actor_type": {
           "type": "string",
@@ -124,8 +129,21 @@
         },
         "actor_id": { "type": "string" },
         "role": { "type": "string", "description": "Optional: role name for ai actors." },
+        "court_run_id": {
+          "type": "string",
+          "description": "Optional: link events to a specific court run."
+        },
+        "stage": {
+          "type": "string",
+          "description": "Optional: example values - prosecutor, defense, jury, judge."
+        },
         "event_type": { "type": "string", "minLength": 1 },
         "content": { "type": "string" },
+        "usage": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Optional: model/tool usage metrics (tokens, cost, latency, retries)."
+        },
         "meta": {
           "type": "object",
           "additionalProperties": true
