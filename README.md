@@ -5,6 +5,8 @@ OMG (Oh My GPT)
 # 프로젝트
 
 ### Prism: Self-Evolving DevRel OS
+<img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/94202945-8b1d-4d75-a16b-6769e09577f2" />
+
 
 > **"조직의 DNA를 복제하여 전문성을 스케일링하다."**
 
