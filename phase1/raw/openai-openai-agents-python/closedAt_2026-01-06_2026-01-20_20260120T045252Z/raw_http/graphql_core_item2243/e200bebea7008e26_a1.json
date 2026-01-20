@@ -1,0 +1,136 @@
+{
+  "finished_at": "2026-01-20T04:54:05.733661Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "e200bebea7008e26",
+    "tag": "graphql_core_item2243"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2243,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "1852",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:05 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DAE8:E9ECE:1614173:1F1E2D9:696F0A6D",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4904",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "96",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 16,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/3147731?v=4",
+              "databaseId": 3147731,
+              "id": "MDQ6VXNlcjMxNDc3MzE=",
+              "login": "aligokalppeker",
+              "url": "https://github.com/aligokalppeker"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "baseRefName": "main",
+            "body": "This PR fixes #2204 the issue I opened a while ago.\r\n\r\nThis fix changes \"exception raise\" to \"runtime error message trigger\" when an unregistered tool is triggered to be executed by the real-time model.",
+            "changedFiles": 2,
+            "closedAt": "2026-01-06T05:58:38Z",
+            "comments": {
+              "totalCount": 3
+            },
+            "createdAt": "2025-12-28T17:47:34Z",
+            "databaseId": 3133116297,
+            "deletions": 10,
+            "files": {
+              "totalCount": 2
+            },
+            "headRefName": "bugfix/wrong_toolname_failure",
+            "headRefOid": "2f39f6158af689f32d7ca44259c05ea84b41ceed",
+            "id": "PR_kwDOOGidp866v4-J",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "d73a4a",
+                  "description": "Something isn't working",
+                  "name": "bug"
+                },
+                {
+                  "color": "d3cbd8",
+                  "description": "",
+                  "name": "feature:realtime"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "c35c0afe906ca0b1694c1c40bf6284a24ac9e030",
+              "url": "https://github.com/openai/openai-agents-python/commit/c35c0afe906ca0b1694c1c40bf6284a24ac9e030"
+            },
+            "mergedAt": "2026-01-06T05:58:38Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2243,
+            "reviews": {
+              "totalCount": 1
+            },
+            "state": "MERGED",
+            "title": "fix: #2204 Convert tool execution exception to runtime error",
+            "updatedAt": "2026-01-06T05:58:38Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2243"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:05.113497Z"
+}

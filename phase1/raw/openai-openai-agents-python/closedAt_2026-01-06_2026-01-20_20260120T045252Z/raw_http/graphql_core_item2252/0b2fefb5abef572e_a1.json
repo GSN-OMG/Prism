@@ -1,0 +1,99 @@
+{
+  "finished_at": "2026-01-20T04:54:14.904971Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "0b2fefb5abef572e",
+    "tag": "graphql_core_item2252"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2252,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "4072",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:14 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DAFC:2324B0:160565B:1F0FEAC:696F0A76",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4891",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "109",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/58684508?u=1f2535743529cea55b3c4dd0ef4eb8cf43db9e73&v=4",
+              "databaseId": 58684508,
+              "id": "MDQ6VXNlcjU4Njg0NTA4",
+              "login": "ayoajuwon1",
+              "url": "https://github.com/ayoajuwon1"
+            },
+            "authorAssociation": "NONE",
+            "body": "### Problem Statement\n\nThe OpenAI Agents SDK repository currently lacks a CONTRIBUTING.md file, which creates friction for potential contributors. As evidenced by the \"Want to contribute?\" banner linking to a generic open-source guide, there's no project-specific guidance on:\n\n- How to set up the development environment\n- Contribution workflow (branching, commits, PRs)\n- Code style and testing requirements\n- Issue triage and labeling conventions\n- Release process and versioning\n- Community expectations and code of conduct\n\nWith 18.1k stars, 201 contributors, and 155 open issues, standardizing the contribution process would:\n1. **Reduce maintainer burden** by setting clear expectations\n2. **Lower the barrier to entry** for new contributors\n3. **Improve PR quality** through upfront guidance\n4. **Scale community contributions** as the project grows\n\n### Proposed Solution\n\nAdd a comprehensive CONTRIBUTING.md file that covers:\n\n#### 1. Getting Started\n- Prerequisites (Python 3.9+, uv installation)\n- Fork and clone workflow\n- Development environment setup (`make sync`)\n- Running tests locally (`make tests`, `make mypy`, `make lint`)\n\n#### 2. Development Workflow\n- Branch naming conventions (e.g., `feature/`, `fix/`, `docs/`)\n- Commit message format (conventional commits)\n- How to run the full test suite\n- When to add/update documentation\n\n#### 3. Submitting Changes\n- PR template expectations\n- Required checks (tests, linting, type checking)\n- Review process and timeline expectations\n- How to respond to feedback\n\n#### 4. Types of Contributions\n- Bug fixes with reproduction steps\n- Feature requests with use case justification\n- Documentation improvements\n- Example additions\n- Test coverage improvements\n\n#### 5. Code Standards\n- Reference to existing tooling (ruff, mypy)\n- Type annotation requirements\n- Documentation standards (docstrings)\n- Test coverage expectations\n\n#### 6. Community Guidelines\n- Issue triage labels and their meanings\n- How to report security vulnerabilities\n- Code of conduct reference\n- Communication channels (issues, discussions, Discord if applicable)\n\n### Success Metrics\n\n- Reduced \"how do I contribute?\" questions in issues\n- Faster PR review cycles due to better initial quality\n- Increased percentage of PRs passing CI on first attempt\n- More first-time contributors successfully landing PRs\n\n### Additional Context\n\nMany successful OSS projects have comprehensive contributing guides:\n- [FastAPI Contributing](https://github.com/tiangolo/fastapi/blob/master/CONTRIBUTING.md)\n- [Django Contributing](https://docs.djangoproject.com/en/dev/internals/contributing/)\n- [React Contributing](https://github.com/facebook/react/blob/main/CONTRIBUTING.md)\n\nGiven the SDK's rapid growth and the complexity of the agent patterns it enables, clear contribution guidelines would significantly improve the contributor experience and project velocity.\n\n### Implementation Notes\n\nI'm happy to draft an initial CONTRIBUTING.md based on the existing Makefile targets and observed PR patterns. This could be refined through maintainer feedback and community input.",
+            "closedAt": "2026-01-13T22:27:11Z",
+            "comments": {
+              "totalCount": 1
+            },
+            "createdAt": "2026-01-01T22:24:46Z",
+            "databaseId": 3775300495,
+            "id": "I_kwDOOGidp87hBoOP",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a2eeef",
+                  "description": "New feature or request",
+                  "name": "enhancement"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": null,
+            "number": 2252,
+            "state": "CLOSED",
+            "title": "[Enhancement] Add comprehensive CONTRIBUTING.md guide to improve contributor onboarding",
+            "updatedAt": "2026-01-13T22:27:11Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2252"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:14.372935Z"
+}

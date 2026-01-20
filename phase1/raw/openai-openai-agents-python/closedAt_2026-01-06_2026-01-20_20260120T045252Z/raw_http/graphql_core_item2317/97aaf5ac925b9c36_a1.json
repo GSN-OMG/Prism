@@ -1,0 +1,110 @@
+{
+  "finished_at": "2026-01-20T04:57:22.988849Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "97aaf5ac925b9c36",
+    "tag": "graphql_core_item2317"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2317,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "7915",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:57:23 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DCAC:7699F:1665327:1F704E8:696F0B32",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4632",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "368",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/21352040?u=0be845711495bbd7b756e13fcaeb8efc1ebd78ba&v=4",
+              "databaseId": 21352040,
+              "id": "MDQ6VXNlcjIxMzUyMDQw",
+              "login": "Filimoa",
+              "url": "https://github.com/Filimoa"
+            },
+            "authorAssociation": "NONE",
+            "body": "### Please read this first\n\n- **Have you read the docs?**[Agents SDK docs](https://openai.github.io/openai-agents-python/)\nYes\n- **Have you searched for related issues?** Others may have faced similar issues.\nYes\n\n### Describe the bug\n\nWhen using `OpenAIResponsesCompactionSession` in a streamed run (`Runner.run_streamed`), compaction can be triggered at a point where the `previous_response_id` passed into `client.responses.compact()` corresponds to a model response that includes a `function_call`, but the corresponding `function_call_output` has not yet been incorporated into the server-side response chain. The OpenAI API then returns:\n\n`400 invalid_request_error: No tool output found for function call <call_id>.`\n\nThis appears to happen when compaction is evaluated/run “between” a tool call and the subsequent model request that submits the tool output.\n\n**Expected behavior**\n\nCompaction should either:\n- only run on response IDs that are safe to compact (i.e., tool calls have corresponding tool outputs in the chain), or\n- gracefully skip/defer compaction when the response chain isn’t in a compactable state (instead of failing the whole run).\n\n**Actual behavior**\nA streamed run crashes with `openai.BadRequestError` from `responses.compact`:\n- `No tool output found for function call call_...`\n\n**Why this seems like an SDK/library issue**\nThe local session history can already contain the tool output item (because the SDK executed the tool and stored the output), but `responses.compact(previous_response_id=...)` is called using a response id that—on the server—still has a pending tool call with no matching output yet.\n\n**Reproduction**\n\n1. Run the attached script `repro_compaction_missing_tool_output.py` (below).\n2. It:\n   * forces a tool call (`tool_choice=\"required\"` forces at least one tool call) \n   * returns a large tool output so a token-based compaction trigger fires\n   * uses `Runner.run_streamed` + `OpenAIResponsesCompactionSession`\n3. Observe compaction trigger log and then `400 No tool output found…`.\n\n\n## 2) Minimal repro script\n\n\n```python\nimport asyncio\nimport json\nimport os\nfrom collections.abc import Callable\nfrom typing import Any\n\nimport tiktoken\nfrom loguru import logger\n\nfrom agents import (\n    Agent,\n    OpenAIResponsesCompactionSession,\n    Runner,\n    SQLiteSession,\n    function_tool,\n    model_settings,\n)\n\n# --- Token estimation (rough) ---\n_O200K = tiktoken.get_encoding(\"o200k_base\")\n\n\ndef _stable_json(obj: Any) -> str:\n    try:\n        return json.dumps(obj, separators=(\",\", \":\"), sort_keys=True, ensure_ascii=False)\n    except TypeError:\n        return str(obj)\n\n\ndef _count(text: str) -> int:\n    return len(_O200K.encode(text))\n\n\ndef estimate_item_tokens(item: Any) -> int:\n    \"\"\"\n    Rough token estimator for Responses API items.\n    Good enough to trigger compaction in a reproducible way.\n    \"\"\"\n    if isinstance(item, dict):\n        content = item.get(\"content\")\n        if isinstance(content, str):\n            return _count(content)\n        if isinstance(content, list):\n            total = 0\n            for part in content:\n                if isinstance(part, dict) and part.get(\"type\") == \"input_text\":\n                    total += _count(part.get(\"text\", \"\"))\n                else:\n                    total += _count(_stable_json(part))\n            return total\n        return _count(_stable_json(item))\n    return _count(_stable_json(item))\n\n\ndef estimate_items_tokens(items: list[Any]) -> int:\n    return sum(estimate_item_tokens(it) for it in items)\n\n\ndef make_token_aware_should_trigger_compaction(*, token_limit: int) -> Callable[[dict[str, Any]], bool]:\n    def _hook(ctx: dict[str, Any]) -> bool:\n        session_items = ctx.get(\"session_items\") or []\n        est = estimate_items_tokens(session_items)\n        trigger = est >= token_limit\n\n        if trigger:\n            # Useful debugging: show tail item types, response_id, etc.\n            tail_types = []\n            for it in session_items[-6:]:\n                if isinstance(it, dict):\n                    tail_types.append(it.get(\"type\") or (\"message\" if \"role\" in it else \"unknown\"))\n                else:\n                    tail_types.append(type(it).__name__)\n\n            logger.info(\n                \"Triggering compaction: est_tokens={} token_limit={} items={} candidates={} response_id={} tail_types={}\",\n                est,\n                token_limit,\n                len(session_items),\n                len(ctx.get(\"compaction_candidate_items\") or []),\n                ctx.get(\"response_id\"),\n                tail_types,\n            )\n\n        return trigger\n\n    return _hook\n\n\n# --- Tool that returns a large payload so we exceed token_limit quickly ---\n@function_tool\ndef big_payload() -> str:\n    # ~a few thousand tokens, cheap but enough to trigger compaction\n    return (\"lorem ipsum \" * 4000).strip()\n\n\nasync def main() -> None:\n    # NOTE: ensure OPENAI_API_KEY is set\n    if not os.getenv(\"OPENAI_API_KEY\"):\n        raise RuntimeError(\"Set OPENAI_API_KEY first\")\n\n    # Underlying session store\n    underlying = SQLiteSession(\":memory:\")\n\n    # Compaction session with a low token limit for easy repro\n    session = OpenAIResponsesCompactionSession(\n        session_id=\"repro-session\",\n        underlying_session=underlying,\n        model=\"gpt-4.1\",  \n        should_trigger_compaction=make_token_aware_should_trigger_compaction(token_limit=1500),\n    )\n\n    agent = Agent(\n        name=\"Repro Agent\",\n        instructions=(\n            \"You must call the big_payload tool before responding. \"\n            \"After you receive the tool output, summarize it in one sentence.\"\n        ),\n        model=\"gpt-4.1\",\n        tools=[big_payload],\n        model_settings=model_settings.ModelSettings(\n            # Force at least one tool call per response.\n            tool_choice=\"required\",\n            # Store is needed for response_id chaining; for Responses API it is typically enabled\n            # automatically when not specified, but leaving explicit store=True is OK.\n            store=True,  \n        ),\n    )\n\n    logger.info(\"Starting streamed run...\")\n    run = Runner.run_streamed(\n        starting_agent=agent,\n        input=\"Call the tool now.\",\n        session=session,\n        max_turns=5,\n    )\n\n    # Just drain stream; the crash (if it happens) will surface here.\n    async for _ in run.stream_events():\n        pass\n\n    logger.info(\"Done.\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```\n\n### Debug information\n- Agents SDK version: `0.6.6`\n- Python version: `3.13`\n\n\n### Expected behavior\n\nThis should not crash\n",
+            "closedAt": "2026-01-16T12:28:01Z",
+            "comments": {
+              "totalCount": 0
+            },
+            "createdAt": "2026-01-16T04:31:26Z",
+            "databaseId": 3820299062,
+            "id": "I_kwDOOGidp87jtSM2",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "d73a4a",
+                  "description": "Something isn't working",
+                  "name": "bug"
+                },
+                {
+                  "color": "90669a",
+                  "description": "",
+                  "name": "feature:sessions"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2317,
+            "state": "CLOSED",
+            "title": "Compaction unusable in Runner.run_streamed: responses.compact runs before tool outputs are in chain",
+            "updatedAt": "2026-01-16T12:28:01Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2317"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:57:22.487197Z"
+}

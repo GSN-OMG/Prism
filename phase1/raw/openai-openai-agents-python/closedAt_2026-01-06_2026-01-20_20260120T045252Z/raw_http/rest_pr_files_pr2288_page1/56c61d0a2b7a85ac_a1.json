@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:55:57.751887Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "56c61d0a2b7a85ac",
+    "tag": "rest_pr_files_pr2288_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2288/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "7627",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:55:57 GMT",
+      "etag": "\"54633ba439438c40bd381ab2577308fb85b6686c55d345db2a4bcfddf8693fa1\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Sat, 10 Jan 2026 06:05:14 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DBD8:37BFB7:160F763:1F1AA1E:696F0ADD",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4961",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "39",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 57,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/715ce64a865f1e421e5f821304eda6122d1e197c/.codex%2Fskills%2Fpr-draft-summary%2FSKILL.md",
+        "changes": 57,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Fpr-draft-summary%2FSKILL.md?ref=715ce64a865f1e421e5f821304eda6122d1e197c",
+        "deletions": 0,
+        "filename": ".codex/skills/pr-draft-summary/SKILL.md",
+        "patch": "@@ -0,0 +1,57 @@\n+---\n+name: pr-draft-summary\n+description: Create a PR title and draft description after substantive code changes are finished. Trigger when wrapping up a moderate-or-larger change (runtime code, tests, build config, docs with behavior impact) and you need the PR-ready summary block with change summary plus PR draft text.\n+---\n+\n+# PR Draft Summary\n+\n+## Purpose\n+Produce the PR-ready summary required in this repository after substantive code work is complete: a concise summary plus a PR-ready title and draft description that begins with \"This pull request <verb> ...\". The block should be ready to paste into a PR for openai-agents-python.\n+\n+## When to Trigger\n+- The task for this repo is finished (or ready for review) and it touched runtime code, tests, examples, docs with behavior impact, or build/test configuration.\n+- You are about to send the \"work complete\" response and need the PR block included.\n+- Skip only for trivial or conversation-only tasks where no PR-style summary is expected.\n+\n+## Inputs to Collect Automatically (do not ask the user)\n+- Current branch: `git rev-parse --abbrev-ref HEAD`.\n+- Working tree: `git status -sb`.\n+- Untracked files: `git ls-files --others --exclude-standard` (use with `git status -sb` to ensure they are surfaced; `--stat` does not include them).\n+- Changed files: `git diff --name-only` (unstaged) and `git diff --name-only --cached` (staged); sizes via `git diff --stat` and `git diff --stat --cached`.\n+- Base reference (use the branch's upstream, fallback to `origin/main`):\n+  - `BASE_REF=$(git rev-parse --abbrev-ref --symbolic-full-name @{upstream} 2>/dev/null || echo origin/main)`.\n+  - `BASE_COMMIT=$(git merge-base --fork-point \"$BASE_REF\" HEAD || git merge-base \"$BASE_REF\" HEAD || echo \"$BASE_REF\")`.\n+- Commits ahead of the base fork point: `git log --oneline --no-merges ${BASE_COMMIT}..HEAD`.\n+- Category signals for this repo: runtime (`src/agents/`), tests (`tests/`), examples (`examples/`), docs (`docs/`, `mkdocs.yml`), build/test config (`pyproject.toml`, `uv.lock`, `Makefile`, `.github/`).\n+\n+## Workflow\n+1) Run the commands above without asking the user; compute `BASE_REF`/`BASE_COMMIT` first so later commands reuse them.\n+2) If there are no staged/unstaged/untracked changes and no commits ahead of `${BASE_COMMIT}`, reply briefly that no code changes were detected and skip emitting the PR block.\n+3) Infer change type from the touched paths listed under \"Category signals\"; classify as feature, fix, refactor, or docs-with-impact, and flag backward-compatibility risk when runtime code changed.\n+4) Summarize changes in 1–3 short sentences using the key paths (top 5) and `git diff --stat` output; explicitly call out untracked files from `git status -sb`/`git ls-files --others --exclude-standard` because `--stat` does not include them. If the working tree is clean but there are commits ahead of `${BASE_COMMIT}`, summarize using those commit messages.\n+5) Choose the lead verb for the description: feature → `adds`, bug fix → `fixes`, refactor/perf → `improves` or `updates`, docs-only → `updates`.\n+6) Suggest a branch name. If already off main, keep it; otherwise propose `feat/<slug>`, `fix/<slug>`, or `docs/<slug>` based on the primary area (e.g., `docs/pr-draft-summary-guidance`).\n+7) If the current branch matches `issue-<number>` (digits only), keep that branch suggestion. Optionally pull light issue context (for example via the GitHub API) when available, but do not block or retry if it is not. When an issue number is present, reference `https://github.com/openai/openai-agents-python/issues/<number>` and include an auto-closing line such as `This pull request resolves #<number>.`.\n+8) Draft the PR title and description using the template below.\n+9) Output only the block in \"Output Format\". Keep any surrounding status note minimal and in English.\n+\n+## Output Format\n+When closing out a task and the summary block is desired, add this concise Markdown block (English only) after any brief status note. If the user says they do not want it, skip this section.\n+\n+```\n+# Pull Request Draft\n+\n+## Branch name suggestion\n+\n+git checkout -b <kebab-case suggestion, e.g., feat/pr-draft-summary-skill>\n+\n+## Title\n+\n+<single-line imperative title, which can be a commit message; if a common prefix like chore: and feat: etc., having them is preferred>\n+\n+## Description\n+\n+<include what you changed plus a draft pull request title and description for your local changes; start the description with prose such as \"This pull request resolves/updates/adds ...\" using a verb that matches the change (you can use bullets later), explain the change background (for bugs, clearly describe the bug, symptoms, or repro; for features, what is needed and why), any behavior changes or considerations to be aware of, and you do not need to mention tests you ran.>\n+```\n+\n+Keep it tight—no redundant prose around the block, and avoid repeating details between `Changes` and the description. Tests do not need to be listed unless specifically requested.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/715ce64a865f1e421e5f821304eda6122d1e197c/.codex%2Fskills%2Fpr-draft-summary%2FSKILL.md",
+        "sha": "0017f1157275247f7927bea9f22c9826541b1fa2",
+        "status": "added"
+      },
+      {
+        "additions": 2,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/715ce64a865f1e421e5f821304eda6122d1e197c/AGENTS.md",
+        "changes": 4,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/AGENTS.md?ref=715ce64a865f1e421e5f821304eda6122d1e197c",
+        "deletions": 2,
+        "filename": "AGENTS.md",
+        "patch": "@@ -151,9 +151,9 @@ make tests\n    ```bash\n    make build-docs\n    ```\n-6. When `$code-change-verification` applies, run it to execute the full verification stack before handoff.\n+6. When `$code-change-verification` applies, run it to execute the full verification stack before marking work complete.\n 7. Commit with concise, imperative messages; keep commits small and focused, then open a pull request.\n-8. When reporting code changes as complete, include what you changed plus a draft pull request title and description for your local changes; start the description with prose such as “This pull request resolves/updates/adds …” using a verb that matches the change (you can use bullets later), explain the change background (for bugs, clearly describe the bug, symptoms, or repro; for features, what is needed and why), any behavior changes or considerations to be aware of, and you do not need to mention tests you ran.\n+8. When reporting code changes as complete (after substantial code work), invoke `$pr-draft-summary` to generate the required PR summary block with change summary, PR title, and draft description.\n \n ## Pull Request & Commit Guidelines\n ",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/715ce64a865f1e421e5f821304eda6122d1e197c/AGENTS.md",
+        "sha": "987a6550e85c5481da6d3581a4e7fc818a8bb5f9",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:55:57.280808Z"
+}

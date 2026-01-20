@@ -1,0 +1,140 @@
+{
+  "finished_at": "2026-01-20T04:56:06.746959Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "70da52b7f6df6116",
+    "tag": "graphql_comments_item2291_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2291,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2960",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:06 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DBED:3782ED:162B375:1F3679D:696F0AE6",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4737",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "263",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "authorAssociation": "MEMBER",
+                  "body": "Hi, thanks for writing in. However, your repro code does not function and I don't see what the actual problem is yet. Can you revisit your report and correct errors?",
+                  "createdAt": "2026-01-11T00:24:40Z",
+                  "databaseId": 3733745580,
+                  "id": "IC_kwDOOGidp87ejG-s",
+                  "updatedAt": "2026-01-11T00:24:40Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2291#issuecomment-3733745580"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/224527505?u=22647dcde997a87624caf478afe66e08d7528e8d&v=4",
+                    "databaseId": 224527505,
+                    "id": "U_kgDODWIEkQ",
+                    "login": "dast-draftwise",
+                    "url": "https://github.com/dast-draftwise"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "@seratch i updated the issue, this happens when using claude models",
+                  "createdAt": "2026-01-11T09:07:29Z",
+                  "databaseId": 3734275903,
+                  "id": "IC_kwDOOGidp87elIc_",
+                  "updatedAt": "2026-01-11T09:07:29Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2291#issuecomment-3734275903"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/224527505?u=22647dcde997a87624caf478afe66e08d7528e8d&v=4",
+                    "databaseId": 224527505,
+                    "id": "U_kgDODWIEkQ",
+                    "login": "dast-draftwise",
+                    "url": "https://github.com/dast-draftwise"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "Thanks for addressing this,\nDo you know if this just suppresses warnings or resolves the issue with Claude.\nWhen I used it despite warnings, it would leak system prompt or internal instructions.\n\nAdditionally, do you know when is this gonna be released?  @seratch ",
+                  "createdAt": "2026-01-12T08:40:46Z",
+                  "databaseId": 3737419916,
+                  "id": "IC_kwDOOGidp87exICM",
+                  "updatedAt": "2026-01-12T08:40:46Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2291#issuecomment-3737419916"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "authorAssociation": "MEMBER",
+                  "body": "This just suppresses warnings for the models that produces litellm-incompatible pydantic models in the scenario. I haven't checked the other issues, but I feel those should be resolved on the litellm side. This warning is the same, but I've applied a quick workaround for now. The change will be released this week.",
+                  "createdAt": "2026-01-12T08:43:13Z",
+                  "databaseId": 3737427869,
+                  "id": "IC_kwDOOGidp87exJ-d",
+                  "updatedAt": "2026-01-12T08:43:13Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2291#issuecomment-3737427869"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO3sSfnQ==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:06.169822Z"
+}

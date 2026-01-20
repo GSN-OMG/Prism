@@ -1,0 +1,141 @@
+{
+  "finished_at": "2026-01-20T04:53:25.248262Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "5952f3f2b02ec41d",
+    "tag": "graphql_core_item2158"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2158,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "11501",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:25 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DA9B:3CEC4D:15B9933:1EC2CEA:696F0A44",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4960",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "40",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 1103,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/4557?v=4",
+              "databaseId": 4557,
+              "id": "MDQ6VXNlcjQ1NTc=",
+              "login": "ihower",
+              "url": "https://github.com/ihower"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "baseRefName": "main",
+            "body": "Resolves: \r\n\r\n* https://github.com/openai/openai-agents-python/issues/2109 (LiteLLM integration)\r\n* https://github.com/openai/openai-agents-python/issues/2137 (ChatCompletions endpoint)\r\n\r\n## Summary\r\n\r\nThis PR does two main things:\r\n\r\n1. Adds support for Gemini 3 Pro `thought_signatures` in function calling.\r\n2. Enables cross-model conversations (OpenAI ↔ Gemini, Gemini ↔ Claude, etc.) by storing provider-specific metadata on raw items and passing the target model name into the conversion helpers.\r\n\r\nThe goal is to make different providers interoperable: allowing them to safely share the same `to_input_list()` items, while each provider only receives the metadata it understands.\r\n\r\n## Examples\r\n\r\nBesides unit tests, I performed live tests for all the following scenarios:\r\n\r\n* LiteLLM + Gemini\r\n  * [LiteLLM Gemini (non-streaming)](https://github.com/ihower/openai-agents-python-live-tests/blob/main/litellm-gemini3.py)\r\n  * [LiteLLM Gemini (streaming)](https://github.com/ihower/openai-agents-python-live-tests/blob/main/litellm-gemini3-streaming.py)\r\n  \r\n* Gemini ChatCompletions (OpenAI-compatible endpoint)\r\n  * [ChatCompletions Gemini (non-streaming)](https://github.com/ihower/openai-agents-python-live-tests/blob/main/chatcmpl-gemini3.py)\r\n  * [ChatCompletions Gemini (streaming)](https://github.com/ihower/openai-agents-python-live-tests/blob/main/chatcmpl-gemini3-streaming.py)\r\n  \r\n* Cross-model conversations (same raw items handled by different models)\r\n  * [Gemini 3 → GPT-5](https://github.com/ihower/openai-agents-python-live-tests/blob/main/crossmodel-gemini-to-openai.py)\r\n  * [Gemini 3 → GPT-5 (streaming)](https://github.com/ihower/openai-agents-python-live-tests/blob/main/crossmodel-gemini-to-openai-streaming.py)\r\n  * [Gemini 3 → Claude](https://github.com/ihower/openai-agents-python-live-tests/blob/main/crossmodel-gemini-to-claude.py)\r\n  * [Claude → GPT-5](https://github.com/ihower/openai-agents-python-live-tests/blob/main/crossmodel-claude-to-openai.py)\r\n  * [Claude → GPT-5 (streaming)](https://github.com/ihower/openai-agents-python-live-tests/blob/main/crossmodel-claude-to-openai-streaming.py)\r\n\r\n* Handoffs (disabled `nest_handoff_history`)\r\n  * [Handoff GPT-5 → Gemini](https://github.com/ihower/openai-agents-python-live-tests/blob/main/handoff-gpt5-to-gemini.py)\r\n  * [Handoff Gemini → GPT-5](https://github.com/ihower/openai-agents-python-live-tests/blob/main/handoff-gemini-to-gpt5.py)\r\n\r\n\r\n## 1. Gemini 3 Pro function calling (`thought_signatures`)\r\n\r\nGemini 3 Pro now requires a `thought_signature` attached to function call in the same turn. \r\nDocs: [https://ai.google.dev/gemini-api/docs/thought-signatures](https://ai.google.dev/gemini-api/docs/thought-signatures)\r\n\r\n\r\nThis PR supports both integration paths with non-streaming and streaming modes:\r\n\r\n1. LiteLLM integration (requires upgrading LiteLLM to version 1.80.5 or later)\r\n2. Google’s Gemini OpenAI-compatible API endpoint\r\n\r\nThe conversation flow is: LiteLLM ↔ ChatCompletions ↔ our raw items.\r\n\r\n### LiteLLM layer\r\n\r\nLiteLLM places Gemini’s `thought_signature` inside `provider_specific_fields`.\r\n\r\nThis PR handles the conversion between: \r\n\r\nLiteLLM’s `provider_specific_fields[\"thought_signature\"]`\r\n↔\r\nGoogle ChatCompletions format `extra_content={\"google\": {\"thought_signature\": ...}}`\r\n    \r\n### ChatCompletions layer\r\n\r\nThis PR handles the conversion between:\r\n\r\nGoogle ChatCompletions format `extra_content={\"google\": {\"thought_signature\": ...}}`\r\n↔\r\nour raw item’s internal new field `provider_data[\"thought_signature\"]`\r\n\r\n### Cleaning up LiteLLM’s `__thought__` suffix\r\n\r\nLiteLLM adds a `__thought__` suffix to Gemini tool call ids (see:\r\nhttps://github.com/BerriAI/litellm/pull/16895). This suffix is not needed since we\r\nhave `thought_signature` and it causes call_id validation problems when the items are passed to other models.\r\n\r\nTherefore, this PR removes it.\r\n\r\n## 2. Enables cross-model conversations\r\n\r\nTo support cross-model conversations, this PR introduces a new `provider_data` field\r\non raw response items. This field holds metadata not compatible with the OpenAI Responses API, allowing us to:\r\n\r\n* Identify which provider produced each item.\r\n* Decide which fields are safe to send to other providers.\r\n* Keep OpenAI Responses API payloads clean and compatible.\r\n\r\nFor non–OpenAI Responses API models, we now store this into raw item:\r\n\r\n```python\r\nprovider_data = {\r\n    \"model\": ...,\r\n    \"response_id\": ...,  # Previously discarded when using non-Resposnes API; now preserved for inspection and debugging.\r\n    # other provider-specific metadata, e.g. Gemini's \"thought_signature\": ...\r\n}\r\n```\r\n\r\nThis design is like PydanticAI, which uses a similar structure. The difference: PydanticAI stores metadata for all models,\r\nwhereas this PR stores `provider_data` only for non-OpenAI providers.\r\n\r\nWith `provider_data` and the model name passed into the converters, agents can now safely switch models while reusing the same raw items from `to_input_list()`. This includes:\r\n\r\n* Gemini ↔ OpenAI\r\n* Claude ↔ OpenAI\r\n* Gemini ↔ Claude\r\n\r\nIt also works with handoffs when `nest_handoff_history=False`.\r\n\r\n### Implementation  Details\r\n\r\nBecause items in a conversation can come from different providers, and each provider has different requirements, this PR passes the target model name into several conversion helpers:\r\n\r\n* `Converter.items_to_messages(..., model=...)`\r\n* `LitellmConverter.convert_message_to_openai(..., model=...)`\r\n* `ChatCmplStreamHandler.handle_stream(..., model=...)`\r\n* `Converter.message_to_output_items(..., provider_data=...)`\r\n\r\nThis lets us branch on behavior for different providers in a controlled way and avoid regressions by handling provider-specific cases. This is especially important for reasoning models, where each provider handles encrypted tokens differently.\r\n\r\nThere are libraries like PydanticAI and LangChain define their own internal standard formats to enable cross-model conversations:\r\n\r\n* https://ai.pydantic.dev/message-history/#accessing-messages-from-results\r\n* https://blog.langchain.com/standard-message-content/\r\n\r\nBy contrast, LiteLLM has not fully abstracted away these differences. It focuses on making each model call work with provider-specific workarounds, without defining a normalized history format for cross-model conversations. Therefore, we need explicit model-aware at this layer to make cross-model possible. \r\n\r\nFor example, when we store Claude's `thinking_blocks` signature inside our reasoning item's `encrypted_content` field, we also need to know that it came from a Claude model. Otherwise, we will send this Claude-only encrypted content to another provider, which cannot safely interpret it.\r\n\r\nThe guiding principle in this PR is to treat OpenAI Responses API items as the baseline format, and use `provider_data` to extend them with provider-specific metadata when needed.\r\n\r\nFor OpenAI Responses API:\r\n\r\nWhen sending items to the OpenAI Responses API, we must not send provider-specific metadata or fake ids. \r\nThis PR adds: `OpenAIResponsesModel._remove_openai_responses_api_incompatible_fields(...)` \r\n\r\n* Quickly returns the input unchanged if no item has `provider_data`.\r\n* Otherwise, processes items:\r\n  * Removes `id` when it equals `FAKE_RESPONSES_ID`.\r\n  * Drops reasoning items that have `provider_data` (these are provider-specific).\r\n  * Removes the `provider_data` field from all items.\r\n\r\nThis keeps the payload clean and compatible with the Responses API, even if the items previously flowed through non-OpenAI providers.\r\n\r\n## Design notes: reasoning items vs provider_data\r\n\r\nThis PR does not introduce a separate reasoning item (e.g. Claude thinking_blocks does) for Gemini function call's `thought_signatures`. Instead it stores the signatures in `provider_data` on the function call item.\r\n\r\nThe main reasons:\r\n\r\n* Gemini thought signatures are function-call-bound and have no summary text. They belong strictly to the function call. Turning them into a separate reasoning   item would add complexity without any benefit.\r\n* Keeping the signature directly on the function call: Matches how Gemini emits its metadata and Keeps the data model simple.\r\n\r\nThis design is again similar to PydanticAI’s approach and also mirrors the underlying Gemini parts structure: signatures are attached to the parts they describe instead of creating an extra reasoning item with no text.\r\n\r\nI also study at the Gemini API raw format, there are four raw part structure with thought_signature:\r\n\r\n1. `functionCall: {...}` with `thought_signature: \"xxx\"` → handled in this PR: keep the thought_signature with the function call.\r\n2. `text: \"....\"` with `thought_signature: \"xxx\"` → could attach to the output item (no extra reasoning item needed).\r\n3. `text: \"\"` with `thought_signature: \"xxx\"`  → (empty text) this is the case where a standalone reasoning item makes sense.\r\n4. `text: \"summary...\"` with `thought: true` → (this is thinking summary) this is another case where a standalone reasoning item make sense.\r\n\r\nThis PR implements case (1), which is sufficient for Gemini’s current function calling requirement. \r\nOther cases can be added later if needed.\r\n\r\n----\r\n\r\nThis PR should have no side effects on projects that only use the OpenAI Responses API, and I believe it establishes a better groundwork for handling various provider-specific cases.\r\n",
+            "changedFiles": 13,
+            "closedAt": "2026-01-06T01:38:16Z",
+            "comments": {
+              "totalCount": 5
+            },
+            "createdAt": "2025-12-07T06:22:17Z",
+            "databaseId": 3078806924,
+            "deletions": 180,
+            "files": {
+              "totalCount": 13
+            },
+            "headRefName": "add-gemini-reasoning-support-v7",
+            "headRefOid": "c73527bfca47bea1fcfb6e068f8ae33dec7d8e33",
+            "id": "PR_kwDOOGidp863gt2M",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a2eeef",
+                  "description": "New feature or request",
+                  "name": "enhancement"
+                },
+                {
+                  "color": "77cf69",
+                  "description": "",
+                  "name": "feature:chat-completions"
+                },
+                {
+                  "color": "a95c3a",
+                  "description": "",
+                  "name": "feature:lite-llm"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "afa224ba143161a0fd2c9c52dec23f85c058a74c",
+              "url": "https://github.com/openai/openai-agents-python/commit/afa224ba143161a0fd2c9c52dec23f85c058a74c"
+            },
+            "mergedAt": "2026-01-06T01:38:15Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2158,
+            "reviews": {
+              "totalCount": 10
+            },
+            "state": "MERGED",
+            "title": "Gemini 3 Pro support and cross-model conversation compatibility",
+            "updatedAt": "2026-01-06T01:38:16Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2158"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:24.572438Z"
+}

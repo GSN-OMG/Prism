@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:56:18.654612Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "d7630dd2b2a13488",
+    "tag": "rest_pr_files_pr2295_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2295/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "6184",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:18 GMT",
+      "etag": "\"310862632f34718f71f12521a875f937ca68dcc6ecf06d5e74bf75a10bd13a50\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Mon, 12 Jan 2026 01:26:14 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DC08:37BFB7:1610237:1F1B749:696F0AF2",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4957",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "43",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 61,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/3be0da9b22c0bcf4b71179ef0781c6007630aa33/src%2Fagents%2Fextensions%2Fmodels%2Flitellm_model.py",
+        "changes": 61,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Fextensions%2Fmodels%2Flitellm_model.py?ref=3be0da9b22c0bcf4b71179ef0781c6007630aa33",
+        "deletions": 0,
+        "filename": "src/agents/extensions/models/litellm_model.py",
+        "patch": "@@ -1,6 +1,7 @@\n from __future__ import annotations\n \n import json\n+import os\n import time\n from collections.abc import AsyncIterator\n from copy import copy\n@@ -32,6 +33,7 @@\n )\n from openai.types.chat.chat_completion_message_function_tool_call import Function\n from openai.types.responses import Response\n+from pydantic import BaseModel\n \n from ... import _debug\n from ...agent_output import AgentOutputSchemaBase\n@@ -53,6 +55,65 @@\n from ...util._json import _to_dump_compatible\n \n \n+def _patch_litellm_serializer_warnings() -> None:\n+    \"\"\"Ensure LiteLLM logging uses model_dump(warnings=False) when available.\"\"\"\n+    # Background: LiteLLM emits Pydantic serializer warnings for Message/Choices mismatches.\n+    # See: https://github.com/BerriAI/litellm/issues/11759\n+    # This patch relies on a private LiteLLM helper; if the name or signature changes,\n+    # the wrapper should no-op or fall back to LiteLLM's default behavior. Revisit on upgrade.\n+    # Remove this patch once the LiteLLM issue is resolved.\n+\n+    try:\n+        from litellm.litellm_core_utils import litellm_logging as _litellm_logging\n+    except Exception:\n+        return\n+\n+    # Guard against double-patching if this module is imported multiple times.\n+    if getattr(_litellm_logging, \"_openai_agents_patched_serializer_warnings\", False):\n+        return\n+\n+    original = getattr(_litellm_logging, \"_extract_response_obj_and_hidden_params\", None)\n+    if original is None:\n+        return\n+\n+    def _wrapped_extract_response_obj_and_hidden_params(*args, **kwargs):\n+        # init_response_obj is LiteLLM's raw response container (often a Pydantic BaseModel).\n+        # Accept arbitrary args to stay compatible if LiteLLM changes the signature.\n+        init_response_obj = args[0] if args else kwargs.get(\"init_response_obj\")\n+        if isinstance(init_response_obj, BaseModel):\n+            hidden_params = getattr(init_response_obj, \"_hidden_params\", None)\n+            try:\n+                response_obj = init_response_obj.model_dump(warnings=False)\n+            except TypeError:\n+                response_obj = init_response_obj.model_dump()\n+            if args:\n+                response_obj_out, original_hidden = original(response_obj, *args[1:], **kwargs)\n+            else:\n+                updated_kwargs = dict(kwargs)\n+                updated_kwargs[\"init_response_obj\"] = response_obj\n+                response_obj_out, original_hidden = original(**updated_kwargs)\n+            return response_obj_out, hidden_params or original_hidden\n+\n+        return original(*args, **kwargs)\n+\n+    setattr(  # noqa: B010\n+        _litellm_logging,\n+        \"_extract_response_obj_and_hidden_params\",\n+        _wrapped_extract_response_obj_and_hidden_params,\n+    )\n+    setattr(  # noqa: B010\n+        _litellm_logging,\n+        \"_openai_agents_patched_serializer_warnings\",\n+        True,\n+    )\n+\n+\n+# Set OPENAI_AGENTS_ENABLE_LITELLM_SERIALIZER_PATCH=true to opt in.\n+_enable_litellm_patch = os.getenv(\"OPENAI_AGENTS_ENABLE_LITELLM_SERIALIZER_PATCH\", \"\")\n+if _enable_litellm_patch.lower() in (\"1\", \"true\"):\n+    _patch_litellm_serializer_warnings()\n+\n+\n class InternalChatCompletionMessage(ChatCompletionMessage):\n     \"\"\"\n     An internal subclass to carry reasoning_content and thinking_blocks without modifying the original model.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/3be0da9b22c0bcf4b71179ef0781c6007630aa33/src%2Fagents%2Fextensions%2Fmodels%2Flitellm_model.py",
+        "sha": "8a2f148dd6d6f831e65d1b571ce0302b85c0453f",
+        "status": "modified"
+      },
+      {
+        "additions": 29,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/3be0da9b22c0bcf4b71179ef0781c6007630aa33/tests%2Fmodels%2Ftest_litellm_logging_patch.py",
+        "changes": 29,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Fmodels%2Ftest_litellm_logging_patch.py?ref=3be0da9b22c0bcf4b71179ef0781c6007630aa33",
+        "deletions": 0,
+        "filename": "tests/models/test_litellm_logging_patch.py",
+        "patch": "@@ -0,0 +1,29 @@\n+from __future__ import annotations\n+\n+import importlib\n+\n+import pytest\n+\n+pytest.importorskip(\"litellm\")\n+\n+\n+def test_litellm_logging_patch_env_var_controls_application(monkeypatch):\n+    \"\"\"Assert the serializer patch only applies when the env var is enabled.\"\"\"\n+    litellm_logging = importlib.import_module(\"litellm.litellm_core_utils.litellm_logging\")\n+    litellm_model = importlib.import_module(\"agents.extensions.models.litellm_model\")\n+\n+    monkeypatch.delenv(\"OPENAI_AGENTS_ENABLE_LITELLM_SERIALIZER_PATCH\", raising=False)\n+    litellm_logging = importlib.reload(litellm_logging)\n+    importlib.reload(litellm_model)\n+\n+    assert hasattr(\n+        litellm_logging,\n+        \"_extract_response_obj_and_hidden_params\",\n+    ), \"LiteLLM removed _extract_response_obj_and_hidden_params; revisit warning patch.\"\n+    assert getattr(litellm_logging, \"_openai_agents_patched_serializer_warnings\", False) is False\n+\n+    monkeypatch.setenv(\"OPENAI_AGENTS_ENABLE_LITELLM_SERIALIZER_PATCH\", \"true\")\n+    litellm_logging = importlib.reload(litellm_logging)\n+    importlib.reload(litellm_model)\n+\n+    assert getattr(litellm_logging, \"_openai_agents_patched_serializer_warnings\", False) is True",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/3be0da9b22c0bcf4b71179ef0781c6007630aa33/tests%2Fmodels%2Ftest_litellm_logging_patch.py",
+        "sha": "631900a4ca3c9af37c84b834feaf5c61f65eacc6",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:18.166399Z"
+}

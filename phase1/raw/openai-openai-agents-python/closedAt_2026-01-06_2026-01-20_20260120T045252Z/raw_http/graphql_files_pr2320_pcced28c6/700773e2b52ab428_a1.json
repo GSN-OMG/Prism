@@ -1,0 +1,167 @@
+{
+  "finished_at": "2026-01-20T04:57:35.702967Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "700773e2b52ab428",
+    "tag": "graphql_files_pr2320_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetPRFilesPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      files(first: 100, after: $after) {\n        pageInfo { hasNextPage endCursor }\n        nodes {\n          path\n          additions\n          deletions\n          changeType\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2320,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "1937",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:57:35 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DCC9:357DBD:15FBAE3:1F07A43:696F0B3F",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4615",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "385",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "pullRequest": {
+            "files": {
+              "nodes": [
+                {
+                  "additions": 163,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "examples/tools/codex.py"
+                },
+                {
+                  "additions": 6,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "src/agents/extensions/experimental/__init__.py"
+                },
+                {
+                  "additions": 92,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "src/agents/extensions/experimental/codex/__init__.py"
+                },
+                {
+                  "additions": 89,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "src/agents/extensions/experimental/codex/codex.py"
+                },
+                {
+                  "additions": 35,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "src/agents/extensions/experimental/codex/codex_options.py"
+                },
+                {
+                  "additions": 1142,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "src/agents/extensions/experimental/codex/codex_tool.py"
+                },
+                {
+                  "additions": 162,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "src/agents/extensions/experimental/codex/events.py"
+                },
+                {
+                  "additions": 263,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "src/agents/extensions/experimental/codex/exec.py"
+                },
+                {
+                  "additions": 245,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "src/agents/extensions/experimental/codex/items.py"
+                },
+                {
+                  "additions": 50,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "src/agents/extensions/experimental/codex/output_schema_file.py"
+                },
+                {
+                  "additions": 31,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "src/agents/extensions/experimental/codex/payloads.py"
+                },
+                {
+                  "additions": 214,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "src/agents/extensions/experimental/codex/thread.py"
+                },
+                {
+                  "additions": 54,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "src/agents/extensions/experimental/codex/thread_options.py"
+                },
+                {
+                  "additions": 36,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "src/agents/extensions/experimental/codex/turn_options.py"
+                },
+                {
+                  "additions": 644,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "tests/extensions/experiemental/codex/test_codex_exec_thread.py"
+                },
+                {
+                  "additions": 1119,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "tests/extensions/experiemental/codex/test_codex_tool.py"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "MTY",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:57:35.238816Z"
+}

@@ -1,0 +1,176 @@
+{
+  "finished_at": "2026-01-20T04:57:42.467336Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "aa50eef2b8315b46",
+    "tag": "graphql_reviews_pr2323_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetPRReviewsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      reviews(first: 100, after: $after) {\n        pageInfo { hasNextPage endCursor }\n        nodes {\n          id\n          databaseId\n          author {\n            __typename\n            login\n            url\n            avatarUrl\n            ... on User { id databaseId }\n            ... on Organization { id databaseId }\n            ... on Bot { id databaseId }\n            ... on Mannequin { id databaseId }\n          }\n          state\n          body\n          submittedAt\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2323,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "3983",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:57:42 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DCD8:357DBD:15FBDEA:1F07E16:696F0B46",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4606",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "394",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "pullRequest": {
+            "reviews": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "Bot",
+                    "avatarUrl": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                    "databaseId": 199175422,
+                    "id": "BOT_kgDOC98s_g",
+                    "login": "chatgpt-codex-connector",
+                    "url": "https://github.com/apps/chatgpt-codex-connector"
+                  },
+                  "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `d1b548dc13`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](http://chatgpt.com/codex/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>",
+                  "databaseId": 3669697245,
+                  "id": "PRR_kwDOOGidp87auyLd",
+                  "state": "COMMENTED",
+                  "submittedAt": "2026-01-16T09:15:20Z"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "body": "",
+                  "databaseId": 3669921276,
+                  "id": "PRR_kwDOOGidp87avo38",
+                  "state": "COMMENTED",
+                  "submittedAt": "2026-01-16T09:52:42Z"
+                },
+                {
+                  "author": {
+                    "__typename": "Bot",
+                    "avatarUrl": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                    "databaseId": 199175422,
+                    "id": "BOT_kgDOC98s_g",
+                    "login": "chatgpt-codex-connector",
+                    "url": "https://github.com/apps/chatgpt-codex-connector"
+                  },
+                  "body": "\n### 💡 Codex Review\n\nHere are some automated review suggestions for this pull request.\n\n**Reviewed commit:** `e1c4153eca`\n    \n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](http://chatgpt.com/codex/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>",
+                  "databaseId": 3669973527,
+                  "id": "PRR_kwDOOGidp87av1oX",
+                  "state": "COMMENTED",
+                  "submittedAt": "2026-01-16T10:02:20Z"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "body": "",
+                  "databaseId": 3670187089,
+                  "id": "PRR_kwDOOGidp87awpxR",
+                  "state": "COMMENTED",
+                  "submittedAt": "2026-01-16T10:42:24Z"
+                },
+                {
+                  "author": {
+                    "__typename": "Bot",
+                    "avatarUrl": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                    "databaseId": 199175422,
+                    "id": "BOT_kgDOC98s_g",
+                    "login": "chatgpt-codex-connector",
+                    "url": "https://github.com/apps/chatgpt-codex-connector"
+                  },
+                  "body": "",
+                  "databaseId": 3670261687,
+                  "id": "PRR_kwDOOGidp87aw7-3",
+                  "state": "COMMENTED",
+                  "submittedAt": "2026-01-16T10:53:07Z"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "body": "",
+                  "databaseId": 3670389441,
+                  "id": "PRR_kwDOOGidp87axbLB",
+                  "state": "COMMENTED",
+                  "submittedAt": "2026-01-16T11:16:13Z"
+                },
+                {
+                  "author": {
+                    "__typename": "Bot",
+                    "avatarUrl": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                    "databaseId": 199175422,
+                    "id": "BOT_kgDOC98s_g",
+                    "login": "chatgpt-codex-connector",
+                    "url": "https://github.com/apps/chatgpt-codex-connector"
+                  },
+                  "body": "",
+                  "databaseId": 3670422223,
+                  "id": "PRR_kwDOOGidp87axjLP",
+                  "state": "COMMENTED",
+                  "submittedAt": "2026-01-16T11:22:30Z"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpO5MjAyNi0wMS0xNlQyMDoyMjozMCswOTowMLkyMDI2LTAxLTE2VDIwOjIyOjMwKzA5OjAwztrGMs8=",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:57:42.009629Z"
+}

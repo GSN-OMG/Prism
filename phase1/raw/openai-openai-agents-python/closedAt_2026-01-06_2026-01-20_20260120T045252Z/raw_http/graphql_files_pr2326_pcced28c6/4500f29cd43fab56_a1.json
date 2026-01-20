@@ -1,0 +1,611 @@
+{
+  "finished_at": "2026-01-20T04:57:54.561917Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "4500f29cd43fab56",
+    "tag": "graphql_files_pr2326_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetPRFilesPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      files(first: 100, after: $after) {\n        pageInfo { hasNextPage endCursor }\n        nodes {\n          path\n          additions\n          deletions\n          changeType\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2326,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "8054",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:57:54 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DCF2:EFCF3:1621119:1F2CB7D:696F0B52",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4590",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "410",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "pullRequest": {
+            "files": {
+              "nodes": [
+                {
+                  "additions": 33,
+                  "changeType": "MODIFIED",
+                  "deletions": 33,
+                  "path": "docs/ja/agents.md"
+                },
+                {
+                  "additions": 13,
+                  "changeType": "MODIFIED",
+                  "deletions": 13,
+                  "path": "docs/ja/config.md"
+                },
+                {
+                  "additions": 30,
+                  "changeType": "MODIFIED",
+                  "deletions": 30,
+                  "path": "docs/ja/context.md"
+                },
+                {
+                  "additions": 28,
+                  "changeType": "MODIFIED",
+                  "deletions": 28,
+                  "path": "docs/ja/examples.md"
+                },
+                {
+                  "additions": 31,
+                  "changeType": "MODIFIED",
+                  "deletions": 31,
+                  "path": "docs/ja/guardrails.md"
+                },
+                {
+                  "additions": 19,
+                  "changeType": "MODIFIED",
+                  "deletions": 19,
+                  "path": "docs/ja/handoffs.md"
+                },
+                {
+                  "additions": 17,
+                  "changeType": "MODIFIED",
+                  "deletions": 17,
+                  "path": "docs/ja/index.md"
+                },
+                {
+                  "additions": 52,
+                  "changeType": "MODIFIED",
+                  "deletions": 52,
+                  "path": "docs/ja/mcp.md"
+                },
+                {
+                  "additions": 40,
+                  "changeType": "MODIFIED",
+                  "deletions": 40,
+                  "path": "docs/ja/models/index.md"
+                },
+                {
+                  "additions": 12,
+                  "changeType": "MODIFIED",
+                  "deletions": 12,
+                  "path": "docs/ja/models/litellm.md"
+                },
+                {
+                  "additions": 23,
+                  "changeType": "MODIFIED",
+                  "deletions": 23,
+                  "path": "docs/ja/multi_agent.md"
+                },
+                {
+                  "additions": 16,
+                  "changeType": "MODIFIED",
+                  "deletions": 16,
+                  "path": "docs/ja/quickstart.md"
+                },
+                {
+                  "additions": 36,
+                  "changeType": "MODIFIED",
+                  "deletions": 36,
+                  "path": "docs/ja/realtime/guide.md"
+                },
+                {
+                  "additions": 25,
+                  "changeType": "MODIFIED",
+                  "deletions": 25,
+                  "path": "docs/ja/realtime/quickstart.md"
+                },
+                {
+                  "additions": 16,
+                  "changeType": "MODIFIED",
+                  "deletions": 16,
+                  "path": "docs/ja/release.md"
+                },
+                {
+                  "additions": 3,
+                  "changeType": "MODIFIED",
+                  "deletions": 3,
+                  "path": "docs/ja/repl.md"
+                },
+                {
+                  "additions": 24,
+                  "changeType": "MODIFIED",
+                  "deletions": 24,
+                  "path": "docs/ja/results.md"
+                },
+                {
+                  "additions": 53,
+                  "changeType": "MODIFIED",
+                  "deletions": 53,
+                  "path": "docs/ja/running_agents.md"
+                },
+                {
+                  "additions": 22,
+                  "changeType": "MODIFIED",
+                  "deletions": 22,
+                  "path": "docs/ja/sessions/advanced_sqlite_session.md"
+                },
+                {
+                  "additions": 26,
+                  "changeType": "MODIFIED",
+                  "deletions": 26,
+                  "path": "docs/ja/sessions/encrypted_session.md"
+                },
+                {
+                  "additions": 38,
+                  "changeType": "MODIFIED",
+                  "deletions": 38,
+                  "path": "docs/ja/sessions/index.md"
+                },
+                {
+                  "additions": 3,
+                  "changeType": "MODIFIED",
+                  "deletions": 3,
+                  "path": "docs/ja/sessions/sqlalchemy_session.md"
+                },
+                {
+                  "additions": 8,
+                  "changeType": "MODIFIED",
+                  "deletions": 8,
+                  "path": "docs/ja/streaming.md"
+                },
+                {
+                  "additions": 94,
+                  "changeType": "MODIFIED",
+                  "deletions": 56,
+                  "path": "docs/ja/tools.md"
+                },
+                {
+                  "additions": 77,
+                  "changeType": "MODIFIED",
+                  "deletions": 76,
+                  "path": "docs/ja/tracing.md"
+                },
+                {
+                  "additions": 18,
+                  "changeType": "MODIFIED",
+                  "deletions": 18,
+                  "path": "docs/ja/usage.md"
+                },
+                {
+                  "additions": 20,
+                  "changeType": "MODIFIED",
+                  "deletions": 19,
+                  "path": "docs/ja/visualization.md"
+                },
+                {
+                  "additions": 15,
+                  "changeType": "MODIFIED",
+                  "deletions": 15,
+                  "path": "docs/ja/voice/pipeline.md"
+                },
+                {
+                  "additions": 12,
+                  "changeType": "MODIFIED",
+                  "deletions": 9,
+                  "path": "docs/ja/voice/quickstart.md"
+                },
+                {
+                  "additions": 6,
+                  "changeType": "MODIFIED",
+                  "deletions": 6,
+                  "path": "docs/ja/voice/tracing.md"
+                },
+                {
+                  "additions": 29,
+                  "changeType": "MODIFIED",
+                  "deletions": 29,
+                  "path": "docs/ko/agents.md"
+                },
+                {
+                  "additions": 8,
+                  "changeType": "MODIFIED",
+                  "deletions": 8,
+                  "path": "docs/ko/config.md"
+                },
+                {
+                  "additions": 22,
+                  "changeType": "MODIFIED",
+                  "deletions": 22,
+                  "path": "docs/ko/context.md"
+                },
+                {
+                  "additions": 23,
+                  "changeType": "MODIFIED",
+                  "deletions": 23,
+                  "path": "docs/ko/examples.md"
+                },
+                {
+                  "additions": 25,
+                  "changeType": "MODIFIED",
+                  "deletions": 25,
+                  "path": "docs/ko/guardrails.md"
+                },
+                {
+                  "additions": 22,
+                  "changeType": "MODIFIED",
+                  "deletions": 22,
+                  "path": "docs/ko/handoffs.md"
+                },
+                {
+                  "additions": 18,
+                  "changeType": "MODIFIED",
+                  "deletions": 18,
+                  "path": "docs/ko/index.md"
+                },
+                {
+                  "additions": 57,
+                  "changeType": "MODIFIED",
+                  "deletions": 48,
+                  "path": "docs/ko/mcp.md"
+                },
+                {
+                  "additions": 41,
+                  "changeType": "MODIFIED",
+                  "deletions": 41,
+                  "path": "docs/ko/models/index.md"
+                },
+                {
+                  "additions": 14,
+                  "changeType": "MODIFIED",
+                  "deletions": 14,
+                  "path": "docs/ko/models/litellm.md"
+                },
+                {
+                  "additions": 19,
+                  "changeType": "MODIFIED",
+                  "deletions": 19,
+                  "path": "docs/ko/multi_agent.md"
+                },
+                {
+                  "additions": 11,
+                  "changeType": "MODIFIED",
+                  "deletions": 11,
+                  "path": "docs/ko/quickstart.md"
+                },
+                {
+                  "additions": 40,
+                  "changeType": "MODIFIED",
+                  "deletions": 40,
+                  "path": "docs/ko/realtime/guide.md"
+                },
+                {
+                  "additions": 13,
+                  "changeType": "MODIFIED",
+                  "deletions": 13,
+                  "path": "docs/ko/realtime/quickstart.md"
+                },
+                {
+                  "additions": 17,
+                  "changeType": "MODIFIED",
+                  "deletions": 17,
+                  "path": "docs/ko/release.md"
+                },
+                {
+                  "additions": 3,
+                  "changeType": "MODIFIED",
+                  "deletions": 3,
+                  "path": "docs/ko/repl.md"
+                },
+                {
+                  "additions": 20,
+                  "changeType": "MODIFIED",
+                  "deletions": 20,
+                  "path": "docs/ko/results.md"
+                },
+                {
+                  "additions": 52,
+                  "changeType": "MODIFIED",
+                  "deletions": 53,
+                  "path": "docs/ko/running_agents.md"
+                },
+                {
+                  "additions": 13,
+                  "changeType": "MODIFIED",
+                  "deletions": 13,
+                  "path": "docs/ko/sessions/advanced_sqlite_session.md"
+                },
+                {
+                  "additions": 14,
+                  "changeType": "MODIFIED",
+                  "deletions": 14,
+                  "path": "docs/ko/sessions/encrypted_session.md"
+                },
+                {
+                  "additions": 37,
+                  "changeType": "MODIFIED",
+                  "deletions": 37,
+                  "path": "docs/ko/sessions/index.md"
+                },
+                {
+                  "additions": 4,
+                  "changeType": "MODIFIED",
+                  "deletions": 4,
+                  "path": "docs/ko/sessions/sqlalchemy_session.md"
+                },
+                {
+                  "additions": 5,
+                  "changeType": "MODIFIED",
+                  "deletions": 5,
+                  "path": "docs/ko/streaming.md"
+                },
+                {
+                  "additions": 99,
+                  "changeType": "MODIFIED",
+                  "deletions": 61,
+                  "path": "docs/ko/tools.md"
+                },
+                {
+                  "additions": 37,
+                  "changeType": "MODIFIED",
+                  "deletions": 38,
+                  "path": "docs/ko/tracing.md"
+                },
+                {
+                  "additions": 15,
+                  "changeType": "MODIFIED",
+                  "deletions": 15,
+                  "path": "docs/ko/usage.md"
+                },
+                {
+                  "additions": 18,
+                  "changeType": "MODIFIED",
+                  "deletions": 18,
+                  "path": "docs/ko/visualization.md"
+                },
+                {
+                  "additions": 15,
+                  "changeType": "MODIFIED",
+                  "deletions": 15,
+                  "path": "docs/ko/voice/pipeline.md"
+                },
+                {
+                  "additions": 10,
+                  "changeType": "MODIFIED",
+                  "deletions": 10,
+                  "path": "docs/ko/voice/quickstart.md"
+                },
+                {
+                  "additions": 8,
+                  "changeType": "MODIFIED",
+                  "deletions": 8,
+                  "path": "docs/ko/voice/tracing.md"
+                },
+                {
+                  "additions": 31,
+                  "changeType": "MODIFIED",
+                  "deletions": 31,
+                  "path": "docs/zh/agents.md"
+                },
+                {
+                  "additions": 10,
+                  "changeType": "MODIFIED",
+                  "deletions": 10,
+                  "path": "docs/zh/config.md"
+                },
+                {
+                  "additions": 27,
+                  "changeType": "MODIFIED",
+                  "deletions": 27,
+                  "path": "docs/zh/context.md"
+                },
+                {
+                  "additions": 29,
+                  "changeType": "MODIFIED",
+                  "deletions": 29,
+                  "path": "docs/zh/examples.md"
+                },
+                {
+                  "additions": 28,
+                  "changeType": "MODIFIED",
+                  "deletions": 29,
+                  "path": "docs/zh/guardrails.md"
+                },
+                {
+                  "additions": 17,
+                  "changeType": "MODIFIED",
+                  "deletions": 17,
+                  "path": "docs/zh/handoffs.md"
+                },
+                {
+                  "additions": 18,
+                  "changeType": "MODIFIED",
+                  "deletions": 18,
+                  "path": "docs/zh/index.md"
+                },
+                {
+                  "additions": 54,
+                  "changeType": "MODIFIED",
+                  "deletions": 52,
+                  "path": "docs/zh/mcp.md"
+                },
+                {
+                  "additions": 38,
+                  "changeType": "MODIFIED",
+                  "deletions": 38,
+                  "path": "docs/zh/models/index.md"
+                },
+                {
+                  "additions": 16,
+                  "changeType": "MODIFIED",
+                  "deletions": 16,
+                  "path": "docs/zh/models/litellm.md"
+                },
+                {
+                  "additions": 22,
+                  "changeType": "MODIFIED",
+                  "deletions": 22,
+                  "path": "docs/zh/multi_agent.md"
+                },
+                {
+                  "additions": 17,
+                  "changeType": "MODIFIED",
+                  "deletions": 17,
+                  "path": "docs/zh/quickstart.md"
+                },
+                {
+                  "additions": 39,
+                  "changeType": "MODIFIED",
+                  "deletions": 39,
+                  "path": "docs/zh/realtime/guide.md"
+                },
+                {
+                  "additions": 13,
+                  "changeType": "MODIFIED",
+                  "deletions": 13,
+                  "path": "docs/zh/realtime/quickstart.md"
+                },
+                {
+                  "additions": 17,
+                  "changeType": "MODIFIED",
+                  "deletions": 17,
+                  "path": "docs/zh/release.md"
+                },
+                {
+                  "additions": 4,
+                  "changeType": "MODIFIED",
+                  "deletions": 5,
+                  "path": "docs/zh/repl.md"
+                },
+                {
+                  "additions": 21,
+                  "changeType": "MODIFIED",
+                  "deletions": 21,
+                  "path": "docs/zh/results.md"
+                },
+                {
+                  "additions": 52,
+                  "changeType": "MODIFIED",
+                  "deletions": 52,
+                  "path": "docs/zh/running_agents.md"
+                },
+                {
+                  "additions": 23,
+                  "changeType": "MODIFIED",
+                  "deletions": 23,
+                  "path": "docs/zh/sessions/advanced_sqlite_session.md"
+                },
+                {
+                  "additions": 19,
+                  "changeType": "MODIFIED",
+                  "deletions": 19,
+                  "path": "docs/zh/sessions/encrypted_session.md"
+                },
+                {
+                  "additions": 36,
+                  "changeType": "MODIFIED",
+                  "deletions": 39,
+                  "path": "docs/zh/sessions/index.md"
+                },
+                {
+                  "additions": 5,
+                  "changeType": "MODIFIED",
+                  "deletions": 5,
+                  "path": "docs/zh/sessions/sqlalchemy_session.md"
+                },
+                {
+                  "additions": 6,
+                  "changeType": "MODIFIED",
+                  "deletions": 6,
+                  "path": "docs/zh/streaming.md"
+                },
+                {
+                  "additions": 93,
+                  "changeType": "MODIFIED",
+                  "deletions": 55,
+                  "path": "docs/zh/tools.md"
+                },
+                {
+                  "additions": 40,
+                  "changeType": "MODIFIED",
+                  "deletions": 40,
+                  "path": "docs/zh/tracing.md"
+                },
+                {
+                  "additions": 17,
+                  "changeType": "MODIFIED",
+                  "deletions": 17,
+                  "path": "docs/zh/usage.md"
+                },
+                {
+                  "additions": 15,
+                  "changeType": "MODIFIED",
+                  "deletions": 16,
+                  "path": "docs/zh/visualization.md"
+                },
+                {
+                  "additions": 14,
+                  "changeType": "MODIFIED",
+                  "deletions": 14,
+                  "path": "docs/zh/voice/pipeline.md"
+                },
+                {
+                  "additions": 10,
+                  "changeType": "MODIFIED",
+                  "deletions": 10,
+                  "path": "docs/zh/voice/quickstart.md"
+                },
+                {
+                  "additions": 9,
+                  "changeType": "MODIFIED",
+                  "deletions": 9,
+                  "path": "docs/zh/voice/tracing.md"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "OTA",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:57:54.050414Z"
+}

@@ -1,0 +1,106 @@
+{
+  "finished_at": "2026-01-20T04:58:18.408334Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "d3692c1097fc7995",
+    "tag": "graphql_comments_item2333_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2333,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "1855",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:58:18 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DD25:3E6F74:1603092:1F0EAF6:696F0B6A",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4558",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "442",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "authorAssociation": "MEMBER",
+                  "body": "Thanks for reporting this issue. Indeed, the current implementation of OpenAIResponsesCompactionSession only supports server managed conversation data, which relies on previous_response_id under the hood. However, responses.compact API supports inputs array without previous_response_id, so the use case you mentioned should be supported as well. We'll adjust the internal behavior to support both use cases.",
+                  "createdAt": "2026-01-19T09:31:18Z",
+                  "databaseId": 3767327863,
+                  "id": "IC_kwDOOGidp87gjNx3",
+                  "updatedAt": "2026-01-19T09:31:18Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2333#issuecomment-3767327863"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/38551872?v=4",
+                    "databaseId": 38551872,
+                    "id": "MDQ6VXNlcjM4NTUxODcy",
+                    "login": "lijianguo1211",
+                    "url": "https://github.com/lijianguo1211"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "Thanks for the quick confirmation and the detailed explanation. I really appreciate you planning to adjust the internal behavior to support both the previous_response_id (server-managed) flow and the inputs-only use case. If helpful, I can provide a minimal repro and I’m happy to help test/verify the fix once there’s a patch.",
+                  "createdAt": "2026-01-19T09:53:25Z",
+                  "databaseId": 3767429627,
+                  "id": "IC_kwDOOGidp87gjmn7",
+                  "updatedAt": "2026-01-19T09:53:25Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2333#issuecomment-3767429627"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO4I5p-w==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:58:17.950867Z"
+}

@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:55:15.949852Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "80612ac92fb343b5",
+    "tag": "rest_pr_files_pr2276_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2276/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "7536",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:55:15 GMT",
+      "etag": "\"1eebb9550abf462bc894a9309c986ee33a453b8326f89a9f85dddec573683f2f\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Thu, 08 Jan 2026 09:31:14 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DB7F:3CEC4D:15BCF2C:1EC6F12:696F0AB3",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4972",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "28",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 56,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/e9ce4041a63e41afff7a09c198335f21c4aafdeb/src%2Fagents%2Fresult.py",
+        "changes": 59,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Fresult.py?ref=e9ce4041a63e41afff7a09c198335f21c4aafdeb",
+        "deletions": 3,
+        "filename": "src/agents/result.py",
+        "patch": "@@ -122,12 +122,65 @@ def final_output_as(self, cls: type[T], raise_if_incorrect_type: bool = False) -\n \n         return cast(T, self.final_output)\n \n-    def to_input_list(self) -> list[TResponseInputItem]:\n-        \"\"\"Creates a new input list, merging the original input with all the new items generated.\"\"\"\n+    def to_input_list(\n+        self, *, include_nested_summary: bool = True\n+    ) -> list[TResponseInputItem]:\n+        \"\"\"Creates a new input list, merging the original input with all the new items generated.\n+\n+        Args:\n+            include_nested_summary: If True (default), includes handoff summary messages that\n+                contain nested conversation history. Set to False to exclude these summary\n+                messages and return only the raw items, which is useful when you need a flat\n+                history without the nested format that can cause parsing issues.\n+\n+        Returns:\n+            A list of input items suitable for passing to subsequent agent runs.\n+        \"\"\"\n         original_items: list[TResponseInputItem] = ItemHelpers.input_to_new_input_list(self.input)\n         new_items = [item.to_input_item() for item in self.new_items]\n \n-        return original_items + new_items\n+        if include_nested_summary:\n+            return original_items + new_items\n+\n+        # Filter nested summaries from BOTH original_items and new_items\n+        filtered_original = [\n+            item for item in original_items\n+            if not self._is_nested_history_summary(item)\n+        ]\n+        filtered_new = [\n+            item for item in new_items\n+            if not self._is_nested_history_summary(item)\n+        ]\n+\n+        return filtered_original + filtered_new\n+\n+    def to_input_list_raw(self) -> list[TResponseInputItem]:\n+        \"\"\"Creates a new input list without nested handoff summary messages.\n+\n+        This is a convenience method equivalent to calling `to_input_list(include_nested_summary=False)`.\n+        Use this when you need a flat conversation history that can be reliably parsed by the API\n+        without the nested `<CONVERSATION HISTORY>` format.\n+\n+        Returns:\n+            A list of input items with handoff summaries excluded.\n+        \"\"\"\n+        return self.to_input_list(include_nested_summary=False)\n+\n+    @staticmethod\n+    def _is_nested_history_summary(item: TResponseInputItem) -> bool:\n+        \"\"\"Check if an input item is a nested handoff history summary message.\n+\n+        These are assistant messages containing the `<CONVERSATION HISTORY>` markers\n+        generated by the nest_handoff_history function.\n+        \"\"\"\n+        if not isinstance(item, dict):\n+            return False\n+        if item.get(\"role\") != \"assistant\":\n+            return False\n+        content = item.get(\"content\")\n+        if not isinstance(content, str):\n+            return False\n+        return \"<CONVERSATION HISTORY>\" in content and \"</CONVERSATION HISTORY>\" in content\n \n     @property\n     def last_response_id(self) -> str | None:",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/e9ce4041a63e41afff7a09c198335f21c4aafdeb/src%2Fagents%2Fresult.py",
+        "sha": "9be40273938c999b62b2d3c5c1dbb19172ce5f1a",
+        "status": "modified"
+      },
+      {
+        "additions": 67,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/e9ce4041a63e41afff7a09c198335f21c4aafdeb/tests%2Ftest_handoff_history_dedup.py",
+        "changes": 67,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_handoff_history_dedup.py?ref=e9ce4041a63e41afff7a09c198335f21c4aafdeb",
+        "deletions": 0,
+        "filename": "tests/test_handoff_history_dedup.py",
+        "patch": "@@ -0,0 +1,67 @@\n+\"\"\"Tests for to_input_list with handoff history deduplication (Issue #2258).\"\"\"\n+\n+from __future__ import annotations\n+\n+from agents.result import RunResultBase\n+\n+\n+class TestNestedHistorySummaryDetection:\n+    \"\"\"Tests for _is_nested_history_summary static method.\"\"\"\n+\n+    def test_detects_summary_with_markers(self) -> None:\n+        \"\"\"Verify detection of nested history summary messages.\"\"\"\n+        summary_item = {\n+            \"role\": \"assistant\",\n+            \"content\": \"<CONVERSATION HISTORY>\\ntest\\n</CONVERSATION HISTORY>\",\n+        }\n+        assert RunResultBase._is_nested_history_summary(summary_item) is True\n+\n+    def test_ignores_regular_assistant_message(self) -> None:\n+        \"\"\"Regular assistant messages should not be detected as summaries.\"\"\"\n+        regular_item = {\n+            \"role\": \"assistant\",\n+            \"content\": \"Hello, how can I help?\",\n+        }\n+        assert RunResultBase._is_nested_history_summary(regular_item) is False\n+\n+    def test_ignores_user_message(self) -> None:\n+        \"\"\"User messages should not be detected as summaries.\"\"\"\n+        user_item = {\"role\": \"user\", \"content\": \"Test\"}\n+        assert RunResultBase._is_nested_history_summary(user_item) is False\n+\n+    def test_ignores_function_output(self) -> None:\n+        \"\"\"Function outputs should not be detected as summaries.\"\"\"\n+        function_item = {\n+            \"type\": \"function_call_output\",\n+            \"call_id\": \"123\",\n+            \"output\": \"result\",\n+        }\n+        assert RunResultBase._is_nested_history_summary(function_item) is False\n+\n+    def test_requires_both_markers(self) -> None:\n+        \"\"\"Both start and end markers are required for detection.\"\"\"\n+        partial_start = {\n+            \"role\": \"assistant\",\n+            \"content\": \"<CONVERSATION HISTORY> only start marker\",\n+        }\n+        assert RunResultBase._is_nested_history_summary(partial_start) is False\n+\n+        partial_end = {\n+            \"role\": \"assistant\",\n+            \"content\": \"only end marker </CONVERSATION HISTORY>\",\n+        }\n+        assert RunResultBase._is_nested_history_summary(partial_end) is False\n+\n+    def test_handles_non_string_content(self) -> None:\n+        \"\"\"Non-string content should return False.\"\"\"\n+        structured_content = {\n+            \"role\": \"assistant\",\n+            \"content\": [{\"type\": \"text\", \"text\": \"structured content\"}],\n+        }\n+        assert RunResultBase._is_nested_history_summary(structured_content) is False\n+\n+    def test_handles_non_dict_input(self) -> None:\n+        \"\"\"Non-dict inputs should return False.\"\"\"\n+        assert RunResultBase._is_nested_history_summary(\"not a dict\") is False  # type: ignore\n+        assert RunResultBase._is_nested_history_summary(None) is False  # type: ignore\n+        assert RunResultBase._is_nested_history_summary(123) is False  # type: ignore",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/e9ce4041a63e41afff7a09c198335f21c4aafdeb/tests%2Ftest_handoff_history_dedup.py",
+        "sha": "c8bfa5839f75ee74b25ec8f05f5b3b4137297588",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:55:15.477507Z"
+}

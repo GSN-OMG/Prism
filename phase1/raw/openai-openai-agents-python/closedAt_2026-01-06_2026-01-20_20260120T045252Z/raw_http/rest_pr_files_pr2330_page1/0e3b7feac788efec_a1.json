@@ -1,0 +1,136 @@
+{
+  "finished_at": "2026-01-20T04:58:10.160328Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "0e3b7feac788efec",
+    "tag": "rest_pr_files_pr2330_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2330/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "19370",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:58:10 GMT",
+      "etag": "\"9c9aa3720ded14a503a72892761fb90cb66e9281130570c9ad265f07a207d3ad\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Mon, 19 Jan 2026 02:47:57 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DD13:EFCF3:16218E1:1F2D4F3:696F0B61",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4930",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "70",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 1,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/2bfdd08b8c121b2c873f232312a40771cda2255c/docs%2Fexamples.md",
+        "changes": 1,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Fexamples.md?ref=2bfdd08b8c121b2c873f232312a40771cda2255c",
+        "deletions": 0,
+        "filename": "docs/examples.md",
+        "patch": "@@ -9,6 +9,7 @@ Check out a variety of sample implementations of the SDK in the examples section\n \n     -   Deterministic workflows\n     -   Agents as tools\n+    -   Agent skills\n     -   Parallel agent execution\n     -   Conditional tool usage\n     -   Input/output guardrails",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/2bfdd08b8c121b2c873f232312a40771cda2255c/docs%2Fexamples.md",
+        "sha": "cfb3b9235b88d058a954e67b9205306e98a7466f",
+        "status": "modified"
+      },
+      {
+        "additions": 12,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/2bfdd08b8c121b2c873f232312a40771cda2255c/examples%2Fagent_patterns%2FREADME.md",
+        "changes": 12,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Fagent_patterns%2FREADME.md?ref=2bfdd08b8c121b2c873f232312a40771cda2255c",
+        "deletions": 0,
+        "filename": "examples/agent_patterns/README.md",
+        "patch": "@@ -30,6 +30,18 @@ For example, you could model the translation task above as tool calls instead: r\n See the [`agents_as_tools.py`](./agents_as_tools.py) file for an example of this.\n See the [`agents_as_tools_streaming.py`](./agents_as_tools_streaming.py) file for a streaming variant that taps into nested agent events via `on_stream`.\n \n+## Agent Skills\n+\n+Skills bundle reusable instructions, references, and helper scripts into a named package that an agent can load on demand. This is useful when you want a consistent way to bring in domain knowledge or workflows without hard-coding them into the base prompt.\n+\n+The key idea is progressive disclosure: only load a skill when it is needed so you can keep prompts short and avoid overwhelming the agent.\n+\n+Start with [`agent_skills.py`](./agent_skills.py) for a minimal implementation that discovers skills under `examples/agent_patterns/skills` and exposes a `load_skill` tool so the agent can pull in a specific skill when needed. Choose this when you only need to read a single skill instructions document.\n+\n+If a skill needs to execute scripts, add a tool that can run them, such as the [shell tool](https://platform.openai.com/docs/guides/tools-shell). In this case, use [`agent_skills_shell.py`](./agent_skills_shell.py), which reads skills and runs skill scripts via bash with the `ShellTool`.\n+\n+For more information, see [https://agentskills.io](https://agentskills.io).\n+\n ## LLM-as-a-judge\n \n LLMs can often improve the quality of their output if given feedback. A common pattern is to generate a response using a model, and then use a second model to provide feedback. You can even use a small model for the initial generation and a larger model for the feedback, to optimize cost.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/2bfdd08b8c121b2c873f232312a40771cda2255c/examples%2Fagent_patterns%2FREADME.md",
+        "sha": "9ea00aeb3df008e3f26f5f0ac5b6d8025e424cc5",
+        "status": "modified"
+      },
+      {
+        "additions": 133,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/2bfdd08b8c121b2c873f232312a40771cda2255c/examples%2Fagent_patterns%2Fagent_skills.py",
+        "changes": 133,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Fagent_patterns%2Fagent_skills.py?ref=2bfdd08b8c121b2c873f232312a40771cda2255c",
+        "deletions": 0,
+        "filename": "examples/agent_patterns/agent_skills.py",
+        "patch": "@@ -0,0 +1,133 @@\n+import os\n+import re\n+\n+from agents import Agent, Runner, TResponseInputItem, function_tool\n+from examples.auto_mode import input_with_fallback, is_auto_mode\n+\n+\"\"\"\n+This example demonstrates the skills pattern. It discovers skills under `skills`, lists them\n+in the system prompt, and lets the agent load a skill on demand. The key idea is\n+progressive disclosure: keep the base prompt small and only load skills when needed.\n+\n+This version loads skills with a Python function tool.\n+\"\"\"\n+\n+# Update this if your skills live in a different directory.\n+SKILL_DIR = \"examples/agent_patterns/skills\"\n+\n+\n+def find_all_skills(skill_dir: str) -> list[dict[str, str]]:\n+    \"\"\"Find installed skills in the given directory.\"\"\"\n+    skills: list[dict[str, str]] = []\n+    if not os.path.exists(skill_dir):\n+        return skills\n+\n+    for entry in os.listdir(skill_dir):\n+        skill_md_path = os.path.join(skill_dir, entry, \"SKILL.md\")\n+        if os.path.exists(skill_md_path):\n+            content = open(skill_md_path, encoding=\"utf-8\").read()\n+            match = re.search(r\"^description:\\s*(.+?)$\", content, re.MULTILINE)\n+            description = match.group(1).strip() if match else \"\"\n+            skills.append({\"name\": entry, \"description\": description})\n+    return skills\n+\n+\n+def generate_skills_prompt(skills: list[dict[str, str]]) -> str:\n+    \"\"\"Generate the skills section for the system prompt.\"\"\"\n+    if not skills:\n+        return \"\"\n+\n+    # Progressive disclosure keeps the base prompt small and loads skills only when needed.\n+    skill_tags = \"\\n\\n\".join(\n+        f\"\"\"<skill>\n+<name>{s[\"name\"]}</name>\n+<description>{s[\"description\"]}</description>\n+<location>project</location>\n+</skill>\"\"\"\n+        for s in skills\n+    )\n+\n+    return f\"\"\"<skills_system priority=\"1\">\n+\n+## Available Skills\n+\n+<usage>\n+When users ask you to perform tasks, check if any of the available skills below can help complete the task more effectively. Skills provide specialized capabilities and domain knowledge.\n+\n+How to use skills:\n+- Use the load_skill tool with the skill name to load detailed instructions\n+- The skill content will provide step-by-step guidance for the task\n+- Base directory is provided for resolving bundled resources (references/, scripts/, assets/)\n+\n+Usage notes:\n+- Only use skills listed in <available_skills> below\n+- Do not invoke a skill that is already loaded in your context\n+- Use progressive disclosure: load a skill only when it is needed\n+</usage>\n+\n+<available_skills>\n+\n+{skill_tags}\n+\n+</available_skills>\n+\n+</skills_system>\"\"\"\n+\n+\n+@function_tool\n+async def load_skill(skill_name: str) -> str:\n+    \"\"\"Load a skill by name and return the full content.\"\"\"\n+    print(f\"Loading skill: {skill_name}\")\n+    skill_dir = os.path.join(SKILL_DIR, skill_name)\n+    skill_path = os.path.join(skill_dir, \"SKILL.md\")\n+    content = open(skill_path, encoding=\"utf-8\").read()\n+    return f\"Reading: {skill_name}\\nBase directory: {skill_dir}\\n\\n{content}\\n\\nSkill read: {skill_name}\"\n+\n+\n+def create_agent_with_skills(base_instructions: str, skill_dir: str = SKILL_DIR) -> Agent:\n+    \"\"\"Create an agent with the skills system embedded in its instructions.\"\"\"\n+    skills = find_all_skills(skill_dir)\n+    skills_prompt = generate_skills_prompt(skills)\n+    instructions = f\"{base_instructions}\\n\\n{skills_prompt}\" if skills_prompt else base_instructions\n+\n+    return Agent(\n+        name=\"Assistant\",\n+        instructions=instructions,\n+        model=\"gpt-5-mini\",\n+        tools=[load_skill],\n+    )\n+\n+\n+# Create the agent once so the run loop can reuse it.\n+agent = create_agent_with_skills(\"You are a helpful assistant.\")\n+\n+\n+async def main():\n+    input_data: list[TResponseInputItem] = []\n+    auto_mode = is_auto_mode()\n+\n+    while True:\n+        user_input = input_with_fallback(\n+            \"Enter a message: \",\n+            \"Use support_transcript_summary skill. Summarize this support transcript and list next steps: Customer: The app crashes after login. Agent: Asked to reinstall. Customer: Still crashes.\",\n+        )\n+        input_data.append(\n+            {\n+                \"role\": \"user\",\n+                \"content\": user_input,\n+            }\n+        )\n+\n+        result = await Runner.run(agent, input_data)\n+        print(result.final_output)\n+\n+        input_data = result.to_input_list()\n+\n+        if auto_mode:\n+            break\n+\n+\n+if __name__ == \"__main__\":\n+    import asyncio\n+\n+    asyncio.run(main())",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/2bfdd08b8c121b2c873f232312a40771cda2255c/examples%2Fagent_patterns%2Fagent_skills.py",
+        "sha": "d9ac64183015c1aec6041d872708256ec67bde8f",
+        "status": "added"
+      },
+      {
+        "additions": 130,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/2bfdd08b8c121b2c873f232312a40771cda2255c/examples%2Fagent_patterns%2Fagent_skills_shell.py",
+        "changes": 130,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Fagent_patterns%2Fagent_skills_shell.py?ref=2bfdd08b8c121b2c873f232312a40771cda2255c",
+        "deletions": 0,
+        "filename": "examples/agent_patterns/agent_skills_shell.py",
+        "patch": "@@ -0,0 +1,130 @@\n+import os\n+import re\n+\n+from agents import Agent, Runner, ShellTool, TResponseInputItem\n+from examples.auto_mode import input_with_fallback, is_auto_mode\n+from examples.tools.shell import ShellExecutor\n+\n+\"\"\"\n+This example demonstrates the skills pattern. It discovers skills under `skills`, lists them\n+in the system prompt, and lets the agent load a skill on demand. The key idea is\n+progressive disclosure: keep the base prompt small and only load skills when needed.\n+\n+This version loads skills with the shell tool and can execute scripts.\n+\"\"\"\n+\n+# Update this if your skills live in a different directory.\n+SKILL_DIR = \"examples/agent_patterns/skills\"\n+\n+# Auto-approve shell commands for this example to avoid interactive prompts.\n+os.environ.setdefault(\"SHELL_AUTO_APPROVE\", \"1\")\n+\n+\n+def find_all_skills(skill_dir: str) -> list[dict[str, str]]:\n+    \"\"\"Find installed skills in the given directory.\"\"\"\n+    skills: list[dict[str, str]] = []\n+    if not os.path.exists(skill_dir):\n+        return skills\n+\n+    for entry in os.listdir(skill_dir):\n+        skill_md_path = os.path.join(skill_dir, entry, \"SKILL.md\")\n+        if os.path.exists(skill_md_path):\n+            content = open(skill_md_path, encoding=\"utf-8\").read()\n+            match = re.search(r\"^description:\\s*(.+?)$\", content, re.MULTILINE)\n+            description = match.group(1).strip() if match else \"\"\n+            skills.append({\"name\": entry, \"description\": description})\n+    return skills\n+\n+\n+def generate_skills_prompt(skills: list[dict[str, str]], skill_dir: str) -> str:\n+    \"\"\"Generate the skills section for the system prompt.\"\"\"\n+    if not skills:\n+        return \"\"\n+\n+    # Progressive disclosure keeps the base prompt small and loads skills only when needed.\n+    skill_tags = \"\\n\\n\".join(\n+        f\"\"\"<skill>\n+<name>{s[\"name\"]}</name>\n+<description>{s[\"description\"]}</description>\n+<location>project</location>\n+</skill>\"\"\"\n+        for s in skills\n+    )\n+\n+    return f\"\"\"<skills_system priority=\"1\">\n+\n+## Available Skills\n+\n+<usage>\n+When users ask you to perform tasks, check if any of the available skills below can help complete the task more effectively. Skills provide specialized capabilities and domain knowledge.\n+\n+How to use skills:\n+- Use the shell tool with bash to load a skill, for example: `bash -lc \"cat {skill_dir}/<skill_name>/SKILL.md\"`.\n+- Base directory is `{skill_dir}/<skill_name>` for resolving bundled resources (references/, scripts/, assets/).\n+- To execute a bash script, use `bash -lc \"bash {skill_dir}/<skill_name>/scripts/<script>.sh ...\"` to avoid permission errors.\n+- To read other skill files, use `bash -lc \"cat {skill_dir}/<skill_name>/<path>\"`.\n+\n+Usage notes:\n+- Only use skills listed in <available_skills> below.\n+- Do not invoke a skill that is already loaded in your context.\n+- Use progressive disclosure: load a skill only when it is needed.\n+</usage>\n+\n+<available_skills>\n+\n+{skill_tags}\n+\n+</available_skills>\n+\n+</skills_system>\"\"\"\n+\n+\n+def create_agent_with_skills(base_instructions: str, skill_dir: str = SKILL_DIR) -> Agent:\n+    \"\"\"Create an agent with the skills system embedded in its instructions.\"\"\"\n+    skills = find_all_skills(skill_dir)\n+    skills_prompt = generate_skills_prompt(skills, skill_dir)\n+    instructions = f\"{base_instructions}\\n\\n{skills_prompt}\" if skills_prompt else base_instructions\n+\n+    return Agent(\n+        name=\"Assistant\",\n+        instructions=instructions,\n+        model=\"gpt-5.2\",\n+        tools=[ShellTool(executor=ShellExecutor())],\n+    )\n+\n+\n+# Create the agent once so the run loop can reuse it.\n+agent = create_agent_with_skills(\n+    \"You are a helpful assistant. Use the shell tool to read skills and run scripts when needed.\"\n+)\n+\n+\n+async def main() -> None:\n+    input_data: list[TResponseInputItem] = []\n+    auto_mode = is_auto_mode()\n+\n+    while True:\n+        user_input = input_with_fallback(\n+            \"Enter a message: \",\n+            \"Use the ascii_art skill to draw an ASCII tree that is 21 characters wide and 12 lines tall.\",\n+        )\n+        input_data.append(\n+            {\n+                \"role\": \"user\",\n+                \"content\": user_input,\n+            }\n+        )\n+\n+        result = await Runner.run(agent, input_data)\n+        print(result.final_output)\n+\n+        input_data = result.to_input_list()\n+\n+        if auto_mode:\n+            break\n+\n+\n+if __name__ == \"__main__\":\n+    import asyncio\n+\n+    asyncio.run(main())",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/2bfdd08b8c121b2c873f232312a40771cda2255c/examples%2Fagent_patterns%2Fagent_skills_shell.py",
+        "sha": "5e2471e5bb13e73e60acd2d03af82bde39f07276",
+        "status": "added"
+      },
+      {
+        "additions": 14,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/2bfdd08b8c121b2c873f232312a40771cda2255c/examples%2Fagent_patterns%2Fskills%2Fascii_art%2FSKILL.md",
+        "changes": 14,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Fagent_patterns%2Fskills%2Fascii_art%2FSKILL.md?ref=2bfdd08b8c121b2c873f232312a40771cda2255c",
+        "deletions": 0,
+        "filename": "examples/agent_patterns/skills/ascii_art/SKILL.md",
+        "patch": "@@ -0,0 +1,14 @@\n+---\n+name: ascii_art\n+description: Generates simple ASCII art for demos, placeholders, or playful output.\n+---\n+\n+# ASCII Art\n+\n+## Overview\n+\n+Use this skill to generate ASCII art without external tools or dependencies.\n+\n+## Scripts\n+\n+- `scripts/tree_ascii.sh <width> <height>`: Generate an ASCII tree for demo output or placeholders.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/2bfdd08b8c121b2c873f232312a40771cda2255c/examples%2Fagent_patterns%2Fskills%2Fascii_art%2FSKILL.md",
+        "sha": "6063968d20324b51fcbdeba569b1763665fc6b43",
+        "status": "added"
+      },
+      {
+        "additions": 78,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/2bfdd08b8c121b2c873f232312a40771cda2255c/examples%2Fagent_patterns%2Fskills%2Fascii_art%2Fscripts%2Ftree_ascii.sh",
+        "changes": 78,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Fagent_patterns%2Fskills%2Fascii_art%2Fscripts%2Ftree_ascii.sh?ref=2bfdd08b8c121b2c873f232312a40771cda2255c",
+        "deletions": 0,
+        "filename": "examples/agent_patterns/skills/ascii_art/scripts/tree_ascii.sh",
+        "patch": "@@ -0,0 +1,78 @@\n+#!/usr/bin/env bash\n+set -euo pipefail\n+\n+usage() {\n+  cat <<'EOF'\n+Usage: tree_ascii.sh <width> <height>\n+\n+Generates an ASCII tree with the given width and height.\n+Width is normalized to an odd number for centering.\n+EOF\n+}\n+\n+if [[ \"${1:-}\" == \"-h\" || \"${1:-}\" == \"--help\" ]]; then\n+  usage\n+  exit 0\n+fi\n+\n+if [[ $# -lt 2 ]]; then\n+  usage >&2\n+  exit 2\n+fi\n+\n+width=\"$1\"\n+height=\"$2\"\n+\n+if [[ ! \"$width\" =~ ^[0-9]+$ || ! \"$height\" =~ ^[0-9]+$ ]]; then\n+  echo \"Width and height must be positive integers.\" >&2\n+  exit 2\n+fi\n+\n+if (( width < 3 || height < 3 )); then\n+  echo \"Width and height must be at least 3.\" >&2\n+  exit 2\n+fi\n+\n+if (( width % 2 == 0 )); then\n+  width=$((width - 1))\n+  echo \"Adjusted width to odd number: ${width}.\" >&2\n+fi\n+\n+trunk_width=$((width / 5))\n+if (( trunk_width < 1 )); then\n+  trunk_width=1\n+fi\n+if (( trunk_width % 2 == 0 )); then\n+  trunk_width=$((trunk_width + 1))\n+fi\n+if (( trunk_width > width )); then\n+  trunk_width=$width\n+fi\n+\n+trunk_height=$((height / 4))\n+if (( trunk_height < 1 )); then\n+  trunk_height=1\n+fi\n+\n+for ((i = 1; i <= height; i++)); do\n+  if (( height == 1 )); then\n+    level_width=1\n+  else\n+    level_width=$((1 + (i - 1) * (width - 1) / (height - 1)))\n+  fi\n+  if (( level_width % 2 == 0 )); then\n+    level_width=$((level_width + 1))\n+  fi\n+  if (( level_width > width )); then\n+    level_width=$width\n+  fi\n+  padding=$(((width - level_width) / 2))\n+  printf \"%*s\" \"$padding\" \"\"\n+  printf \"%*s\\n\" \"$level_width\" \"\" | tr \" \" \"*\"\n+done\n+\n+for ((i = 0; i < trunk_height; i++)); do\n+  padding=$(((width - trunk_width) / 2))\n+  printf \"%*s\" \"$padding\" \"\"\n+  printf \"%*s\\n\" \"$trunk_width\" \"\" | tr \" \" \"|\"\n+done",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/2bfdd08b8c121b2c873f232312a40771cda2255c/examples%2Fagent_patterns%2Fskills%2Fascii_art%2Fscripts%2Ftree_ascii.sh",
+        "sha": "2a606bf3ec24c98d37903f387199cfddfa3100b3",
+        "status": "added"
+      },
+      {
+        "additions": 16,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/2bfdd08b8c121b2c873f232312a40771cda2255c/examples%2Fagent_patterns%2Fskills%2Fsupport_transcript_summary%2FSKILL.md",
+        "changes": 16,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Fagent_patterns%2Fskills%2Fsupport_transcript_summary%2FSKILL.md?ref=2bfdd08b8c121b2c873f232312a40771cda2255c",
+        "deletions": 0,
+        "filename": "examples/agent_patterns/skills/support_transcript_summary/SKILL.md",
+        "patch": "@@ -0,0 +1,16 @@\n+---\n+name: support_transcript_summary\n+description: Summarizes a customer support transcript; use it when you need a concise issue summary and next steps.\n+---\n+\n+# Support Transcript Summary\n+\n+## Overview\n+\n+Use this skill to condense a support conversation into a short summary and actionable next steps.\n+\n+## Checklist\n+\n+1. Capture the customer issue and desired outcome.\n+2. Note key troubleshooting steps already taken.\n+3. List pending actions and required follow-up details.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/2bfdd08b8c121b2c873f232312a40771cda2255c/examples%2Fagent_patterns%2Fskills%2Fsupport_transcript_summary%2FSKILL.md",
+        "sha": "3c61a7aba9140b37c7e31fff8e29e80f294ff1b0",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:58:09.551367Z"
+}

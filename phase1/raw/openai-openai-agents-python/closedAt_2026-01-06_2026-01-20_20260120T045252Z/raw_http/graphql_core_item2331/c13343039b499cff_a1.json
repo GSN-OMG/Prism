@@ -1,0 +1,131 @@
+{
+  "finished_at": "2026-01-20T04:58:10.791994Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "c13343039b499cff",
+    "tag": "graphql_core_item2331"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2331,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "4832",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:58:10 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DD14:29AB24:15FF948:1F0B776:696F0B62",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4569",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "431",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 5,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/136383052?u=c3abd7a04ff57b02e274a04432ea9f184de3d7d8&v=4",
+              "databaseId": 136383052,
+              "id": "U_kgDOCCEKTA",
+              "login": "habema",
+              "url": "https://github.com/habema"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "baseRefName": "main",
+            "body": "### Summary\r\n\r\nFixes `Missing corresponding tool call for tool response message` errors when using Gemini models. The message ordering fix that was already applied to Anthropic models is now also applied to Gemini models, since they seem have the same requirement that tool calls must immediately precede their corresponding tool responses.\r\n\r\n### Error:\r\n```\r\nlitellm.exceptions.APIConnectionError: litellm.APIConnectionError: Missing corresponding tool call for tool response message. Received - message={'role': 'tool', 'tool_call_id': 'call_c1f7ac7f4d564f0ab55574de3052', 'content': '{\"success\": true, \"result\": {\"webBuildErrors\": {}}, \"error\": null}'}, last_message_with_tool_calls={'role': 'assistant', 'content': \"It's currently 12:16 PM. Is there anything I can help you with in your app today?\"}\r\n```\r\n\r\n### Repro Script:\r\n```py\r\nimport asyncio\r\nfrom datetime import datetime\r\n\r\nfrom agents import Agent, Runner, function_tool\r\n\r\n# function_call_output preceeds function_call\r\nhistory_list = [\r\n    {\r\n        \"type\": \"message\",\r\n        \"role\": \"user\",\r\n        \"content\": [{\"type\": \"input_text\", \"text\": \"Hi. What time is it?\"}],\r\n    },\r\n    {\r\n        \"call_id\": \"call_04de935c15ad4e4b9ac226e5c2e8\",\r\n        \"output\": '{\"success\":true,\"result\":{\"time\":\"12:16 PM\",\"format\":\"%I:%M %p\"},\"error\":null}',\r\n        \"type\": \"function_call_output\",\r\n    },\r\n    {\r\n        \"arguments\": '{\"format\": \"%I:%M %p\"}',\r\n        \"call_id\": \"call_04de935c15ad4e4b9ac226e5c2e8\",\r\n        \"name\": \"get_server_time\",\r\n        \"type\": \"function_call\",\r\n        \"id\": \"__fake_id__\",\r\n        \"provider_data\": {\r\n            \"model\": \"vertex_ai/gemini-3-flash-preview\",\r\n            \"response_id\": \"Cc9sadGmNLCAz_IPqPSEqQw\",\r\n            \"thought_signature\": \"CiEBjz1rX65+CQhe4AGRK95x8byJ82UbcroiDLuw+NNisjI=\",\r\n        },\r\n    },\r\n    {\r\n        \"id\": \"__fake_id__\",\r\n        \"content\": [\r\n            {\r\n                \"annotations\": [],\r\n                \"text\": \"It's currently 12:16 PM. Is there anything I can help you with in your app today?\",\r\n                \"type\": \"output_text\",\r\n                \"logprobs\": [],\r\n            }\r\n        ],\r\n        \"role\": \"assistant\",\r\n        \"status\": \"completed\",\r\n        \"type\": \"message\",\r\n        \"provider_data\": {\r\n            \"model\": \"vertex_ai/gemini-3-flash-preview\",\r\n            \"response_id\": \"C89sab_sG-mEz_IPvYGN0AY\",\r\n        },\r\n    },\r\n]\r\n\r\n\r\n@function_tool\r\ndef get_server_time() -> str:\r\n    \"\"\"\r\n    Returns the current time.\r\n    \"\"\"\r\n    return datetime.now().strftime(\"%I:%M %p\")\r\n\r\n\r\nagent = Agent(\r\n    name=\"Assistant\",\r\n    model=\"litellm/vertex_ai/gemini-3-flash-preview\",\r\n    instructions=\"You are a helpful agent.\",\r\n    tools=[get_server_time],\r\n)\r\n\r\n\r\nasync def main():\r\n    result = await Runner.run(agent, history_list + [{\"content\": \"How about now?\", \"role\": \"user\"}])\r\n    print(result.final_output)\r\n\r\n\r\nif __name__ == \"__main__\":\r\n    asyncio.run(main())\r\n```",
+            "changedFiles": 1,
+            "closedAt": "2026-01-18T23:05:20Z",
+            "comments": {
+              "totalCount": 0
+            },
+            "createdAt": "2026-01-18T12:47:37Z",
+            "databaseId": 3185303948,
+            "deletions": 4,
+            "files": {
+              "totalCount": 1
+            },
+            "headRefName": "fix/gemini-message-ordering",
+            "headRefOid": "899528a1b923e2a7cb243f725528d14947d9b2d3",
+            "id": "PR_kwDOOGidp8692-GM",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a95c3a",
+                  "description": "",
+                  "name": "feature:lite-llm"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "bb727b19c5a9ccbce510e914ab75d3c3a1389d4a",
+              "url": "https://github.com/openai/openai-agents-python/commit/bb727b19c5a9ccbce510e914ab75d3c3a1389d4a"
+            },
+            "mergedAt": "2026-01-18T23:05:20Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2331,
+            "reviews": {
+              "totalCount": 0
+            },
+            "state": "MERGED",
+            "title": "Fix: Tool message ordering for Gemini models",
+            "updatedAt": "2026-01-18T23:05:20Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2331"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:58:10.163011Z"
+}

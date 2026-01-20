@@ -1,0 +1,140 @@
+{
+  "finished_at": "2026-01-20T04:54:26.101633Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "4a46cbcebcd2a48d",
+    "tag": "graphql_comments_item2259_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2259,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2872",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:26 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DB14:7699F:165FF72:1F69DE4:696F0A81",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4874",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "126",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/4557?v=4",
+                    "databaseId": 4557,
+                    "id": "MDQ6VXNlcjQ1NTc=",
+                    "login": "ihower",
+                    "url": "https://github.com/ihower"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "@dast-draftwise You can pass this via `extra_args` in `ModelSettings`.\n\nAny values in `extra_args` are forwarded to LiteLLM’s `litellm.acompletion(...)`, so you can use it to pass the Bedrock inference profile `model_id`.\n\n```python\nfrom agents import Agent, Runner, ModelSettings\nfrom agents.extensions.models.litellm_model import LitellmModel\n\nagent = Agent(\n    name=\"your agent\",\n    model=LitellmModel(model=\"bedrock/anthropic.claude-3-5-sonnet-20240620-v1:0\"),\n    model_settings=ModelSettings(\n        extra_args={\n            \"model_id\": \"....\"\n        },\n    ),\n)\n```\n",
+                  "createdAt": "2026-01-05T14:54:57Z",
+                  "databaseId": 3710768060,
+                  "id": "IC_kwDOOGidp87dLdO8",
+                  "updatedAt": "2026-01-05T14:54:57Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2259#issuecomment-3710768060"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/224527505?u=22647dcde997a87624caf478afe66e08d7528e8d&v=4",
+                    "databaseId": 224527505,
+                    "id": "U_kgDODWIEkQ",
+                    "login": "dast-draftwise",
+                    "url": "https://github.com/dast-draftwise"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "Thank you for the help, will test it out!",
+                  "createdAt": "2026-01-06T20:21:43Z",
+                  "databaseId": 3716180100,
+                  "id": "IC_kwDOOGidp87dgGiE",
+                  "updatedAt": "2026-01-06T20:21:43Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2259#issuecomment-3716180100"
+                },
+                {
+                  "author": {
+                    "__typename": "Bot",
+                    "avatarUrl": "https://avatars.githubusercontent.com/in/15368?v=4",
+                    "databaseId": 41898282,
+                    "id": "MDM6Qm90NDE4OTgyODI=",
+                    "login": "github-actions",
+                    "url": "https://github.com/apps/github-actions"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "This issue is stale because it has been open for 7 days with no activity.",
+                  "createdAt": "2026-01-14T02:12:57Z",
+                  "databaseId": 3747370935,
+                  "id": "IC_kwDOOGidp87fXFe3",
+                  "updatedAt": "2026-01-14T02:12:57Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2259#issuecomment-3747370935"
+                },
+                {
+                  "author": {
+                    "__typename": "Bot",
+                    "avatarUrl": "https://avatars.githubusercontent.com/in/15368?v=4",
+                    "databaseId": 41898282,
+                    "id": "MDM6Qm90NDE4OTgyODI=",
+                    "login": "github-actions",
+                    "url": "https://github.com/apps/github-actions"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "This issue was closed because it has been inactive for 3 days since being marked as stale.",
+                  "createdAt": "2026-01-18T02:13:18Z",
+                  "databaseId": 3764697195,
+                  "id": "IC_kwDOOGidp87gZLhr",
+                  "updatedAt": "2026-01-18T02:13:18Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2259#issuecomment-3764697195"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO4GS4aw==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:25.600243Z"
+}

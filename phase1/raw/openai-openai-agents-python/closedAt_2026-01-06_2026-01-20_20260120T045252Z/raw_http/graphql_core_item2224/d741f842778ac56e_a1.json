@@ -1,0 +1,141 @@
+{
+  "finished_at": "2026-01-20T04:53:45.568293Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "d741f842778ac56e",
+    "tag": "graphql_core_item2224"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2224,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "4220",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:45 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DABE:3782ED:16272CD:1F31792:696F0A58",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4932",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "68",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 679,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/154019945?u=2e2cd13dc870d4fc63830deb204279a1fd8d28b9&v=4",
+              "databaseId": 154019945,
+              "id": "U_kgDOCS4oaQ",
+              "login": "ruskaruma",
+              "url": "https://github.com/ruskaruma"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "baseRefName": "main",
+            "body": "### Summary\r\n\r\nImplements [OpenAIResponsesCompactionSession](cci:2://file:///home/ruskaruma/Desktop/GITHUB/openai-agents-python/src/agents/memory/openai_responses_compaction_session.py:65:0-214:42) to add seamless support for the newly added `responses.compact` API, matching the TypeScript SDK implementation ([openai-agents-js#760](https://github.com/openai/openai-agents-js/pull/760)).\r\n\r\n#### Core Implementation\r\n\r\n- **[OpenAIResponsesCompactionSession](cci:2://file:///home/ruskaruma/Desktop/GITHUB/openai-agents-python/src/agents/memory/openai_responses_compaction_session.py:65:0-214:42)**: Session decorator that automatically compacts conversation history when it grows too large\r\n- **[CompactionItem](cci:2://file:///home/ruskaruma/Desktop/GITHUB/openai-agents-python/src/agents/items.py:329:0-336:56)**: New item type to handle encrypted compaction content\r\n- **`OpenAIResponsesCompactionAwareSession`**: Protocol extension for compaction-aware sessions\r\n- **`is_openai_responses_compaction_aware_session()`**: Type guard for runtime checks\r\n\r\n#### Key Features\r\n\r\n- Configurable [should_trigger_compaction](cci:1://file:///home/ruskaruma/Desktop/GITHUB/openai-agents-python/src/agents/memory/openai_responses_compaction_session.py:41:0-43:85) hook for custom compaction logic\r\n- Default threshold of 10 candidate items (excludes user messages and existing compaction items)\r\n- Model validation to ensure only OpenAI Responses API–compatible models are used\r\n- Automatic runner integration, compaction runs after each turn if threshold is met\r\n- Chat completions guardrail to prevent unsupported usage\r\n\r\n#### Usage Example\r\n\r\n```python\r\nfrom agents import Agent, MemorySession, OpenAIResponsesCompactionSession, Runner\r\n\r\nsession = OpenAIResponsesCompactionSession(\r\n    session_id=\"my-session\",\r\n    underlying_session=MemorySession(),\r\n)\r\n\r\nresult = await Runner.run(agent, \"Hello!\", session=session)\r\n```\r\n\r\n### Test plan\r\n\r\n- Added 17 new tests in [tests/memory/test_openai_responses_compaction_session.py](cci:7://file:///home/ruskaruma/Desktop/GITHUB/openai-agents-python/tests/memory/test_openai_responses_compaction_session.py:0:0-0:0)\r\n\r\n### Issue number\r\n\r\nCloses #2206\r\n\r\n### Checks\r\n\r\n- [x] I've added new tests (if relevant)\r\n- [ ] I've added/updated the relevant documentation\r\n- [x] I've run `make lint` and `make format`\r\n- [x] I've made sure tests pass",
+            "changedFiles": 10,
+            "closedAt": "2026-01-09T00:42:15Z",
+            "comments": {
+              "totalCount": 6
+            },
+            "createdAt": "2025-12-23T10:58:26Z",
+            "databaseId": 3125727007,
+            "deletions": 9,
+            "files": {
+              "totalCount": 10
+            },
+            "headRefName": "feature/compaction-support",
+            "headRefOid": "cc3c67a54208e83c411503ec4377e90ed89e6307",
+            "id": "PR_kwDOOGidp866Ts8f",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a2eeef",
+                  "description": "New feature or request",
+                  "name": "enhancement"
+                },
+                {
+                  "color": "b2fdef",
+                  "description": "",
+                  "name": "feature:core"
+                },
+                {
+                  "color": "90669a",
+                  "description": "",
+                  "name": "feature:sessions"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "09443fd044e5d58a523ab06e243ed68985788145",
+              "url": "https://github.com/openai/openai-agents-python/commit/09443fd044e5d58a523ab06e243ed68985788145"
+            },
+            "mergedAt": "2026-01-09T00:42:15Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2224,
+            "reviews": {
+              "totalCount": 2
+            },
+            "state": "MERGED",
+            "title": "feat: #2206  Add responses.compact: auto-compact long conversations",
+            "updatedAt": "2026-01-09T00:42:15Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2224"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:44.825424Z"
+}

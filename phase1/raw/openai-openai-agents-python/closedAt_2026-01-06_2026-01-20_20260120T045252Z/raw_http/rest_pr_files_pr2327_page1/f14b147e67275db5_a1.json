@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:57:59.516818Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "f14b147e67275db5",
+    "tag": "rest_pr_files_pr2327_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2327/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "3794",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:57:59 GMT",
+      "etag": "\"9478644c1f3958fbee95084985b3790d9927a76cdd5a59947cb9ab96ffd1cbe9\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Tue, 20 Jan 2026 03:08:25 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DCFA:F2819:16A4949:1FAFF3C:696F0B57",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4933",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "67",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 12,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/99ae0ede3257f626dbc25a0f2a99766eaa3e2967/src%2Fagents%2Fmodels%2Fdefault_models.py",
+        "changes": 12,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Fmodels%2Fdefault_models.py?ref=99ae0ede3257f626dbc25a0f2a99766eaa3e2967",
+        "deletions": 0,
+        "filename": "src/agents/models/default_models.py",
+        "patch": "@@ -17,6 +17,16 @@\n     reasoning=Reasoning(effort=\"low\"),\n     verbosity=\"low\",\n )\n+_GPT_5_NONE_DEFAULT_MODEL_SETTINGS: ModelSettings = ModelSettings(\n+    reasoning=Reasoning(effort=\"none\"),\n+    verbosity=\"low\",\n+)\n+\n+_GPT_5_NONE_EFFORT_MODELS = {\"gpt-5.1\", \"gpt-5.2\"}\n+\n+\n+def _is_gpt_5_none_effort_model(model_name: str) -> bool:\n+    return model_name in _GPT_5_NONE_EFFORT_MODELS\n \n \n def gpt_5_reasoning_settings_required(model_name: str) -> bool:\n@@ -54,5 +64,7 @@ def get_default_model_settings(model: Optional[str] = None) -> ModelSettings:\n     \"\"\"\n     _model = model if model is not None else get_default_model()\n     if gpt_5_reasoning_settings_required(_model):\n+        if _is_gpt_5_none_effort_model(_model):\n+            return copy.deepcopy(_GPT_5_NONE_DEFAULT_MODEL_SETTINGS)\n         return copy.deepcopy(_GPT_5_DEFAULT_MODEL_SETTINGS)\n     return ModelSettings()",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/99ae0ede3257f626dbc25a0f2a99766eaa3e2967/src%2Fagents%2Fmodels%2Fdefault_models.py",
+        "sha": "3a8a122e8b003230cda06f40bd4cbc642011d71f",
+        "status": "modified"
+      },
+      {
+        "additions": 24,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/99ae0ede3257f626dbc25a0f2a99766eaa3e2967/tests%2Fmodels%2Ftest_default_models.py",
+        "changes": 24,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Fmodels%2Ftest_default_models.py?ref=99ae0ede3257f626dbc25a0f2a99766eaa3e2967",
+        "deletions": 0,
+        "filename": "tests/models/test_default_models.py",
+        "patch": "@@ -26,6 +26,30 @@ def test_default_model_env_gpt_5():\n     assert get_default_model_settings().reasoning.effort == \"low\"  # type: ignore[union-attr]\n \n \n+@patch.dict(os.environ, {\"OPENAI_DEFAULT_MODEL\": \"gpt-5.1\"})\n+def test_default_model_env_gpt_5_1():\n+    assert get_default_model() == \"gpt-5.1\"\n+    assert is_gpt_5_default() is True\n+    assert gpt_5_reasoning_settings_required(get_default_model()) is True\n+    assert get_default_model_settings().reasoning.effort == \"none\"  # type: ignore[union-attr]\n+\n+\n+@patch.dict(os.environ, {\"OPENAI_DEFAULT_MODEL\": \"gpt-5.2\"})\n+def test_default_model_env_gpt_5_2():\n+    assert get_default_model() == \"gpt-5.2\"\n+    assert is_gpt_5_default() is True\n+    assert gpt_5_reasoning_settings_required(get_default_model()) is True\n+    assert get_default_model_settings().reasoning.effort == \"none\"  # type: ignore[union-attr]\n+\n+\n+@patch.dict(os.environ, {\"OPENAI_DEFAULT_MODEL\": \"gpt-5.2-codex\"})\n+def test_default_model_env_gpt_5_2_codex():\n+    assert get_default_model() == \"gpt-5.2-codex\"\n+    assert is_gpt_5_default() is True\n+    assert gpt_5_reasoning_settings_required(get_default_model()) is True\n+    assert get_default_model_settings().reasoning.effort == \"low\"  # type: ignore[union-attr]\n+\n+\n @patch.dict(os.environ, {\"OPENAI_DEFAULT_MODEL\": \"gpt-5-mini\"})\n def test_default_model_env_gpt_5_mini():\n     assert get_default_model() == \"gpt-5-mini\"",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/99ae0ede3257f626dbc25a0f2a99766eaa3e2967/tests%2Fmodels%2Ftest_default_models.py",
+        "sha": "d291aac1e314955649848bafc411c8bfb8c183cf",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:57:59.045773Z"
+}

@@ -1,0 +1,136 @@
+{
+  "finished_at": "2026-01-20T04:54:51.512867Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "f4eb45e9df91927e",
+    "tag": "graphql_core_item2268"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2268,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "6854",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:51 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DB45:E9ECE:161586D:1F1FEA7:696F0A9A",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4841",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "159",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 186,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/136383052?u=c3abd7a04ff57b02e274a04432ea9f184de3d7d8&v=4",
+              "databaseId": 136383052,
+              "id": "U_kgDOCCEKTA",
+              "login": "habema",
+              "url": "https://github.com/habema"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "baseRefName": "main",
+            "body": "Fixes an issue where MCP server connection failures (e.g., 401 Unauthorized, connection errors, 500 errors) surfaced as confusing `BaseExceptionGroup` exceptions with `RuntimeError` about cancel scopes, masking the actual HTTP errors.\r\n\r\n**What changed:**\r\n\r\n- Added `_extract_http_error_from_exception()` helper method to extract HTTP errors from exceptions or `BaseExceptionGroup` raised by anyio task groups\r\n- Added `_raise_user_error_for_http_error()` helper method to wrap HTTP errors in clear, actionable `UserError` messages with specific guidance for different error types (401, 403, 500+, connection errors, timeouts)\r\n- Updated `connect()` to extract HTTP errors from exceptions/ExceptionGroups and wrap them in `UserError`, while preserving non-HTTP errors (e.g., `ValueError`) as-is\r\n- Updated `cleanup()` to catch `BaseExceptionGroup` raised during cleanup, extract HTTP errors from it, and re-raise them as `UserError` while suppressing `RuntimeError` about cancel scopes that would otherwise mask the real error\r\n- Updated `list_tools()` and `call_tool()` to catch `httpx.HTTPStatusError` and `httpx.ConnectError` and wrap them in `UserError` with clear messages\r\n- Updated `invoke_mcp_tool()` in `util.py` to preserve `UserError` exceptions for better error propagation\r\n\r\n**Result:**\r\n\r\nCryptic `BaseExceptionGroup` with nested exceptions and `RuntimeError: Attempted to exit cancel scope in a different task` now become clear, actionable errors like:\r\n\r\n```\r\nagents.exceptions.UserError: Failed to connect to MCP server 'Streamable HTTP Python Server': Authentication failed (401 Unauthorized). Please check your credentials.\r\n```\r\n\r\nThe original HTTP error is preserved in the exception chain via `from e`, maintaining full traceback information for debugging.\r\n\r\n---\r\n\r\nCurrent logs examples before and after fix:\r\n- 401 Unauthorized: [Before](https://pastebin.com/BYaUh95K) --> [After](https://pastebin.com/9BdyasZr)\r\n- Unreachable: [Before](https://pastebin.com/6mWs5cQi) --> [After](https://pastebin.com/jeJcRmr5)\r\n- 5xx Server Error: [Before](https://pastebin.com/H9YUKXru) --> [After](https://pastebin.com/gY8Awie0)\r\n\r\nRepro Scripts:\r\n\r\n- <details>\r\n  <summary>main.py</summary>\r\n\r\n  ```py\r\n  # main.py\r\n  import asyncio\r\n\r\n  from agents import Agent, Runner\r\n  from agents.mcp import MCPServer, MCPServerStreamableHttp\r\n  from agents.model_settings import ModelSettings\r\n\r\n\r\n  async def run(mcp_server: MCPServer):\r\n      agent = Agent(\r\n          name=\"Assistant\",\r\n          instructions=\"Use the tools to answer the questions.\",\r\n          mcp_servers=[mcp_server],\r\n          model_settings=ModelSettings(tool_choice=\"required\"),\r\n      )\r\n\r\n      message = \"Add these numbers: 7 and 22.\"\r\n      print(f\"Running: {message}\")\r\n      result = await Runner.run(starting_agent=agent, input=message)\r\n      print(result.final_output)\r\n\r\n\r\n  async def main():\r\n      async with MCPServerStreamableHttp(\r\n          name=\"Streamable HTTP Python Server\",\r\n          params={\r\n              \"url\": \"http://localhost:8000/mcp\", # Replace with wrong port to test unreachability\r\n              # \"headers\": {\"Authorization\": \"Bearer my-secret-token\"}, # Comment/uncomment to test 401\r\n          },\r\n      ) as server:\r\n          await run(server)\r\n\r\n\r\n  if __name__ == \"__main__\":\r\n      asyncio.run(main())\r\n  ```\r\n\r\n</details>\r\n\r\n- <details>\r\n  <summary>server.py</summary>\r\n\r\n  ```py\r\n  # server.py\r\n  from mcp.server.auth.provider import AccessToken, TokenVerifier\r\n  from mcp.server.auth.settings import AuthSettings\r\n  from mcp.server.fastmcp import FastMCP\r\n  \r\n  SECRET_TOKEN = \"my-secret-token\"\r\n  \r\n  \r\n  class SimpleTokenVerifier(TokenVerifier):\r\n      async def verify_token(self, token: str) -> AccessToken | None:\r\n          \"\"\"\r\n          Verifies the incoming authorization token.\r\n          \"\"\"\r\n          # raise Exception(\"Server Error for testing\") # Uncomment this to test 5xx error\r\n          if token == SECRET_TOKEN:\r\n              print(\"Token verified successfully.\")\r\n              return AccessToken(\r\n                  token=token,\r\n                  client_id=\"static-client-id\",\r\n                  scopes=[\"read\", \"write\"],\r\n                  expires_at=None,\r\n                  resource=\"http://localhost:8000/mcp/tools\",\r\n              )\r\n          print(\"Token not verified.\")\r\n          return None\r\n  \r\n  \r\n  mcp = FastMCP(\r\n      \"Echo Server\",\r\n      auth=AuthSettings(\r\n          issuer_url=\"http://localhost:8000/mcp/auth\",\r\n          resource_server_url=\"http://localhost:8000/mcp\",\r\n      ),\r\n      token_verifier=SimpleTokenVerifier(),\r\n  )\r\n  \r\n  \r\n  @mcp.tool()\r\n  def add(a: int, b: int) -> int:\r\n      \"\"\"Add two numbers\"\"\"\r\n      print(f\"[debug-server] add({a}, {b})\")\r\n      return a + b\r\n  \r\n  \r\n  if __name__ == \"__main__\":\r\n      mcp.run(transport=\"streamable-http\")\r\n  ```\r\n\r\n</details>\r\n",
+            "changedFiles": 2,
+            "closedAt": "2026-01-19T01:35:45Z",
+            "comments": {
+              "totalCount": 3
+            },
+            "createdAt": "2026-01-07T15:22:55Z",
+            "databaseId": 3152964556,
+            "deletions": 21,
+            "files": {
+              "totalCount": 2
+            },
+            "headRefName": "fix/mcp-server-expection-handling",
+            "headRefOid": "dc428fad5fdb8956000733dd3f95d2d05297741a",
+            "id": "PR_kwDOOGidp8677mvM",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a2eeef",
+                  "description": "New feature or request",
+                  "name": "enhancement"
+                },
+                {
+                  "color": "307a20",
+                  "description": "",
+                  "name": "feature:mcp"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "014dea2c58a3c0a547851b59d07a93760cc54143",
+              "url": "https://github.com/openai/openai-agents-python/commit/014dea2c58a3c0a547851b59d07a93760cc54143"
+            },
+            "mergedAt": "2026-01-19T01:35:45Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2268,
+            "reviews": {
+              "totalCount": 4
+            },
+            "state": "MERGED",
+            "title": "Enhance exception handling in MCP server initialization and cleanup",
+            "updatedAt": "2026-01-19T01:35:45Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2268"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:50.751690Z"
+}

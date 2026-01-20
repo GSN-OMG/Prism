@@ -1,0 +1,88 @@
+{
+  "finished_at": "2026-01-20T04:54:23.280228Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "3d5fd3ca35564719",
+    "tag": "rest_pr_files_pr2255_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2255/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "10121",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:23 GMT",
+      "etag": "\"2da4059896cbb170460f9955ad95781946a1246f80dcc8cd43ee6fa08e0c68c9\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Tue, 06 Jan 2026 02:20:13 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DB0E:2324B0:1605B91:1F104D6:696F0A7E",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4984",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "16",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 44,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/6ea9e8f97baf250bc851900ccacf260e0f553708/src%2Fagents%2Ftracing%2Fscope.py",
+        "changes": 48,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Ftracing%2Fscope.py?ref=6ea9e8f97baf250bc851900ccacf260e0f553708",
+        "deletions": 4,
+        "filename": "src/agents/tracing/scope.py",
+        "patch": "@@ -31,8 +31,25 @@ def set_current_span(cls, span: \"Span[Any] | None\") -> \"contextvars.Token[Span[A\n         return _current_span.set(span)\n \n     @classmethod\n-    def reset_current_span(cls, token: \"contextvars.Token[Span[Any] | None]\") -> None:\n-        _current_span.reset(token)\n+    def reset_current_span(\n+        cls,\n+        token: \"contextvars.Token[Span[Any] | None]\",\n+        prev_span: \"Span[Any] | None\" = None,\n+    ) -> None:\n+        try:\n+            _current_span.reset(token)\n+        except ValueError:\n+            # Token was created in a different Context. This can happen when multiple\n+            # Runner.run() calls execute concurrently via asyncio.gather().\n+            # Fall back to setting the previous value directly.\n+            # See: https://github.com/openai/openai-agents-python/issues/2246\n+            logger.warning(\n+                \"Tracing context mismatch detected during concurrent execution. \"\n+                \"Span context was reset using fallback. This may affect trace hierarchy \"\n+                \"in concurrent scenarios. Consider using asyncio.create_task() for concurrent \"\n+                \"Runner.run() calls to ensure proper context isolation.\"\n+            )\n+            _current_span.set(prev_span)\n \n     @classmethod\n     def get_current_trace(cls) -> \"Trace | None\":\n@@ -44,6 +61,29 @@ def set_current_trace(cls, trace: \"Trace | None\") -> \"contextvars.Token[Trace |\n         return _current_trace.set(trace)\n \n     @classmethod\n-    def reset_current_trace(cls, token: \"contextvars.Token[Trace | None]\") -> None:\n+    def reset_current_trace(\n+        cls,\n+        token: \"contextvars.Token[Trace | None]\",\n+        prev_trace: \"Trace | None\" = None,\n+    ) -> None:\n+        \"\"\"Reset the current trace to its previous value.\n+\n+        Uses token-based reset when possible, with fallback to direct set for\n+        concurrent execution scenarios where Context objects may differ.\n+        See: https://github.com/openai/openai-agents-python/issues/2246\n+        \"\"\"\n         logger.debug(\"Resetting current trace\")\n-        _current_trace.reset(token)\n+        try:\n+            _current_trace.reset(token)\n+        except ValueError:\n+            # Token was created in a different Context. This can happen when multiple\n+            # Runner.run() calls execute concurrently via asyncio.gather().\n+            # Fall back to setting the previous value directly.\n+            # See: https://github.com/openai/openai-agents-python/issues/2246\n+            logger.warning(\n+                \"Tracing context mismatch detected during concurrent execution. \"\n+                \"Trace context was reset using fallback. This may affect trace hierarchy \"\n+                \"in concurrent scenarios. Consider using asyncio.create_task() for concurrent \"\n+                \"Runner.run() calls to ensure proper context isolation.\"\n+            )\n+            _current_trace.set(prev_trace)",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/6ea9e8f97baf250bc851900ccacf260e0f553708/src%2Fagents%2Ftracing%2Fscope.py",
+        "sha": "66146c4184cd22a956c5b5f96118f02787d12c38",
+        "status": "modified"
+      },
+      {
+        "additions": 10,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/6ea9e8f97baf250bc851900ccacf260e0f553708/src%2Fagents%2Ftracing%2Fspans.py",
+        "changes": 13,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Ftracing%2Fspans.py?ref=6ea9e8f97baf250bc851900ccacf260e0f553708",
+        "deletions": 3,
+        "filename": "src/agents/tracing/spans.py",
+        "patch": "@@ -182,11 +182,12 @@ class NoOpSpan(Span[TSpanData]):\n         span_data: The operation-specific data for this span.\n     \"\"\"\n \n-    __slots__ = (\"_span_data\", \"_prev_span_token\")\n+    __slots__ = (\"_span_data\", \"_prev_span_token\", \"_prev_span\")\n \n     def __init__(self, span_data: TSpanData):\n         self._span_data = span_data\n         self._prev_span_token: contextvars.Token[Span[TSpanData] | None] | None = None\n+        self._prev_span: Span[Any] | None = None\n \n     @property\n     def trace_id(self) -> str:\n@@ -206,12 +207,14 @@ def parent_id(self) -> str | None:\n \n     def start(self, mark_as_current: bool = False):\n         if mark_as_current:\n+            self._prev_span = Scope.get_current_span()\n             self._prev_span_token = Scope.set_current_span(self)\n \n     def finish(self, reset_current: bool = False) -> None:\n         if reset_current and self._prev_span_token is not None:\n-            Scope.reset_current_span(self._prev_span_token)\n+            Scope.reset_current_span(self._prev_span_token, self._prev_span)\n             self._prev_span_token = None\n+            self._prev_span = None\n \n     def __enter__(self) -> Span[TSpanData]:\n         self.start(mark_as_current=True)\n@@ -253,6 +256,7 @@ class SpanImpl(Span[TSpanData]):\n         \"_ended_at\",\n         \"_error\",\n         \"_prev_span_token\",\n+        \"_prev_span\",\n         \"_processor\",\n         \"_span_data\",\n     )\n@@ -273,6 +277,7 @@ def __init__(\n         self._processor = processor\n         self._error: SpanError | None = None\n         self._prev_span_token: contextvars.Token[Span[TSpanData] | None] | None = None\n+        self._prev_span: Span[Any] | None = None\n         self._span_data = span_data\n \n     @property\n@@ -299,6 +304,7 @@ def start(self, mark_as_current: bool = False):\n         self._started_at = util.time_iso()\n         self._processor.on_span_start(self)\n         if mark_as_current:\n+            self._prev_span = Scope.get_current_span()\n             self._prev_span_token = Scope.set_current_span(self)\n \n     def finish(self, reset_current: bool = False) -> None:\n@@ -309,8 +315,9 @@ def finish(self, reset_current: bool = False) -> None:\n         self._ended_at = util.time_iso()\n         self._processor.on_span_end(self)\n         if reset_current and self._prev_span_token is not None:\n-            Scope.reset_current_span(self._prev_span_token)\n+            Scope.reset_current_span(self._prev_span_token, self._prev_span)\n             self._prev_span_token = None\n+            self._prev_span = None\n \n     def __enter__(self) -> Span[TSpanData]:\n         self.start(mark_as_current=True)",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/6ea9e8f97baf250bc851900ccacf260e0f553708/src%2Fagents%2Ftracing%2Fspans.py",
+        "sha": "478f52fea5152380819247ab6325dcb3fd8ebdd3",
+        "status": "modified"
+      },
+      {
+        "additions": 9,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/6ea9e8f97baf250bc851900ccacf260e0f553708/src%2Fagents%2Ftracing%2Ftraces.py",
+        "changes": 11,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Ftracing%2Ftraces.py?ref=6ea9e8f97baf250bc851900ccacf260e0f553708",
+        "deletions": 2,
+        "filename": "src/agents/tracing/traces.py",
+        "patch": "@@ -143,6 +143,7 @@ class NoOpTrace(Trace):\n     def __init__(self):\n         self._started = False\n         self._prev_context_token: contextvars.Token[Trace | None] | None = None\n+        self._prev_trace: Trace | None = None\n \n     def __enter__(self) -> Trace:\n         if self._started:\n@@ -160,12 +161,14 @@ def __exit__(self, exc_type, exc_val, exc_tb):\n \n     def start(self, mark_as_current: bool = False):\n         if mark_as_current:\n+            self._prev_trace = Scope.get_current_trace()\n             self._prev_context_token = Scope.set_current_trace(self)\n \n     def finish(self, reset_current: bool = False):\n         if reset_current and self._prev_context_token is not None:\n-            Scope.reset_current_trace(self._prev_context_token)\n+            Scope.reset_current_trace(self._prev_context_token, self._prev_trace)\n             self._prev_context_token = None\n+            self._prev_trace = None\n \n     @property\n     def trace_id(self) -> str:\n@@ -208,6 +211,7 @@ class TraceImpl(Trace):\n         \"group_id\",\n         \"metadata\",\n         \"_prev_context_token\",\n+        \"_prev_trace\",\n         \"_processor\",\n         \"_started\",\n     )\n@@ -225,6 +229,7 @@ def __init__(\n         self.group_id = group_id\n         self.metadata = metadata\n         self._prev_context_token: contextvars.Token[Trace | None] | None = None\n+        self._prev_trace: Trace | None = None\n         self._processor = processor\n         self._started = False\n \n@@ -244,6 +249,7 @@ def start(self, mark_as_current: bool = False):\n         self._processor.on_trace_start(self)\n \n         if mark_as_current:\n+            self._prev_trace = Scope.get_current_trace()\n             self._prev_context_token = Scope.set_current_trace(self)\n \n     def finish(self, reset_current: bool = False):\n@@ -253,8 +259,9 @@ def finish(self, reset_current: bool = False):\n         self._processor.on_trace_end(self)\n \n         if reset_current and self._prev_context_token is not None:\n-            Scope.reset_current_trace(self._prev_context_token)\n+            Scope.reset_current_trace(self._prev_context_token, self._prev_trace)\n             self._prev_context_token = None\n+            self._prev_trace = None\n \n     def __enter__(self) -> Trace:\n         if self._started:",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/6ea9e8f97baf250bc851900ccacf260e0f553708/src%2Fagents%2Ftracing%2Ftraces.py",
+        "sha": "2cba78b49fc61b42f6f5fe65c7328a8538e5d6d5",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:22.835395Z"
+}

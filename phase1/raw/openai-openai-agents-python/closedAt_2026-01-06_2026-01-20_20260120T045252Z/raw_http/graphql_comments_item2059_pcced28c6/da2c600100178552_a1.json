@@ -1,0 +1,208 @@
+{
+  "finished_at": "2026-01-20T04:53:09.362455Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "da2c600100178552",
+    "tag": "graphql_comments_item2059_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2059,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "5543",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:09 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DA79:3E6F74:15F9AA2:1F0334A:696F0A34",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4981",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "19",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/154019945?u=2e2cd13dc870d4fc63830deb204279a1fd8d28b9&v=4",
+                    "databaseId": 154019945,
+                    "id": "U_kgDOCS4oaQ",
+                    "login": "ruskaruma",
+                    "url": "https://github.com/ruskaruma"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "Greetings @seratch, I’ve opened this PR referencing issue #2010. Please review the patch and let me know if it correctly addresses the problem or if any adjustments are needed.",
+                  "createdAt": "2025-11-07T21:45:09Z",
+                  "databaseId": 3505103166,
+                  "id": "IC_kwDOOGidp87Q66E-",
+                  "updatedAt": "2025-11-07T21:45:09Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2059#issuecomment-3505103166"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/154019945?u=2e2cd13dc870d4fc63830deb204279a1fd8d28b9&v=4",
+                    "databaseId": 154019945,
+                    "id": "U_kgDOCS4oaQ",
+                    "login": "ruskaruma",
+                    "url": "https://github.com/ruskaruma"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "Greetings, @seratch . \r\nI’ve made these changes and fixed the issues:\r\n\r\nUpdated calculate_audio_length_ms to return correct PCM16 durations (fixes #2010)\r\n\r\nMade the VAD speech-start event emit conversation.item.truncate so the server properly records interruptions (fixes #2009)\r\n\r\nHere’s the test plan:\r\n\r\nuv run pytest tests/realtime/test_playback_tracker_manual_unit.py tests/realtime/test_playback_tracker.py tests/realtime/test_openai_realtime.py\r\n\r\nuv run pytest\r\n\r\nLet me know if you’d like me to tweak or add anything.",
+                  "createdAt": "2025-11-10T19:44:11Z",
+                  "databaseId": 3513610788,
+                  "id": "IC_kwDOOGidp87RbXIk",
+                  "updatedAt": "2025-11-10T19:44:11Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2059#issuecomment-3513610788"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/154019945?u=2e2cd13dc870d4fc63830deb204279a1fd8d28b9&v=4",
+                    "databaseId": 154019945,
+                    "id": "U_kgDOCS4oaQ",
+                    "login": "ruskaruma",
+                    "url": "https://github.com/ruskaruma"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "@seratch do you have any updates on this one!?",
+                  "createdAt": "2025-11-12T21:11:50Z",
+                  "databaseId": 3523955181,
+                  "id": "IC_kwDOOGidp87SC0nt",
+                  "updatedAt": "2025-11-12T21:11:50Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2059#issuecomment-3523955181"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "authorAssociation": "MEMBER",
+                  "body": "Thanks for working on this. To decide having the change or not, I need to do thorough testing to understand visible changes (and no regressions), but I don't have the bandwidth for it right now.",
+                  "createdAt": "2025-11-12T21:34:38Z",
+                  "databaseId": 3524024100,
+                  "id": "IC_kwDOOGidp87SDFck",
+                  "updatedAt": "2025-11-12T21:34:38Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2059#issuecomment-3524024100"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/154019945?u=2e2cd13dc870d4fc63830deb204279a1fd8d28b9&v=4",
+                    "databaseId": 154019945,
+                    "id": "U_kgDOCS4oaQ",
+                    "login": "ruskaruma",
+                    "url": "https://github.com/ruskaruma"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "@seratch I understand, totally alright. No rush from my side.\n\nBy the way, I was wondering if there’s any Slack or Discord community for contributors that I could join? I’ve really enjoyed working on this project in the past few weeks and it’s been a great learning experience.",
+                  "createdAt": "2025-11-12T21:41:46Z",
+                  "databaseId": 3524043858,
+                  "id": "IC_kwDOOGidp87SDKRS",
+                  "updatedAt": "2025-11-12T22:03:26Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2059#issuecomment-3524043858"
+                },
+                {
+                  "author": {
+                    "__typename": "Bot",
+                    "avatarUrl": "https://avatars.githubusercontent.com/in/15368?v=4",
+                    "databaseId": 41898282,
+                    "id": "MDM6Qm90NDE4OTgyODI=",
+                    "login": "github-actions",
+                    "url": "https://github.com/apps/github-actions"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "This PR is stale because it has been open for 10 days with no activity.",
+                  "createdAt": "2025-12-12T02:12:50Z",
+                  "databaseId": 3644599146,
+                  "id": "IC_kwDOOGidp87ZPCtq",
+                  "updatedAt": "2025-12-12T02:12:50Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2059#issuecomment-3644599146"
+                },
+                {
+                  "author": {
+                    "__typename": "Bot",
+                    "avatarUrl": "https://avatars.githubusercontent.com/in/15368?v=4",
+                    "databaseId": 41898282,
+                    "id": "MDM6Qm90NDE4OTgyODI=",
+                    "login": "github-actions",
+                    "url": "https://github.com/apps/github-actions"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "This PR is stale because it has been open for 10 days with no activity.",
+                  "createdAt": "2025-12-28T02:13:27Z",
+                  "databaseId": 3694376873,
+                  "id": "IC_kwDOOGidp87cM7ep",
+                  "updatedAt": "2025-12-28T02:13:27Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2059#issuecomment-3694376873"
+                },
+                {
+                  "author": {
+                    "__typename": "Bot",
+                    "avatarUrl": "https://avatars.githubusercontent.com/in/15368?v=4",
+                    "databaseId": 41898282,
+                    "id": "MDM6Qm90NDE4OTgyODI=",
+                    "login": "github-actions",
+                    "url": "https://github.com/apps/github-actions"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "This PR is stale because it has been open for 10 days with no activity.",
+                  "createdAt": "2026-01-08T02:12:48Z",
+                  "databaseId": 3721593955,
+                  "id": "IC_kwDOOGidp87d0wRj",
+                  "updatedAt": "2026-01-08T02:12:48Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2059#issuecomment-3721593955"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO3dMEYw==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:08.839849Z"
+}

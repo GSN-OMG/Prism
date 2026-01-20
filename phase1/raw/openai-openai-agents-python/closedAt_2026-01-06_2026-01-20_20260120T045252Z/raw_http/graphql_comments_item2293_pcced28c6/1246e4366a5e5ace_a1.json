@@ -1,0 +1,106 @@
+{
+  "finished_at": "2026-01-20T04:56:12.315997Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "1246e4366a5e5ace",
+    "tag": "graphql_comments_item2293_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2293,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2047",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:12 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DBFA:3FF1FA:3A6236:51EDDC:696F0AEB",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4729",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "271",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/4557?v=4",
+                    "databaseId": 4557,
+                    "id": "MDQ6VXNlcjQ1NTc=",
+                    "login": "ihower",
+                    "url": "https://github.com/ihower"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "@jaogarcia97 I don’t think the issue is run_demo_loop itself. `__fake_id__` is injected when the SDK is calling a non-OpenAI Responses API.\n\nThis error typically occurs when mixing models from different providers and then sending non-OpenAI chat history to the OpenAI Responses API.\n\nCould you confirm which OpenAI Agents SDK version you’re using? Please try upgrading to the latest v0.6.5, which improves cross-model compatibility and may already resolve this issue.",
+                  "createdAt": "2026-01-11T08:59:27Z",
+                  "databaseId": 3734267667,
+                  "id": "IC_kwDOOGidp87elGcT",
+                  "updatedAt": "2026-01-11T09:00:06Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2293#issuecomment-3734267667"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/93397590?u=f673ab1921d0326e28d31aba0b87ac0f00337a4d&v=4",
+                    "databaseId": 93397590,
+                    "id": "U_kgDOBZEiVg",
+                    "login": "jao-o-garcia",
+                    "url": "https://github.com/jao-o-garcia"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "@ihower You're right. The issue was specific to using a non-OpenAI model.\n\nI confirmed that switching to an OpenAI model (gpt-5.2) works as expected.\nAfter that, I updated to openai-agents[litellm]==0.6.5 (I was previously on 0.6.4) per your guidance.\n\nAfter the update, I re-tested with a non-OpenAI model and the issue no longer occurs. I no longer need the temporary workaround I mentioned earlier.\n\nThanks for the help. This resolves the issue on my end.",
+                  "createdAt": "2026-01-11T09:44:31Z",
+                  "databaseId": 3734313444,
+                  "id": "IC_kwDOOGidp87elRnk",
+                  "updatedAt": "2026-01-11T09:44:31Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2293#issuecomment-3734313444"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO3pUZ5A==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:11.794627Z"
+}

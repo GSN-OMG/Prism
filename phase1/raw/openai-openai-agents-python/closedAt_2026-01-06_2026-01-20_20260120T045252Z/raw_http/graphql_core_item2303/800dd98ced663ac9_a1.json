@@ -1,0 +1,136 @@
+{
+  "finished_at": "2026-01-20T04:56:36.575123Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "800dd98ced663ac9",
+    "tag": "graphql_core_item2303"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2303,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2304",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:36 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DC30:29AB24:15FB574:1F06953:696F0B04",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4693",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "307",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 953,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "authorAssociation": "MEMBER",
+            "baseRefName": "main",
+            "body": "This pull request adds an examples auto-run skill and refreshes example scripts for automated execution. It introduces the documented .codex/skills/examples-auto-run skill with a companion scripts/run.sh runner, updates examples/run_examples.py and examples/auto_mode.py to orchestrate auto mode execution, and touches the agent pattern, basic, customer_service, mcp, and tools examples to align with the new flow. It also adjusts .gitignore to support the workflow. No library code under src/agents was changed, so impact is limited to tooling and examples.\r\n\r\nsee also: https://github.com/openai/openai-agents-js/pull/848",
+            "changedFiles": 35,
+            "closedAt": "2026-01-13T13:59:15Z",
+            "comments": {
+              "totalCount": 1
+            },
+            "createdAt": "2026-01-13T12:34:20Z",
+            "databaseId": 3169557847,
+            "deletions": 115,
+            "files": {
+              "totalCount": 35
+            },
+            "headRefName": "feat/examples-auto-run",
+            "headRefOid": "46df3c3d78aff3f4642fabab1857663e16aac6bf",
+            "id": "PR_kwDOOGidp868651X",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "0075ca",
+                  "description": "Improvements or additions to documentation",
+                  "name": "documentation"
+                },
+                {
+                  "color": "e7cef1",
+                  "description": "",
+                  "name": "project"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "c06a8bb42a24edd18e944a40f8a89cc4f2d36eb4",
+              "url": "https://github.com/openai/openai-agents-python/commit/c06a8bb42a24edd18e944a40f8a89cc4f2d36eb4"
+            },
+            "mergedAt": "2026-01-13T13:59:15Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2303,
+            "reviews": {
+              "totalCount": 16
+            },
+            "state": "MERGED",
+            "title": "feat: add examples auto-run skill and refresh example scripts",
+            "updatedAt": "2026-01-13T13:59:17Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2303"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:35.937714Z"
+}

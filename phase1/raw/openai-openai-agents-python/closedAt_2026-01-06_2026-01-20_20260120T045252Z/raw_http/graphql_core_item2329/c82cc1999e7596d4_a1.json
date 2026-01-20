@@ -1,0 +1,136 @@
+{
+  "finished_at": "2026-01-20T04:58:03.909606Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "c82cc1999e7596d4",
+    "tag": "graphql_core_item2329"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2329,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "3168",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:58:03 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DD02:365621:16C55F7:1FD0E2B:696F0B5B",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4579",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "421",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 5,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/136383052?u=c3abd7a04ff57b02e274a04432ea9f184de3d7d8&v=4",
+              "databaseId": 136383052,
+              "id": "U_kgDOCCEKTA",
+              "login": "habema",
+              "url": "https://github.com/habema"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "baseRefName": "main",
+            "body": "Fixes a Vertex AI error that occurs within LiteLLM, where tools with no parameters (like `get_random_number()`) would fail with a BadRequestError about function declaration parameters schema needing to be type OBJECT.\r\n\r\nBumped LiteLLM dependency to 1.81.0 which handles this case properly. Related bug fix [here](https://github.com/BerriAI/litellm/pull/19103).\r\n\r\nError:\r\n```\r\nlitellm.BadRequestError: Vertex_aiException BadRequestError - {\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Unable to submit request because `get_random_number` functionDeclaration parameters schema should be of type OBJECT. Learn more: https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/function-calling\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n```\r\n\r\nRepro Script:\r\n```py\r\nimport asyncio\r\nimport random\r\n\r\nfrom agents import Agent, Runner, function_tool\r\n\r\n\r\n@function_tool\r\ndef get_random_number() -> int:\r\n    \"\"\"\r\n    Returns a random number between 0 and 100.\r\n    \"\"\"\r\n    return random.randint(0, 100)\r\n\r\n\r\nagent = Agent(\r\n    name=\"Assistant\",\r\n    model=\"litellm/vertex_ai/gemini-3-flash-preview\",\r\n    instructions=\"You are a helpful agent.\",\r\n    tools=[get_random_number],\r\n)\r\n\r\n\r\nasync def main():\r\n    result = await Runner.run(agent, input=\"Call the `get_random_number` tool\")\r\n    print(result.final_output)\r\n\r\n\r\nif __name__ == \"__main__\":\r\n    asyncio.run(main())\r\n",
+            "changedFiles": 2,
+            "closedAt": "2026-01-18T23:04:31Z",
+            "comments": {
+              "totalCount": 0
+            },
+            "createdAt": "2026-01-18T10:13:50Z",
+            "databaseId": 3185184503,
+            "deletions": 5,
+            "files": {
+              "totalCount": 2
+            },
+            "headRefName": "fix/bump-litellm-for-vertex-tool-issue",
+            "headRefOid": "1e37e32a3ba9802045c3573af3fd8cc5d174c5d7",
+            "id": "PR_kwDOOGidp8692g73",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a95c3a",
+                  "description": "",
+                  "name": "feature:lite-llm"
+                },
+                {
+                  "color": "d0ceac",
+                  "description": "",
+                  "name": "dependencies"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "e833518b8bdeaafe280fc64a13b1a4ac0097676d",
+              "url": "https://github.com/openai/openai-agents-python/commit/e833518b8bdeaafe280fc64a13b1a4ac0097676d"
+            },
+            "mergedAt": "2026-01-18T23:04:31Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2329,
+            "reviews": {
+              "totalCount": 0
+            },
+            "state": "MERGED",
+            "title": "Bump LiteLLM to fix Vertex AI function calling with no-param tools",
+            "updatedAt": "2026-01-18T23:04:31Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2329"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:58:03.305800Z"
+}

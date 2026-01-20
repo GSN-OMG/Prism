@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:54:12.289229Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "ee6bed868cddd6d7",
+    "tag": "rest_pr_files_pr2245_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2245/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "9335",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:12 GMT",
+      "etag": "\"4dabdeee2d90a37c12aa200cf21a7f83984b756f81bdd6de1f7eb22c2da2b642\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Mon, 19 Jan 2026 12:04:58 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DAF6:F2819:169DB4B:1FA7872:696F0A74",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4987",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "13",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 19,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/187d69ffc21a9c1e9aaeff36ca3cb2135eb93978/src%2Fagents%2Fmodels%2Fchatcmpl_converter.py",
+        "changes": 20,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Fmodels%2Fchatcmpl_converter.py?ref=187d69ffc21a9c1e9aaeff36ca3cb2135eb93978",
+        "deletions": 1,
+        "filename": "src/agents/models/chatcmpl_converter.py",
+        "patch": "@@ -379,13 +379,22 @@ def items_to_messages(\n         result: list[ChatCompletionMessageParam] = []\n         current_assistant_msg: ChatCompletionAssistantMessageParam | None = None\n         pending_thinking_blocks: list[dict[str, str]] | None = None\n+        # Track reasoning_content for DeepSeek reasoner models which require this\n+        # field in assistant messages for multi-turn conversations with tool calls\n+        pending_reasoning_content: str | None = None\n \n         def flush_assistant_message() -> None:\n-            nonlocal current_assistant_msg\n+            nonlocal current_assistant_msg, pending_reasoning_content\n             if current_assistant_msg is not None:\n                 # The API doesn't support empty arrays for tool_calls\n                 if not current_assistant_msg.get(\"tool_calls\"):\n                     del current_assistant_msg[\"tool_calls\"]\n+                # Add reasoning_content if pending (for DeepSeek compatibility)\n+                # This ensures the reasoning_content field is included in assistant\n+                # messages that have tool calls, which is required by DeepSeek API\n+                if pending_reasoning_content is not None:\n+                    current_assistant_msg[\"reasoning_content\"] = pending_reasoning_content  # type: ignore[typeddict-unknown-key]\n+                    pending_reasoning_content = None\n                 result.append(current_assistant_msg)\n                 current_assistant_msg = None\n \n@@ -568,6 +577,15 @@ def ensure_assistant_message() -> ChatCompletionAssistantMessageParam:\n \n             # 7) reasoning message => extract thinking blocks if present\n             elif reasoning_item := cls.maybe_reasoning_message(item):\n+                # Extract reasoning_content from summary field for DeepSeek compatibility\n+                # The summary contains the reasoning text that DeepSeek API requires\n+                # in assistant messages for multi-turn conversations with tool calls\n+                summary_items = reasoning_item.get(\"summary\", [])\n+                for summary_item in summary_items:\n+                    if isinstance(summary_item, dict) and summary_item.get(\"type\") == \"summary_text\":\n+                        pending_reasoning_content = summary_item.get(\"text\", \"\")\n+                        break\n+\n                 # Reconstruct thinking blocks from content (text) and encrypted_content (signature)\n                 content_items = reasoning_item.get(\"content\", [])\n                 encrypted_content = reasoning_item.get(\"encrypted_content\")",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/187d69ffc21a9c1e9aaeff36ca3cb2135eb93978/src%2Fagents%2Fmodels%2Fchatcmpl_converter.py",
+        "sha": "3de3dfe03e5a10065ce0cb97c3d6c97b2ea54621",
+        "status": "modified"
+      },
+      {
+        "additions": 143,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/187d69ffc21a9c1e9aaeff36ca3cb2135eb93978/tests%2Ftest_openai_chatcompletions_converter.py",
+        "changes": 143,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_openai_chatcompletions_converter.py?ref=187d69ffc21a9c1e9aaeff36ca3cb2135eb93978",
+        "deletions": 0,
+        "filename": "tests/test_openai_chatcompletions_converter.py",
+        "patch": "@@ -467,3 +467,146 @@ def test_assistant_messages_in_history():\n     assert messages[1][\"content\"] == \"Hello?\"\n     assert messages[2][\"role\"] == \"user\"\n     assert messages[2][\"content\"] == \"What was my Name?\"\n+\n+\n+def test_reasoning_message_extracts_reasoning_content_for_tool_calls():\n+    \"\"\"\n+    Test that reasoning_content is extracted from the summary field of a\n+    reasoning message and included in the following assistant message that\n+    contains tool calls.\n+\n+    This is required for DeepSeek compatibility, where the API expects the\n+    reasoning_content field in assistant messages for multi-turn conversations\n+    with tool calls.\n+\n+    This is a regression test for issue #2155.\n+    \"\"\"\n+    # User message followed by reasoning message followed by tool call\n+    items: list[TResponseInputItem] = [\n+        {\n+            \"role\": \"user\",\n+            \"content\": \"What is the weather?\",\n+        },\n+        {\n+            \"type\": \"reasoning\",\n+            \"id\": \"reasoning-1\",\n+            \"summary\": [\n+                {\n+                    \"type\": \"summary_text\",\n+                    \"text\": \"I need to call the weather API to get the current weather.\",\n+                }\n+            ],\n+        },\n+        {\n+            \"type\": \"function_call\",\n+            \"id\": \"fc-1\",\n+            \"call_id\": \"call_123\",\n+            \"name\": \"get_weather\",\n+            \"arguments\": '{\"location\": \"New York\"}',\n+        },\n+    ]\n+    messages = Converter.items_to_messages(items)\n+\n+    # Should return user message and assistant message with tool call\n+    assert len(messages) == 2\n+    user_msg = messages[0]\n+    assert user_msg[\"role\"] == \"user\"\n+    assert user_msg[\"content\"] == \"What is the weather?\"\n+\n+    assistant_msg = messages[1]\n+    assert assistant_msg[\"role\"] == \"assistant\"\n+    # The reasoning_content from the summary should be included\n+    assert \"reasoning_content\" in assistant_msg\n+    assert (\n+        assistant_msg[\"reasoning_content\"]\n+        == \"I need to call the weather API to get the current weather.\"\n+    )\n+    # Tool calls should be present\n+    tool_calls = list(assistant_msg.get(\"tool_calls\", []))\n+    assert len(tool_calls) == 1\n+    assert tool_calls[0][\"function\"][\"name\"] == \"get_weather\"\n+\n+\n+def test_reasoning_message_without_summary_works():\n+    \"\"\"\n+    Test that a reasoning message without a summary field does not cause errors\n+    and that no reasoning_content is added to the assistant message.\n+    \"\"\"\n+    items: list[TResponseInputItem] = [\n+        {\n+            \"role\": \"user\",\n+            \"content\": \"Hello\",\n+        },\n+        {\n+            \"type\": \"reasoning\",\n+            \"id\": \"reasoning-1\",\n+            # No summary field\n+        },\n+        {\n+            \"type\": \"function_call\",\n+            \"id\": \"fc-1\",\n+            \"call_id\": \"call_456\",\n+            \"name\": \"greet\",\n+            \"arguments\": \"{}\",\n+        },\n+    ]\n+    messages = Converter.items_to_messages(items)\n+\n+    assert len(messages) == 2\n+    assistant_msg = messages[1]\n+    assert assistant_msg[\"role\"] == \"assistant\"\n+    # No reasoning_content should be added\n+    assert \"reasoning_content\" not in assistant_msg\n+\n+\n+def test_reasoning_content_only_added_when_pending():\n+    \"\"\"\n+    Test that reasoning_content is only added to the assistant message\n+    that follows the reasoning message, not to subsequent messages.\n+    \"\"\"\n+    items: list[TResponseInputItem] = [\n+        {\n+            \"role\": \"user\",\n+            \"content\": \"First question\",\n+        },\n+        {\n+            \"type\": \"reasoning\",\n+            \"id\": \"reasoning-1\",\n+            \"summary\": [\n+                {\n+                    \"type\": \"summary_text\",\n+                    \"text\": \"Reasoning for first response\",\n+                }\n+            ],\n+        },\n+        {\n+            \"type\": \"function_call\",\n+            \"id\": \"fc-1\",\n+            \"call_id\": \"call_1\",\n+            \"name\": \"tool1\",\n+            \"arguments\": \"{}\",\n+        },\n+        {\n+            \"type\": \"function_call_output\",\n+            \"call_id\": \"call_1\",\n+            \"output\": \"result1\",\n+        },\n+        {\n+            \"role\": \"assistant\",\n+            \"content\": \"Here's the answer\",\n+        },\n+    ]\n+    messages = Converter.items_to_messages(items)\n+\n+    # Should return: user, assistant with tool call and reasoning_content, tool result, assistant\n+    assert len(messages) == 4\n+\n+    # First assistant message should have reasoning_content\n+    first_assistant = messages[1]\n+    assert first_assistant[\"role\"] == \"assistant\"\n+    assert first_assistant.get(\"reasoning_content\") == \"Reasoning for first response\"\n+\n+    # Second assistant message should NOT have reasoning_content\n+    second_assistant = messages[3]\n+    assert second_assistant[\"role\"] == \"assistant\"\n+    assert \"reasoning_content\" not in second_assistant",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/187d69ffc21a9c1e9aaeff36ca3cb2135eb93978/tests%2Ftest_openai_chatcompletions_converter.py",
+        "sha": "4e390cd0773dc091cf182370d26342c233b02406",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:11.832928Z"
+}

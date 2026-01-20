@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:55:41.680251Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "dcaf241464100bf8",
+    "tag": "rest_pr_files_pr2283_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2283/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "5206",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:55:41 GMT",
+      "etag": "\"f518b4ad0c48ba6ddbb17125c5a06a2684ec298b8aa1e2c230b99ae4e658e6bf\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Fri, 09 Jan 2026 00:48:23 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DBB2:365621:16C0FCB:1FCB886:696F0ACD",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4965",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "35",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 20,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/1183d09704952d254c0e170628ee43fd4a0dcc38/src%2Fagents%2Fmodels%2Fchatcmpl_converter.py",
+        "changes": 21,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Fmodels%2Fchatcmpl_converter.py?ref=1183d09704952d254c0e170628ee43fd4a0dcc38",
+        "deletions": 1,
+        "filename": "src/agents/models/chatcmpl_converter.py",
+        "patch": "@@ -581,7 +581,26 @@ def ensure_assistant_message() -> ChatCompletionAssistantMessageParam:\n                     pending_thinking_blocks = None  # Clear after using\n \n                 tool_calls = list(asst.get(\"tool_calls\", []))\n-                arguments = func_call[\"arguments\"] if func_call[\"arguments\"] else \"{}\"\n+                raw_args = func_call[\"arguments\"]\n+                # Validate JSON arguments to prevent downstream parsing failures\n+                # Invalid JSON can break sessions with Anthropic models (issue #2061)\n+                if raw_args:\n+                    try:\n+                        json.loads(raw_args)  # Validate JSON is parseable\n+                        arguments = raw_args\n+                    except json.JSONDecodeError:\n+                        # Invalid JSON - use empty object to prevent session corruption\n+                        from ..logger import logger\n+                        logger.warning(\n+                            f\"Invalid JSON in tool call arguments for '{func_call['name']}', \"\n+                            f\"replacing with empty object. Original: {raw_args[:100]}...\"\n+                            if len(raw_args) > 100 else\n+                            f\"Invalid JSON in tool call arguments for '{func_call['name']}', \"\n+                            f\"replacing with empty object. Original: {raw_args}\"\n+                        )\n+                        arguments = \"{}\"\n+                else:\n+                    arguments = \"{}\"\n                 new_tool_call = ChatCompletionMessageFunctionToolCallParam(\n                     id=func_call[\"call_id\"],\n                     type=\"function\",",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/1183d09704952d254c0e170628ee43fd4a0dcc38/src%2Fagents%2Fmodels%2Fchatcmpl_converter.py",
+        "sha": "d9ba052d6976b3a361182e1624351ea6fd006202",
+        "status": "modified"
+      },
+      {
+        "additions": 48,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/1183d09704952d254c0e170628ee43fd4a0dcc38/tests%2Ftest_openai_chatcompletions_converter.py",
+        "changes": 48,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_openai_chatcompletions_converter.py?ref=1183d09704952d254c0e170628ee43fd4a0dcc38",
+        "deletions": 0,
+        "filename": "tests/test_openai_chatcompletions_converter.py",
+        "patch": "@@ -467,3 +467,51 @@ def test_assistant_messages_in_history():\n     assert messages[1][\"content\"] == \"Hello?\"\n     assert messages[2][\"role\"] == \"user\"\n     assert messages[2][\"content\"] == \"What was my Name?\"\n+\n+\n+def test_items_to_messages_handles_invalid_json_arguments():\n+    \"\"\"\n+    Invalid JSON in tool call arguments should be replaced with empty object\n+    to prevent session corruption with Anthropic models (issue #2061).\n+    \"\"\"\n+    # Construct a function call with invalid JSON (missing closing brace)\n+    function_call: ResponseFunctionToolCallParam = {\n+        \"id\": \"fc_invalid\",\n+        \"call_id\": \"call_invalid_json\",\n+        \"name\": \"get_server_time\",\n+        \"arguments\": '{\"format\":\"%Y-%m-%d\"',  # Invalid JSON - missing closing brace\n+        \"type\": \"function_call\",\n+    }\n+\n+    messages = Converter.items_to_messages([function_call])\n+    assert len(messages) == 1\n+    tool_msg = messages[0]\n+    assert tool_msg[\"role\"] == \"assistant\"\n+\n+    tool_calls = list(tool_msg.get(\"tool_calls\", []))\n+    assert len(tool_calls) == 1\n+\n+    tool_call = tool_calls[0]\n+    # Invalid JSON should be replaced with empty object\n+    assert tool_call[\"function\"][\"arguments\"] == \"{}\"\n+\n+\n+def test_items_to_messages_preserves_valid_json_arguments():\n+    \"\"\"\n+    Valid JSON in tool call arguments should be preserved unchanged.\n+    \"\"\"\n+    valid_json = '{\"format\": \"%Y-%m-%d %H:%M:%S\", \"timezone\": \"UTC\"}'\n+    function_call: ResponseFunctionToolCallParam = {\n+        \"id\": \"fc_valid\",\n+        \"call_id\": \"call_valid_json\",\n+        \"name\": \"get_server_time\",\n+        \"arguments\": valid_json,\n+        \"type\": \"function_call\",\n+    }\n+\n+    messages = Converter.items_to_messages([function_call])\n+    tool_calls = list(messages[0].get(\"tool_calls\", []))\n+    \n+    # Valid JSON should be preserved\n+    assert tool_calls[0][\"function\"][\"arguments\"] == valid_json\n+",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/1183d09704952d254c0e170628ee43fd4a0dcc38/tests%2Ftest_openai_chatcompletions_converter.py",
+        "sha": "005eea828ea15d1c66d813d2153214e29949a9c7",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:55:41.166588Z"
+}

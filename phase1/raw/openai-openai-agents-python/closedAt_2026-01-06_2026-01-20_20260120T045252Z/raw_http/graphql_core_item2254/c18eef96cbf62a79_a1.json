@@ -1,0 +1,120 @@
+{
+  "finished_at": "2026-01-20T04:54:16.838524Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "c18eef96cbf62a79",
+    "tag": "graphql_core_item2254"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2254,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2765",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:16 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DB00:EFCF3:161A95D:1F24C36:696F0A78",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4888",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "112",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 417,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/143676135?u=c7807204f738bc86d5066fd90421f2ca5cc818c9&v=4",
+              "databaseId": 143676135,
+              "id": "U_kgDOCJBS5w",
+              "login": "AnkanMisra",
+              "url": "https://github.com/AnkanMisra"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "baseRefName": "main",
+            "body": "Fixes #2171\r\n\r\n## Problem\r\n\r\nWhen `nest_handoff_history` is enabled, the next agent receives duplicate conversation items:\r\n\r\nBefore this fix:\r\n1. Summary message with `<CONVERSATION HISTORY>` containing tool calls as text\r\n2. Raw `function_call` items (duplicated)\r\n3. Raw `function_call_output` items (duplicated)\r\n\r\nThis causes the model to see the same information twice, wasting tokens and potentially causing confusion.\r\n\r\n## Solution\r\n\r\nIntroduced separation between items sent to the model vs items preserved for session history:\r\n\r\n- Model input: Filtered - excludes `function_call` and `function_call_output` items already in the summary\r\n- Session history: Unfiltered - preserves all items for observability and session saving\r\n\r\nKey changes:\r\n- Added `input_items` field to `HandoffInputData` for filtered model input\r\n- Added `session_step_items` field to `SingleStepResult` for full session history\r\n- Updated `generated_items` property to use session items when available\r\n- Streaming events now use unfiltered items for full observability\r\n\r\n## Behavior\r\n\r\n| Scenario | Before | After |\r\n|----------|--------|-------|\r\n| Model receives | Summary + raw tool items (duplicated) | Summary only (no duplicates) |\r\n| Session saves | All items | All items (unchanged) |\r\n| Streaming events | All items | All items (unchanged) |\r\n\r\n## Testing\r\n\r\n- Added 6 dedicated tests covering the fix\r\n- Updated existing test assertions to reflect new expected counts\r\n- All 1111 tests pass",
+            "changedFiles": 7,
+            "closedAt": "2026-01-16T09:09:27Z",
+            "comments": {
+              "totalCount": 5
+            },
+            "createdAt": "2026-01-02T19:20:13Z",
+            "databaseId": 3142742077,
+            "deletions": 33,
+            "files": {
+              "totalCount": 7
+            },
+            "headRefName": "main",
+            "headRefOid": "b03063d3ff76a98f507f3d7a91d7478816e25e25",
+            "id": "PR_kwDOOGidp867UnA9",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "b2fdef",
+                  "description": "",
+                  "name": "feature:core"
+                },
+                {
+                  "color": "76cbb2",
+                  "description": "",
+                  "name": "skip-stale"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": null,
+            "mergedAt": null,
+            "mergedBy": null,
+            "milestone": null,
+            "number": 2254,
+            "reviews": {
+              "totalCount": 3
+            },
+            "state": "CLOSED",
+            "title": "fix(handoffs): filter duplicate items from model input when nest_handoff_history is enabled",
+            "updatedAt": "2026-01-16T12:25:34Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2254"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:16.278809Z"
+}

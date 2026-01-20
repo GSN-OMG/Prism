@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:55:53.988665Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "3c03a9105177c8a5",
+    "tag": "rest_pr_files_pr2287_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2287/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "2672",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:55:54 GMT",
+      "etag": "\"d17959a1f93e3e3d1a74ce09900e3141b1cf2a6f7dc7ffd2f37c66ff3733c17d\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Sat, 10 Jan 2026 05:04:03 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DBD0:365621:16C15E1:1FCBFFD:696F0AD9",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4962",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "38",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 1,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/b8a03bb7fe59c55af52311137024f33f70601283/src%2Fagents%2F_run_impl.py",
+        "changes": 2,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2F_run_impl.py?ref=b8a03bb7fe59c55af52311137024f33f70601283",
+        "deletions": 1,
+        "filename": "src/agents/_run_impl.py",
+        "patch": "@@ -542,7 +542,7 @@ def process_model_response(\n                 shell_calls.append(ToolRunShellCall(tool_call=output, shell_tool=shell_tool))\n                 continue\n             if output_type == \"compaction\":\n-                items.append(CompactionItem(raw_item=cast(dict[str, Any], output), agent=agent))\n+                items.append(CompactionItem(raw_item=cast(TResponseInputItem, output), agent=agent))\n                 continue\n             if output_type == \"apply_patch_call\":\n                 items.append(ToolCallItem(raw_item=cast(Any, output), agent=agent))",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/b8a03bb7fe59c55af52311137024f33f70601283/src%2Fagents%2F_run_impl.py",
+        "sha": "77006da472d094fec46342c4e7f2c16787a00736",
+        "status": "modified"
+      },
+      {
+        "additions": 2,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/b8a03bb7fe59c55af52311137024f33f70601283/src%2Fagents%2Fitems.py",
+        "changes": 10,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Fitems.py?ref=b8a03bb7fe59c55af52311137024f33f70601283",
+        "deletions": 8,
+        "filename": "src/agents/items.py",
+        "patch": "@@ -328,20 +328,14 @@ class MCPApprovalResponseItem(RunItemBase[McpApprovalResponse]):\n \n \n @dataclass\n-class CompactionItem:\n+class CompactionItem(RunItemBase[TResponseInputItem]):\n     \"\"\"Represents a compaction item from responses.compact.\"\"\"\n \n-    agent: Agent[Any]\n-    \"\"\"The agent whose run caused this item to be generated.\"\"\"\n-\n-    raw_item: dict[str, Any]\n-    \"\"\"The raw compaction item containing encrypted_content.\"\"\"\n-\n     type: Literal[\"compaction_item\"] = \"compaction_item\"\n \n     def to_input_item(self) -> TResponseInputItem:\n         \"\"\"Converts this item into an input item suitable for passing to the model.\"\"\"\n-        return cast(TResponseInputItem, self.raw_item)\n+        return self.raw_item\n \n \n RunItem: TypeAlias = Union[",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/b8a03bb7fe59c55af52311137024f33f70601283/src%2Fagents%2Fitems.py",
+        "sha": "240c2bfdda19f85c7aae046d2bcdaff961d662cf",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:55:53.590529Z"
+}

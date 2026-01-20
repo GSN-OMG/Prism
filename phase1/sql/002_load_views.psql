@@ -1,0 +1,11 @@
+\set ON_ERROR_STOP on
+
+TRUNCATE TABLE repo_work_item;
+TRUNCATE TABLE repo_work_item_event;
+TRUNCATE TABLE repo_comment;
+TRUNCATE TABLE repo_pr_review;
+
+\copy repo_work_item(repo_full_name,number,type,url,title,body_excerpt,state,created_at,closed_at,author_login,author_association,labels_json,milestone_title,is_merged,merged_at,merged_by,comment_count,review_count,changed_files,additions,deletions) FROM '/data/out_views/repo_work_item.csv' CSV HEADER;
+\copy repo_work_item_event(repo_full_name,number,type,event_id,event_type,occurred_at,actor_login,subject_type,subject,reference) FROM '/data/out_views/repo_work_item_event.csv' CSV HEADER;
+\copy repo_comment(repo_full_name,number,type,comment_id,url,created_at,author_login,author_association,body_excerpt) FROM '/data/out_views/repo_comment.csv' CSV HEADER;
+\copy repo_pr_review(repo_full_name,pr_number,review_id,review_state,submitted_at,author_login,body_excerpt,reference) FROM '/data/out_views/repo_pr_review.csv' CSV HEADER;

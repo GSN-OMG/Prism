@@ -1,0 +1,100 @@
+{
+  "finished_at": "2026-01-20T04:55:05.150729Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "47176008e887df85",
+    "tag": "rest_pr_files_pr2272_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2272/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "11757",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:55:05 GMT",
+      "etag": "\"ced3f0007a65655348fa36bcf0d4ce35e275549409b842b05a65596f16c9a6a7\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Tue, 20 Jan 2026 03:08:58 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DB66:3782ED:1629778:1F344E2:696F0AA8",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4975",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "25",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 4,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/81975e602ca3fb86f35486eaa4d21587d2e51e49/src%2Fagents%2Frun.py",
+        "changes": 8,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Frun.py?ref=81975e602ca3fb86f35486eaa4d21587d2e51e49",
+        "deletions": 4,
+        "filename": "src/agents/run.py",
+        "patch": "@@ -210,10 +210,10 @@ class RunConfig:\n     agent. See the documentation in `Handoff.input_filter` for more details.\n     \"\"\"\n \n-    nest_handoff_history: bool = True\n-    \"\"\"Wrap prior run history in a single assistant message before handing off when no custom\n-    input filter is set. Set to False to preserve the raw transcript behavior from previous\n-    releases.\n+    nest_handoff_history: bool = False\n+    \"\"\"Opt-in beta: wrap prior run history in a single assistant message before handing off when no\n+    custom input filter is set. This is disabled by default while we stabilize nested handoffs; set\n+    to True to enable the collapsed transcript behavior.\n     \"\"\"\n \n     handoff_history_mapper: HandoffHistoryMapper | None = None",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/81975e602ca3fb86f35486eaa4d21587d2e51e49/src%2Fagents%2Frun.py",
+        "sha": "9988e31e63ef9d260c08160a56384f219da90593",
+        "status": "modified"
+      },
+      {
+        "additions": 41,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/81975e602ca3fb86f35486eaa4d21587d2e51e49/tests%2Ftest_agent_runner.py",
+        "changes": 46,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_agent_runner.py?ref=81975e602ca3fb86f35486eaa4d21587d2e51e49",
+        "deletions": 5,
+        "filename": "tests/test_agent_runner.py",
+        "patch": "@@ -288,6 +288,7 @@ async def test_structured_output():\n             get_text_input_item(\"user_message\"),\n             get_text_input_item(\"another_message\"),\n         ],\n+        run_config=RunConfig(nest_handoff_history=True),\n     )\n \n     assert result.final_output == Foo(bar=\"baz\")\n@@ -345,7 +346,36 @@ async def test_handoff_filters():\n \n \n @pytest.mark.asyncio\n-async def test_default_handoff_history_nested_and_filters_respected():\n+async def test_handoff_history_not_nested_by_default():\n+    triage_model = FakeModel()\n+    delegate_model = FakeModel()\n+\n+    delegate = Agent(name=\"delegate\", model=delegate_model)\n+    triage = Agent(name=\"triage\", model=triage_model, handoffs=[delegate])\n+\n+    triage_model.add_multiple_turn_outputs(\n+        [[get_text_message(\"triage summary\"), get_handoff_tool_call(delegate)]]\n+    )\n+    delegate_model.add_multiple_turn_outputs([[get_text_message(\"resolution\")]])\n+\n+    result = await Runner.run(triage, input=\"user_message\")\n+\n+    assert result.final_output == \"resolution\"\n+    assert delegate_model.first_turn_args is not None\n+    delegate_input = delegate_model.first_turn_args[\"input\"]\n+    assert isinstance(delegate_input, list)\n+    delegate_messages = [item for item in delegate_input if isinstance(item, dict)]\n+    assert delegate_messages\n+    assert _as_message(delegate_messages[0])[\"role\"] == \"user\"\n+    assert not any(\n+        \"<CONVERSATION HISTORY>\" in str(item.get(\"content\", \"\"))\n+        for item in delegate_messages\n+        if isinstance(item.get(\"content\"), str)\n+    )\n+\n+\n+@pytest.mark.asyncio\n+async def test_handoff_history_nested_and_filters_respected_when_enabled():\n     model = FakeModel()\n     agent_1 = Agent(\n         name=\"delegate\",\n@@ -364,7 +394,9 @@ async def test_default_handoff_history_nested_and_filters_respected():\n         ]\n     )\n \n-    result = await Runner.run(agent_2, input=\"user_message\")\n+    result = await Runner.run(\n+        agent_2, input=\"user_message\", run_config=RunConfig(nest_handoff_history=True)\n+    )\n \n     assert isinstance(result.input, list)\n     assert len(result.input) == 1\n@@ -395,14 +427,16 @@ def passthrough_filter(data: HandoffInputData) -> HandoffInputData:\n         ]\n     )\n \n-    filtered_result = await Runner.run(triage_with_filter, input=\"user_message\")\n+    filtered_result = await Runner.run(\n+        triage_with_filter, input=\"user_message\", run_config=RunConfig(nest_handoff_history=True)\n+    )\n \n     assert isinstance(filtered_result.input, str)\n     assert filtered_result.input == \"user_message\"\n \n \n @pytest.mark.asyncio\n-async def test_default_handoff_history_accumulates_across_multiple_handoffs():\n+async def test_handoff_history_accumulates_across_multiple_handoffs_when_enabled():\n     triage_model = FakeModel()\n     delegate_model = FakeModel()\n     closer_model = FakeModel()\n@@ -419,7 +453,9 @@ async def test_default_handoff_history_accumulates_across_multiple_handoffs():\n     )\n     closer_model.add_multiple_turn_outputs([[get_text_message(\"resolution\")]])\n \n-    result = await Runner.run(triage, input=\"user_question\")\n+    result = await Runner.run(\n+        triage, input=\"user_question\", run_config=RunConfig(nest_handoff_history=True)\n+    )\n \n     assert result.final_output == \"resolution\"\n     assert closer_model.first_turn_args is not None",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/81975e602ca3fb86f35486eaa4d21587d2e51e49/tests%2Ftest_agent_runner.py",
+        "sha": "695ad00ae7a58f67f5b6250edb10666ec782c455",
+        "status": "modified"
+      },
+      {
+        "additions": 2,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/81975e602ca3fb86f35486eaa4d21587d2e51e49/tests%2Ftest_agent_runner_streamed.py",
+        "changes": 2,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_agent_runner_streamed.py?ref=81975e602ca3fb86f35486eaa4d21587d2e51e49",
+        "deletions": 0,
+        "filename": "tests/test_agent_runner_streamed.py",
+        "patch": "@@ -289,6 +289,7 @@ async def test_structured_output():\n             get_text_input_item(\"user_message\"),\n             get_text_input_item(\"another_message\"),\n         ],\n+        run_config=RunConfig(nest_handoff_history=True),\n     )\n     async for _ in result.stream_events():\n         pass\n@@ -771,6 +772,7 @@ async def test_streaming_events():\n             get_text_input_item(\"user_message\"),\n             get_text_input_item(\"another_message\"),\n         ],\n+        run_config=RunConfig(nest_handoff_history=True),\n     )\n     async for event in result.stream_events():\n         event_counts[event.type] = event_counts.get(event.type, 0) + 1",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/81975e602ca3fb86f35486eaa4d21587d2e51e49/tests%2Ftest_agent_runner_streamed.py",
+        "sha": "728bf527948d2f105872a6455cb9339cbd07f259",
+        "status": "modified"
+      },
+      {
+        "additions": 98,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/81975e602ca3fb86f35486eaa4d21587d2e51e49/tests%2Ftest_run_step_processing.py",
+        "changes": 98,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_run_step_processing.py?ref=81975e602ca3fb86f35486eaa4d21587d2e51e49",
+        "deletions": 0,
+        "filename": "tests/test_run_step_processing.py",
+        "patch": "@@ -211,6 +211,102 @@ async def test_handoffs_parsed_correctly():\n     assert handoff_agent == agent_1\n \n \n+@pytest.mark.asyncio\n+async def test_history_nesting_disabled_by_default(monkeypatch: pytest.MonkeyPatch):\n+    source_agent = Agent(name=\"source\")\n+    target_agent = Agent(name=\"target\")\n+    default_handoff = handoff(target_agent)\n+    tool_call = cast(ResponseFunctionToolCall, get_handoff_tool_call(target_agent))\n+    run_handoffs = [ToolRunHandoff(handoff=default_handoff, tool_call=tool_call)]\n+    run_config = RunConfig()\n+    context_wrapper = RunContextWrapper(context=None)\n+    hooks = RunHooks()\n+    original_input = [get_text_input_item(\"hello\")]\n+    pre_step_items: list[RunItem] = []\n+    new_step_items: list[RunItem] = []\n+    new_response = ModelResponse(output=[tool_call], usage=Usage(), response_id=None)\n+\n+    def fail_if_called(\n+        _handoff_input_data: HandoffInputData,\n+        *,\n+        history_mapper: Any,\n+    ) -> HandoffInputData:\n+        _ = history_mapper\n+        raise AssertionError(\"nest_handoff_history should be opt-in.\")\n+\n+    monkeypatch.setattr(\"agents._run_impl.nest_handoff_history\", fail_if_called)\n+\n+    result = await RunImpl.execute_handoffs(\n+        agent=source_agent,\n+        original_input=list(original_input),\n+        pre_step_items=pre_step_items,\n+        new_step_items=new_step_items,\n+        new_response=new_response,\n+        run_handoffs=run_handoffs,\n+        hooks=hooks,\n+        context_wrapper=context_wrapper,\n+        run_config=run_config,\n+    )\n+\n+    assert result.original_input == original_input\n+\n+\n+@pytest.mark.asyncio\n+async def test_run_level_history_nesting_can_be_enabled(monkeypatch: pytest.MonkeyPatch):\n+    source_agent = Agent(name=\"source\")\n+    target_agent = Agent(name=\"target\")\n+    default_handoff = handoff(target_agent)\n+    tool_call = cast(ResponseFunctionToolCall, get_handoff_tool_call(target_agent))\n+    run_handoffs = [ToolRunHandoff(handoff=default_handoff, tool_call=tool_call)]\n+    run_config = RunConfig(nest_handoff_history=True)\n+    context_wrapper = RunContextWrapper(context=None)\n+    hooks = RunHooks()\n+    original_input = [get_text_input_item(\"hello\")]\n+    pre_step_items: list[RunItem] = []\n+    new_step_items: list[RunItem] = []\n+    new_response = ModelResponse(output=[tool_call], usage=Usage(), response_id=None)\n+\n+    calls: list[HandoffInputData] = []\n+\n+    def fake_nest(\n+        handoff_input_data: HandoffInputData,\n+        *,\n+        history_mapper: Any,\n+    ) -> HandoffInputData:\n+        _ = history_mapper\n+        calls.append(handoff_input_data)\n+        return handoff_input_data.clone(\n+            input_history=(\n+                {\n+                    \"role\": \"assistant\",\n+                    \"content\": \"nested\",\n+                },\n+            )\n+        )\n+\n+    monkeypatch.setattr(\"agents._run_impl.nest_handoff_history\", fake_nest)\n+\n+    result = await RunImpl.execute_handoffs(\n+        agent=source_agent,\n+        original_input=list(original_input),\n+        pre_step_items=pre_step_items,\n+        new_step_items=new_step_items,\n+        new_response=new_response,\n+        run_handoffs=run_handoffs,\n+        hooks=hooks,\n+        context_wrapper=context_wrapper,\n+        run_config=run_config,\n+    )\n+\n+    assert calls\n+    assert result.original_input == [\n+        {\n+            \"role\": \"assistant\",\n+            \"content\": \"nested\",\n+        }\n+    ]\n+\n+\n @pytest.mark.asyncio\n async def test_handoff_can_disable_run_level_history_nesting(monkeypatch: pytest.MonkeyPatch):\n     source_agent = Agent(name=\"source\")\n@@ -233,6 +329,7 @@ def fake_nest(\n         *,\n         history_mapper: Any,\n     ) -> HandoffInputData:\n+        _ = history_mapper\n         calls.append(handoff_input_data)\n         return handoff_input_data\n \n@@ -274,6 +371,7 @@ def fake_nest(\n         *,\n         history_mapper: Any,\n     ) -> HandoffInputData:\n+        _ = history_mapper\n         return handoff_input_data.clone(\n             input_history=(\n                 {",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/81975e602ca3fb86f35486eaa4d21587d2e51e49/tests%2Ftest_run_step_processing.py",
+        "sha": "afac02481d858f6903bf31155ceffec65c4e1bda",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:55:04.476128Z"
+}

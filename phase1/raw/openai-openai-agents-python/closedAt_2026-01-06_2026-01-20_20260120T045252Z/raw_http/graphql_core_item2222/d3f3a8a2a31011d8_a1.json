@@ -1,0 +1,110 @@
+{
+  "finished_at": "2026-01-20T04:53:43.375937Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "d3f3a8a2a31011d8",
+    "tag": "graphql_core_item2222"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2222,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2413",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:43 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DABB:E9ECE:161368F:1F1D579:696F0A57",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4935",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "65",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/159173215?v=4",
+              "databaseId": 159173215,
+              "id": "U_kgDOCXzKXw",
+              "login": "varunursekar",
+              "url": "https://github.com/varunursekar"
+            },
+            "authorAssociation": "NONE",
+            "body": "### Describe the bug\n\n`RunResultStreamed.stream_events()` cannot be cancelled using `asyncio` primitives. In the script below, we'd like to time out if a streaming event takes longer than 5 seconds to arrive. However, using `asyncio.wait_for`'s cancellation event is not propagated to the `stream_events` iterator. \n\n\n### Debug information\n- Agents SDK version: (e.g. `v0.0.3`)\n- Python version (e.g. Python 3.10)\n\n### Repro steps\n\n```python\nfrom agents import Agent, Runner, function_tool\nimport asyncio\nimport datetime\n\n\n@function_tool\nasync def get_secret_key():\n    await asyncio.sleep(120)\n    return \"secret_key\"\n\n\nasync def main():\n    agent = Agent(\n        name=\"secret_key_agent\",\n        model=\"gpt-4.1-mini\",\n        tools=[get_secret_key],\n    )\n\n    result = Runner.run_streamed(agent, input=\"What is the secret key?\")\n    event_iter = aiter(result.stream_events())\n\n    while True:\n        try:\n            event = await asyncio.wait_for(anext(event_iter), timeout=5)\n            print(datetime.datetime.now(), event)\n        except StopAsyncIteration:\n            break\n        except asyncio.TimeoutError:\n            print(\"Timed out waiting for next event\")\n            break  # or continue if you want to keep waiting\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```\n\n### Expected behavior\n\nThe iterator should respond as expected to asyncio cancellations. The loop above should time out. \n",
+            "closedAt": "2026-01-06T02:18:18Z",
+            "comments": {
+              "totalCount": 2
+            },
+            "createdAt": "2025-12-22T22:30:17Z",
+            "databaseId": 3755428207,
+            "id": "I_kwDOOGidp87f10lv",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a2eeef",
+                  "description": "New feature or request",
+                  "name": "enhancement"
+                },
+                {
+                  "color": "b2fdef",
+                  "description": "",
+                  "name": "feature:core"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2222,
+            "state": "CLOSED",
+            "title": "Streaming is blocking and cannot be cancelled",
+            "updatedAt": "2026-01-19T02:26:25Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2222"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:42.861130Z"
+}

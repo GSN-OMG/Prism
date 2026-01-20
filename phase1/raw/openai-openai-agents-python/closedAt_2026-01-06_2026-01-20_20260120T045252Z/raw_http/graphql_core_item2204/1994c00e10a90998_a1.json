@@ -1,0 +1,104 @@
+{
+  "finished_at": "2026-01-20T04:53:33.412284Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "1994c00e10a90998",
+    "tag": "graphql_core_item2204"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2204,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "1903",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:33 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DAAA:3CEC4D:15B9D04:1EC31BD:696F0A4D",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4949",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "51",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/3147731?v=4",
+              "databaseId": 3147731,
+              "id": "MDQ6VXNlcjMxNDc3MzE=",
+              "login": "aligokalppeker",
+              "url": "https://github.com/aligokalppeker"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "body": "### Describe the bug\nFor the OpenAI Realtime model, when the model hallucinates a tool that is not hooked into the tool list, and platforms SDK fails and raises an exception, causing teardown of the session.\n\nTool hallucination is very likely to happen in complex prompts, as well as OpenAI's text mode.\n\nMade-up tool errors are also opened with other bugs but closed due to inactivity; #1671 \n\n### Debug information\n- Agents SDK version: v0.6.3\n- Python version: Python 3.11\n\n### Repro steps\n- Add a system instruction for a made-up or non-existent tool. (also a tool name similar but not an exact one of the one added to the system)\n- During the execution, when the tool fails exception is raised, the following log is raised, and the whole session is down.\n\n``agents.exceptions.ModelBehaviorError: Tool xxxx not found.\n\n### Expected behavior\nAs the tool fails, this error can be logged and propagated as a message or handler, allowing the session to continue with the error handled by the application.\n",
+            "closedAt": "2026-01-06T05:58:39Z",
+            "comments": {
+              "totalCount": 2
+            },
+            "createdAt": "2025-12-18T18:22:08Z",
+            "databaseId": 3744270628,
+            "id": "I_kwDOOGidp87fLQkk",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "d73a4a",
+                  "description": "Something isn't working",
+                  "name": "bug"
+                },
+                {
+                  "color": "d3cbd8",
+                  "description": "",
+                  "name": "feature:realtime"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": null,
+            "number": 2204,
+            "state": "CLOSED",
+            "title": "Not found tool execution brakes down the session.",
+            "updatedAt": "2026-01-06T05:58:39Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2204"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:32.945558Z"
+}

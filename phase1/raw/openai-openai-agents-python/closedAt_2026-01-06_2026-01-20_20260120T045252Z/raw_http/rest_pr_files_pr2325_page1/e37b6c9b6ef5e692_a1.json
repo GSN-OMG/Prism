@@ -1,0 +1,64 @@
+{
+  "finished_at": "2026-01-20T04:57:51.425735Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "e37b6c9b6ef5e692",
+    "tag": "rest_pr_files_pr2325_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2325/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "3591",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:57:51 GMT",
+      "etag": "\"45b4292b75d17c7640190e1670b786f07c6888d02904b29c4ff718b2c827791f\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Sat, 17 Jan 2026 00:24:02 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DCEA:3CEC4D:15C1DDE:1ECCE8E:696F0B4F",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4935",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "65",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 40,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/65f007ca72dbf81b107822f5f4be92113a1f8b58/docs%2Ftools.md",
+        "changes": 41,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Ftools.md?ref=65f007ca72dbf81b107822f5f4be92113a1f8b58",
+        "deletions": 1,
+        "filename": "docs/tools.md",
+        "patch": "@@ -1,11 +1,12 @@\n # Tools\n \n-Tools let agents take actions: things like fetching data, running code, calling external APIs, and even using a computer. The SDK supports four categories:\n+Tools let agents take actions: things like fetching data, running code, calling external APIs, and even using a computer. The SDK supports five categories:\n \n -   Hosted OpenAI tools: run alongside the model on OpenAI servers.\n -   Local runtime tools: run in your environment (computer use, shell, apply patch).\n -   Function calling: wrap any Python function as a tool.\n -   Agents as tools: expose an agent as a callable tool without a full handoff.\n+-   Experimental: Codex tool: run workspace-scoped Codex tasks from a tool call.\n \n ## Hosted tools\n \n@@ -464,6 +465,44 @@ Disabled tools are completely hidden from the LLM at runtime, making this useful\n -   A/B testing different tool configurations\n -   Dynamic tool filtering based on runtime state\n \n+## Experimental: Codex tool\n+\n+The `codex_tool` wraps the Codex CLI so an agent can run workspace-scoped tasks (shell, file edits, MCP tools)\n+during a tool call. This surface is experimental and may change.\n+\n+```python\n+from agents import Agent\n+from agents.extensions.experimental.codex import ThreadOptions, codex_tool\n+\n+agent = Agent(\n+    name=\"Codex Agent\",\n+    instructions=\"Use the codex tool to inspect the workspace and answer the question.\",\n+    tools=[\n+        codex_tool(\n+            sandbox_mode=\"workspace-write\",\n+            working_directory=\"/path/to/repo\",\n+            default_thread_options=ThreadOptions(\n+                model=\"gpt-5.2-codex\",\n+                network_access_enabled=True,\n+                web_search_enabled=False,\n+            ),\n+            persist_session=True,\n+        )\n+    ],\n+)\n+```\n+\n+What to know:\n+\n+-   Auth: set `CODEX_API_KEY` (preferred) or `OPENAI_API_KEY`, or pass `codex_options={\"api_key\": \"...\"}`.\n+-   Inputs: tool calls must include at least one item in `inputs` with `{ \"type\": \"text\", \"text\": ... }` or `{ \"type\": \"local_image\", \"path\": ... }`.\n+-   Safety: pair `sandbox_mode` with `working_directory`; set `skip_git_repo_check=True` outside Git repos.\n+-   Behavior: `persist_session=True` reuses a single Codex thread and returns its `thread_id`.\n+-   Streaming: `on_stream` receives Codex events (reasoning, command execution, MCP tool calls, file changes, web search).\n+-   Outputs: results include `response`, `usage`, and `thread_id`; usage is added to `RunContextWrapper.usage`.\n+-   Structure: `output_schema` enforces structured Codex responses when you need typed outputs.\n+-   See `examples/tools/codex.py` for a complete runnable sample.\n+\n ## Handling errors in function tools\n \n When you create a function tool via `@function_tool`, you can pass a `failure_error_function`. This is a function that provides an error response to the LLM in case the tool call crashes.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/65f007ca72dbf81b107822f5f4be92113a1f8b58/docs%2Ftools.md",
+        "sha": "818153a823f7e42413fe752ea24fdb2ae1dac12b",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:57:50.903616Z"
+}

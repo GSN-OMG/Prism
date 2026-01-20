@@ -1,0 +1,110 @@
+{
+  "finished_at": "2026-01-20T04:53:29.162039Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "3662ee6aefd6e36c",
+    "tag": "graphql_core_item2171"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2171,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "6470",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:29 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DAA3:EFCF3:161932E:1F230A9:696F0A48",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4955",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "45",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/7621696?u=28ff16788d9c4d12ab98e662ff94c912810af1e1&v=4",
+              "databaseId": 7621696,
+              "id": "MDQ6VXNlcjc2MjE2OTY=",
+              "login": "pokliu",
+              "url": "https://github.com/pokliu"
+            },
+            "authorAssociation": "NONE",
+            "body": "### Please read this first\n\n- **Have you read the docs?**[Agents SDK docs](https://openai.github.io/openai-agents-python/) [Yes]\n- **Have you searched for related issues?** Others may have faced similar issues. [Yes]\n\n### Describe the bug\n\nWhen `nest_handoff_history` is enabled (which is the default behavior), the SDK summarizes the conversation history into a single assistant message containing `<CONVERSATION HISTORY>`. This summary correctly includes the handoff tool calls (`function_call`) and their outputs.\n\nHowever, the logic that filters the summarized items from the input history (in `agents.handoffs.history.nest_handoff_history`) only removes items where `role == \"assistant\"`. Since Tool Calls (`type=\"function_call\"`) and Tool Outputs (`type=\"function_call_output\"`) do not have a `role` attribute (or it is `None`), they are **NOT filtered out**.\n\nAs a result, the next agent receives inputs containing **duplicate** information:\n1. The \"Summary Message\" (which mentions the handoff tool call).\n2. The original \"Handoff Tool Call\" and \"Handoff Tool Output\" items in the raw message list.\n\nThis duplication causes the model to see the same action twice, confusing the context and consuming unnecessary tokens.\n\n### Debug information\n\n- Agents SDK version: ( `v0.6.2`)\n- Python version: 3.12\n\n### Repro steps\n\nRun the following script. It sets up `Agent A` to hand off to `Agent B`, and uses `call_model_input_filter` to inspect the actual input sent to `Agent B`. It requires a valid `OPENAI_API_KEY`.\n\n```python\nimport asyncio\nimport os\nfrom typing import Any\n\nfrom agents import Agent, Runner, RunConfig\nfrom agents.run import CallModelData, ModelInputData\n\n# Ensure OPENAI_API_KEY is set in your environment\nos.environ[\"OPENAI_API_KEY\"] = \"sk-proj-***\"\n\ndef check_duplication_filter(data: CallModelData[Any]) -> ModelInputData:\n    \"\"\"\n    Inspects the input for Agent B to check for duplicates.\n    \"\"\"\n    if data.agent.name == \"AgentB\":\n        print(f\"\\n=== Inspecting Input for {data.agent.name} ===\")\n        summary_found = False\n        tool_call_found = False\n        \n        inputs = data.model_data.input\n        for i, item in enumerate(inputs):\n            role = item.get('role')\n            msg_type = item.get('type')\n            content = str(item.get('content', '')).replace('\\n', ' ')\n            name = item.get('name', '')\n            print(f\"[{i}] role={role}, type={msg_type}, name={name}, content={content}...\")\n\n            # 1. Check for Summary Message\n            if role == \"assistant\" and \"<CONVERSATION HISTORY>\" in content:\n                summary_found = True\n            \n            # 2. Check for Raw Handoff Tool Call\n            if msg_type == \"function_call\" and \"transfer_to\" in name:\n                tool_call_found = True\n        \n        if summary_found and tool_call_found:\n            print(\"\\n[FAIL] Duplication detected: Both Summary and Raw Tool Call exist in input!\")\n        else:\n            print(\"\\n[PASS] No duplication detected.\")\n            \n    return data.model_data\n\nasync def main():\n    agent_b = Agent(\n        name=\"AgentB\", \n        instructions=\"You are Agent B. Just say hello.\"\n    )\n    \n    agent_a = Agent(\n        name=\"AgentA\", \n        instructions=\"You are Agent A. Just transfer to AgentB\",\n        handoffs=[agent_b]\n    )\n\n    print(\"Running reproduction flow...\")\n    \n    # Run Agent A and let it hand off to Agent B\n    await Runner.run(\n        agent_a, \n        \"Start conversation\", \n        run_config=RunConfig(\n            call_model_input_filter=check_duplication_filter\n        )\n    )\n\nif __name__ == \"__main__\":\n    asyncio.run(main())\n```\n\n**Output:**\n```\nRunning reproduction flow...\n\n=== Inspecting Input for AgentB ===\n[0] role=assistant, type=None, name=, content=For context, here is the conversation so far between the user and the previous agent: <CONVERSATION HISTORY> 1. user: Start conversation 2. function_call: {\"arguments\": \"{}\", \"call_id\": \"call_DjTNgeg17pk5Y2c8peaG2i6Z\", \"name\": \"transfer_to_agentb\", \"id\": \"fc_025c33410193e02200693a4ad2e8e08190b56f9e509fc3dee9\", \"status\": \"completed\"} 3. function_call_output: {\"call_id\": \"call_DjTNgeg17pk5Y2c8peaG2i6Z\", \"output\": \"{\\\"assistant\\\": \\\"AgentB\\\"}\"} </CONVERSATION HISTORY>...\n[1] role=None, type=function_call, name=transfer_to_agentb, content=...\n[2] role=None, type=function_call_output, name=, content=...\n\n[FAIL] Duplication detected: Both Summary and Raw Tool Call exist in input!\n```\n\n### Expected behavior\n\nThe input list for the next agent (`Agent B`) should ONLY contain the summarized history message. The raw handoff tool calls and outputs should be removed from the input list because they are already represented in the `<CONVERSATION HISTORY>` summary.\n\n### Suggested Fix\n\nIn `agents/handoffs/history.py`, the filtering logic in `nest_handoff_history` should be updated to also filter out items based on their type, not just their role.\n\n```python\n    filtered_pre_items = tuple(\n        item\n        for item in handoff_input_data.pre_handoff_items\n        if _get_run_item_role(item) != \"assistant\" \n        and item.type not in (\"handoff_call_item\", \"handoff_output_item\", \"tool_call_item\", \"tool_call_output_item\")\n    )\n```",
+            "closedAt": "2026-01-16T11:24:14Z",
+            "comments": {
+              "totalCount": 3
+            },
+            "createdAt": "2025-12-11T04:40:55Z",
+            "databaseId": 3717727253,
+            "id": "I_kwDOOGidp87dmAQV",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "d73a4a",
+                  "description": "Something isn't working",
+                  "name": "bug"
+                },
+                {
+                  "color": "b2fdef",
+                  "description": "",
+                  "name": "feature:core"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 4,
+              "state": "OPEN",
+              "title": "0.8.x"
+            },
+            "number": 2171,
+            "state": "CLOSED",
+            "title": "Bug: Next agent receives duplicate history (summary + raw tool calls) when nest_handoff_history is enabled",
+            "updatedAt": "2026-01-16T11:24:14Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2171"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:28.674409Z"
+}

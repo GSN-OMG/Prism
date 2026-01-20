@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:55:19.455715Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "f85c7cb037b647af",
+    "tag": "rest_pr_files_pr2277_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2277/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "9151",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:55:19 GMT",
+      "etag": "\"d37901cca2ce3a7b6c053ae9737c7108f3c32d387d6704a29660cfe6c8df1649\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Thu, 08 Jan 2026 09:19:15 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DB86:2324B0:1607AE6:1F12A61:696F0AB7",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4971",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "29",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 76,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a92760ff14e4757327a34bee39c911275dacfbd5/src%2Fagents%2Fitems.py",
+        "changes": 76,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Fitems.py?ref=a92760ff14e4757327a34bee39c911275dacfbd5",
+        "deletions": 0,
+        "filename": "src/agents/items.py",
+        "patch": "@@ -520,3 +520,79 @@ def _convert_single_tool_output_pydantic_model(\n         else:\n             assert_never(output)\n             raise ValueError(f\"Unexpected tool output type: {output}\")\n+\n+    @classmethod\n+    def filter_by_type(\n+        cls, items: list[RunItem], item_type: type[RunItem] | tuple[type[RunItem], ...]\n+    ) -> list[RunItem]:\n+        \"\"\"Filter run items by their type.\n+\n+        Args:\n+            items: List of run items to filter.\n+            item_type: A single type or tuple of types to filter by.\n+\n+        Returns:\n+            A list containing only items matching the specified type(s).\n+\n+        Example:\n+            >>> messages = ItemHelpers.filter_by_type(result.new_items, MessageOutputItem)\n+            >>> tool_items = ItemHelpers.filter_by_type(items, (ToolCallItem, ToolCallOutputItem))\n+        \"\"\"\n+        return [item for item in items if isinstance(item, item_type)]\n+\n+    @classmethod\n+    def count_by_type(cls, items: list[RunItem]) -> dict[str, int]:\n+        \"\"\"Count run items grouped by their type.\n+\n+        Args:\n+            items: List of run items to count.\n+\n+        Returns:\n+            A dictionary mapping item type names to their counts.\n+\n+        Example:\n+            >>> counts = ItemHelpers.count_by_type(result.new_items)\n+            >>> print(counts)  # {'message_output_item': 2, 'tool_call_item': 3, ...}\n+        \"\"\"\n+        counts: dict[str, int] = {}\n+        for item in items:\n+            type_name = getattr(item, \"type\", item.__class__.__name__)\n+            counts[type_name] = counts.get(type_name, 0) + 1\n+        return counts\n+\n+    @classmethod\n+    def has_handoffs(cls, items: list[RunItem]) -> bool:\n+        \"\"\"Check if any run items represent handoffs.\n+\n+        Args:\n+            items: List of run items to check.\n+\n+        Returns:\n+            True if any item is a handoff-related item, False otherwise.\n+        \"\"\"\n+        return any(isinstance(item, (HandoffCallItem, HandoffOutputItem)) for item in items)\n+\n+    @classmethod\n+    def get_tool_calls(cls, items: list[RunItem]) -> list[ToolCallItem]:\n+        \"\"\"Extract all tool call items from a list of run items.\n+\n+        Args:\n+            items: List of run items to extract from.\n+\n+        Returns:\n+            A list of ToolCallItem instances.\n+        \"\"\"\n+        return [item for item in items if isinstance(item, ToolCallItem)]\n+\n+    @classmethod\n+    def get_messages(cls, items: list[RunItem]) -> list[MessageOutputItem]:\n+        \"\"\"Extract all message output items from a list of run items.\n+\n+        Args:\n+            items: List of run items to extract from.\n+\n+        Returns:\n+            A list of MessageOutputItem instances.\n+        \"\"\"\n+        return [item for item in items if isinstance(item, MessageOutputItem)]\n+",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a92760ff14e4757327a34bee39c911275dacfbd5/src%2Fagents%2Fitems.py",
+        "sha": "fb923b18b9095acc366f25f204c88e6342fb4bf6",
+        "status": "modified"
+      },
+      {
+        "additions": 128,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a92760ff14e4757327a34bee39c911275dacfbd5/tests%2Ftest_item_helpers_utility.py",
+        "changes": 128,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_item_helpers_utility.py?ref=a92760ff14e4757327a34bee39c911275dacfbd5",
+        "deletions": 0,
+        "filename": "tests/test_item_helpers_utility.py",
+        "patch": "@@ -0,0 +1,128 @@\n+\"\"\"Tests for ItemHelpers utility methods.\"\"\"\n+\n+from __future__ import annotations\n+\n+from unittest.mock import MagicMock\n+\n+from agents.items import (\n+    HandoffCallItem,\n+    HandoffOutputItem,\n+    ItemHelpers,\n+    MessageOutputItem,\n+    ToolCallItem,\n+    ToolCallOutputItem,\n+)\n+\n+\n+def create_mock_agent() -> MagicMock:\n+    \"\"\"Create a mock agent for testing.\"\"\"\n+    agent = MagicMock()\n+    agent.name = \"TestAgent\"\n+    return agent\n+\n+\n+class TestItemHelpersUtilityMethods:\n+    \"\"\"Tests for ItemHelpers utility methods.\"\"\"\n+\n+    def test_filter_by_type_single_type(self) -> None:\n+        \"\"\"Filter by a single type should return matching items.\"\"\"\n+        agent = create_mock_agent()\n+        msg_item = MagicMock(spec=MessageOutputItem)\n+        msg_item.type = \"message_output_item\"\n+        tool_item = MagicMock(spec=ToolCallItem)\n+        tool_item.type = \"tool_call_item\"\n+\n+        items = [msg_item, tool_item, msg_item]\n+        result = ItemHelpers.filter_by_type(items, MessageOutputItem)\n+\n+        assert len(result) == 2\n+        for item in result:\n+            assert isinstance(item, MessageOutputItem)\n+\n+    def test_filter_by_type_tuple_of_types(self) -> None:\n+        \"\"\"Filter by tuple of types should return all matching items.\"\"\"\n+        msg_item = MagicMock(spec=MessageOutputItem)\n+        tool_item = MagicMock(spec=ToolCallItem)\n+        output_item = MagicMock(spec=ToolCallOutputItem)\n+\n+        items = [msg_item, tool_item, output_item]\n+        result = ItemHelpers.filter_by_type(items, (ToolCallItem, ToolCallOutputItem))\n+\n+        assert len(result) == 2\n+\n+    def test_filter_by_type_empty_list(self) -> None:\n+        \"\"\"Filter on empty list should return empty list.\"\"\"\n+        result = ItemHelpers.filter_by_type([], MessageOutputItem)\n+        assert result == []\n+\n+    def test_count_by_type_mixed_items(self) -> None:\n+        \"\"\"Count should return correct counts per type.\"\"\"\n+        msg1 = MagicMock(spec=MessageOutputItem)\n+        msg1.type = \"message_output_item\"\n+        msg2 = MagicMock(spec=MessageOutputItem)\n+        msg2.type = \"message_output_item\"\n+        tool = MagicMock(spec=ToolCallItem)\n+        tool.type = \"tool_call_item\"\n+\n+        items = [msg1, msg2, tool]\n+        counts = ItemHelpers.count_by_type(items)\n+\n+        assert counts[\"message_output_item\"] == 2\n+        assert counts[\"tool_call_item\"] == 1\n+\n+    def test_count_by_type_empty_list(self) -> None:\n+        \"\"\"Count on empty list should return empty dict.\"\"\"\n+        counts = ItemHelpers.count_by_type([])\n+        assert counts == {}\n+\n+    def test_has_handoffs_true(self) -> None:\n+        \"\"\"has_handoffs should return True when handoff items present.\"\"\"\n+        msg = MagicMock(spec=MessageOutputItem)\n+        handoff = MagicMock(spec=HandoffCallItem)\n+\n+        assert ItemHelpers.has_handoffs([msg, handoff]) is True\n+\n+    def test_has_handoffs_with_output_item(self) -> None:\n+        \"\"\"has_handoffs should return True for HandoffOutputItem.\"\"\"\n+        msg = MagicMock(spec=MessageOutputItem)\n+        handoff_out = MagicMock(spec=HandoffOutputItem)\n+\n+        assert ItemHelpers.has_handoffs([msg, handoff_out]) is True\n+\n+    def test_has_handoffs_false(self) -> None:\n+        \"\"\"has_handoffs should return False when no handoffs present.\"\"\"\n+        msg = MagicMock(spec=MessageOutputItem)\n+        tool = MagicMock(spec=ToolCallItem)\n+\n+        assert ItemHelpers.has_handoffs([msg, tool]) is False\n+\n+    def test_has_handoffs_empty_list(self) -> None:\n+        \"\"\"has_handoffs should return False for empty list.\"\"\"\n+        assert ItemHelpers.has_handoffs([]) is False\n+\n+    def test_get_tool_calls(self) -> None:\n+        \"\"\"get_tool_calls should extract only ToolCallItem instances.\"\"\"\n+        msg = MagicMock(spec=MessageOutputItem)\n+        tool1 = MagicMock(spec=ToolCallItem)\n+        tool2 = MagicMock(spec=ToolCallItem)\n+        output = MagicMock(spec=ToolCallOutputItem)\n+\n+        items = [msg, tool1, output, tool2]\n+        result = ItemHelpers.get_tool_calls(items)\n+\n+        assert len(result) == 2\n+        for item in result:\n+            assert isinstance(item, ToolCallItem)\n+\n+    def test_get_messages(self) -> None:\n+        \"\"\"get_messages should extract only MessageOutputItem instances.\"\"\"\n+        msg1 = MagicMock(spec=MessageOutputItem)\n+        msg2 = MagicMock(spec=MessageOutputItem)\n+        tool = MagicMock(spec=ToolCallItem)\n+\n+        items = [msg1, tool, msg2]\n+        result = ItemHelpers.get_messages(items)\n+\n+        assert len(result) == 2\n+        for item in result:\n+            assert isinstance(item, MessageOutputItem)",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a92760ff14e4757327a34bee39c911275dacfbd5/tests%2Ftest_item_helpers_utility.py",
+        "sha": "cc074815136749800129462e9e2d7e965395b34b",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:55:18.942333Z"
+}

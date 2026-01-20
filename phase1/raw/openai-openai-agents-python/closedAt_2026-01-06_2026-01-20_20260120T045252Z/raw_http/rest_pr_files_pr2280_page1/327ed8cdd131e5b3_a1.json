@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:55:30.188369Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "327ed8cdd131e5b3",
+    "tag": "rest_pr_files_pr2280_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2280/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "5795",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:55:30 GMT",
+      "etag": "\"55594b92048c905e7b1d052fbb99d39aced41db04ea66f6eef6281ebc9712839\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Thu, 08 Jan 2026 10:14:23 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DB9E:F2819:169FFBF:1FAA54E:696F0AC1",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4968",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "32",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 54,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/dacb5de70cfd68b4c7a45b1edd652e38dc9996b5/src%2Fagents%2Fagent.py",
+        "changes": 54,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Fagent.py?ref=dacb5de70cfd68b4c7a45b1edd652e38dc9996b5",
+        "deletions": 0,
+        "filename": "src/agents/agent.py",
+        "patch": "@@ -387,6 +387,60 @@ def __post_init__(self):\n                 f\"got {type(self.reset_tool_choice).__name__}\"\n             )\n \n+    @property\n+    def has_tools(self) -> bool:\n+        \"\"\"Check if this agent has any tools configured.\n+\n+        Note: This only checks the static tools list, not MCP server tools.\n+        Use `get_all_tools()` to get all tools including MCP tools at runtime.\n+\n+        Returns:\n+            True if the agent has at least one tool, False otherwise.\n+        \"\"\"\n+        return len(self.tools) > 0\n+\n+    @property\n+    def has_handoffs(self) -> bool:\n+        \"\"\"Check if this agent has any handoffs configured.\n+\n+        Returns:\n+            True if the agent has at least one handoff, False otherwise.\n+        \"\"\"\n+        return len(self.handoffs) > 0\n+\n+    @property\n+    def tool_names(self) -> list[str]:\n+        \"\"\"Get the names of all static tools.\n+\n+        Note: This only returns names of static tools, not MCP server tools.\n+        Use `get_all_tools()` to get all tools including MCP tools at runtime.\n+\n+        Returns:\n+            List of tool names.\n+        \"\"\"\n+        return [tool.name for tool in self.tools]\n+\n+    @property\n+    def handoff_names(self) -> list[str]:\n+        \"\"\"Get the names of all handoff targets.\n+\n+        Returns:\n+            List of handoff target agent names.\n+        \"\"\"\n+        return [\n+            h.agent_name if isinstance(h, Handoff) else h.name\n+            for h in self.handoffs\n+        ]\n+\n+    @property\n+    def has_guardrails(self) -> bool:\n+        \"\"\"Check if this agent has any guardrails configured.\n+\n+        Returns:\n+            True if the agent has any input or output guardrails, False otherwise.\n+        \"\"\"\n+        return len(self.input_guardrails) > 0 or len(self.output_guardrails) > 0\n+\n     def clone(self, **kwargs: Any) -> Agent[TContext]:\n         \"\"\"Make a copy of the agent, with the given arguments changed.\n         Notes:",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/dacb5de70cfd68b4c7a45b1edd652e38dc9996b5/src%2Fagents%2Fagent.py",
+        "sha": "15815962bc52da9dd0c1db25325efdceaa3fb30a",
+        "status": "modified"
+      },
+      {
+        "additions": 63,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/dacb5de70cfd68b4c7a45b1edd652e38dc9996b5/tests%2Ftest_agent_utility.py",
+        "changes": 63,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_agent_utility.py?ref=dacb5de70cfd68b4c7a45b1edd652e38dc9996b5",
+        "deletions": 0,
+        "filename": "tests/test_agent_utility.py",
+        "patch": "@@ -0,0 +1,63 @@\n+\"\"\"Tests for Agent utility properties.\"\"\"\n+\n+from __future__ import annotations\n+\n+from agents.agent import Agent\n+from agents.tool import function_tool\n+\n+\n+@function_tool\n+def sample_tool(x: str) -> str:\n+    \"\"\"A sample tool.\"\"\"\n+    return x\n+\n+\n+class TestAgentUtilityProperties:\n+    \"\"\"Tests for Agent utility properties.\"\"\"\n+\n+    def test_has_tools_true(self) -> None:\n+        \"\"\"has_tools should be True when agent has tools.\"\"\"\n+        agent = Agent(name=\"test\", tools=[sample_tool])\n+        assert agent.has_tools is True\n+\n+    def test_has_tools_false(self) -> None:\n+        \"\"\"has_tools should be False when agent has no tools.\"\"\"\n+        agent = Agent(name=\"test\")\n+        assert agent.has_tools is False\n+\n+    def test_has_handoffs_true(self) -> None:\n+        \"\"\"has_handoffs should be True when agent has handoffs.\"\"\"\n+        other = Agent(name=\"other\")\n+        agent = Agent(name=\"test\", handoffs=[other])\n+        assert agent.has_handoffs is True\n+\n+    def test_has_handoffs_false(self) -> None:\n+        \"\"\"has_handoffs should be False when agent has no handoffs.\"\"\"\n+        agent = Agent(name=\"test\")\n+        assert agent.has_handoffs is False\n+\n+    def test_tool_names_returns_list(self) -> None:\n+        \"\"\"tool_names should return list of tool names.\"\"\"\n+        agent = Agent(name=\"test\", tools=[sample_tool])\n+        assert \"sample_tool\" in agent.tool_names\n+\n+    def test_tool_names_empty_list(self) -> None:\n+        \"\"\"tool_names should return empty list when no tools.\"\"\"\n+        agent = Agent(name=\"test\")\n+        assert agent.tool_names == []\n+\n+    def test_handoff_names_returns_list(self) -> None:\n+        \"\"\"handoff_names should return list of handoff names.\"\"\"\n+        other = Agent(name=\"handler\")\n+        agent = Agent(name=\"test\", handoffs=[other])\n+        assert \"handler\" in agent.handoff_names\n+\n+    def test_handoff_names_empty_list(self) -> None:\n+        \"\"\"handoff_names should return empty list when no handoffs.\"\"\"\n+        agent = Agent(name=\"test\")\n+        assert agent.handoff_names == []\n+\n+    def test_has_guardrails_false_by_default(self) -> None:\n+        \"\"\"has_guardrails should be False by default.\"\"\"\n+        agent = Agent(name=\"test\")\n+        assert agent.has_guardrails is False",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/dacb5de70cfd68b4c7a45b1edd652e38dc9996b5/tests%2Ftest_agent_utility.py",
+        "sha": "5f98b1f028b2381650fb768477fb04342e770303",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:55:29.743670Z"
+}

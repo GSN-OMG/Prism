@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:56:35.936307Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "89bafd6157bef18c",
+    "tag": "rest_pr_files_pr2302_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2302/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "5934",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:35 GMT",
+      "etag": "\"ef704c86226c0517d583a5803dbfab7deac6aab9b886f5e379508177b0258cb6\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Tue, 13 Jan 2026 12:07:36 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DC2F:EFCF3:161E99E:1F29B7C:696F0B03",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4953",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "47",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 27,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/f79f31bd11641b0c6674eef48d8e26d9a46498b4/src%2Fagents%2Ftracing%2Fprovider.py",
+        "changes": 32,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Ftracing%2Fprovider.py?ref=f79f31bd11641b0c6674eef48d8e26d9a46498b4",
+        "deletions": 5,
+        "filename": "src/agents/tracing/provider.py",
+        "patch": "@@ -196,10 +196,10 @@ def shutdown(self) -> None:\n class DefaultTraceProvider(TraceProvider):\n     def __init__(self) -> None:\n         self._multi_processor = SynchronousMultiTracingProcessor()\n-        self._disabled = os.environ.get(\"OPENAI_AGENTS_DISABLE_TRACING\", \"false\").lower() in (\n-            \"true\",\n-            \"1\",\n-        )\n+        # Lazily read env flag on first use to honor env set after import but before first trace.\n+        self._env_disabled: bool | None = None\n+        self._manual_disabled: bool | None = None\n+        self._disabled = False\n \n     def register_processor(self, processor: TracingProcessor):\n         \"\"\"\n@@ -229,7 +229,27 @@ def set_disabled(self, disabled: bool) -> None:\n         \"\"\"\n         Set whether tracing is disabled.\n         \"\"\"\n-        self._disabled = disabled\n+        self._manual_disabled = disabled\n+        self._refresh_disabled_flag()\n+\n+    def _refresh_disabled_flag(self) -> None:\n+        \"\"\"Refresh disabled flag from cached env value and manual override.\n+\n+        The env flag is read once on first use to avoid surprises mid-run; further env\n+        changes are ignored after the manual flag is set via set_disabled, which always\n+        takes precedence over the env value.\n+        \"\"\"\n+        if self._env_disabled is None:\n+            self._env_disabled = os.environ.get(\n+                \"OPENAI_AGENTS_DISABLE_TRACING\", \"false\"\n+            ).lower() in (\n+                \"true\",\n+                \"1\",\n+            )\n+        if self._manual_disabled is None:\n+            self._disabled = bool(self._env_disabled)\n+        else:\n+            self._disabled = self._manual_disabled\n \n     def time_iso(self) -> str:\n         \"\"\"Return the current time in ISO 8601 format.\"\"\"\n@@ -259,6 +279,7 @@ def create_trace(\n         \"\"\"\n         Create a new trace.\n         \"\"\"\n+        self._refresh_disabled_flag()\n         if self._disabled or disabled:\n             logger.debug(f\"Tracing is disabled. Not creating trace {name}\")\n             return NoOpTrace()\n@@ -286,6 +307,7 @@ def create_span(\n         \"\"\"\n         Create a new span.\n         \"\"\"\n+        self._refresh_disabled_flag()\n         tracing_api_key: str | None = None\n         if self._disabled or disabled:\n             logger.debug(f\"Tracing is disabled. Not creating span {span_data}\")",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/f79f31bd11641b0c6674eef48d8e26d9a46498b4/src%2Fagents%2Ftracing%2Fprovider.py",
+        "sha": "0439b53d7399d24d9185cc8912edf49fe9f22cb0",
+        "status": "modified"
+      },
+      {
+        "additions": 56,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/f79f31bd11641b0c6674eef48d8e26d9a46498b4/tests%2Ftracing%2Ftest_tracing_env_disable.py",
+        "changes": 56,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftracing%2Ftest_tracing_env_disable.py?ref=f79f31bd11641b0c6674eef48d8e26d9a46498b4",
+        "deletions": 0,
+        "filename": "tests/tracing/test_tracing_env_disable.py",
+        "patch": "@@ -0,0 +1,56 @@\n+from agents.tracing.provider import DefaultTraceProvider\n+from agents.tracing.traces import NoOpTrace, TraceImpl\n+\n+\n+def test_env_read_on_first_use(monkeypatch):\n+    \"\"\"Env flag set before first trace disables tracing.\"\"\"\n+    monkeypatch.setenv(\"OPENAI_AGENTS_DISABLE_TRACING\", \"1\")\n+    provider = DefaultTraceProvider()\n+\n+    trace = provider.create_trace(\"demo\")\n+\n+    assert isinstance(trace, NoOpTrace)\n+\n+\n+def test_env_cached_after_first_use(monkeypatch):\n+    \"\"\"Env flag is cached after the first trace and later env changes do not flip it.\"\"\"\n+    monkeypatch.setenv(\"OPENAI_AGENTS_DISABLE_TRACING\", \"0\")\n+    provider = DefaultTraceProvider()\n+\n+    first = provider.create_trace(\"first\")\n+    assert isinstance(first, TraceImpl)\n+\n+    # Change env after first use; cached value should keep tracing enabled.\n+    monkeypatch.setenv(\"OPENAI_AGENTS_DISABLE_TRACING\", \"1\")\n+    second = provider.create_trace(\"second\")\n+\n+    assert isinstance(second, TraceImpl)\n+\n+\n+def test_manual_override_after_cache(monkeypatch):\n+    \"\"\"Manual toggle still works after env value is cached.\"\"\"\n+    monkeypatch.setenv(\"OPENAI_AGENTS_DISABLE_TRACING\", \"0\")\n+    provider = DefaultTraceProvider()\n+\n+    provider.create_trace(\"warmup\")\n+    provider.set_disabled(True)\n+    disabled = provider.create_trace(\"disabled\")\n+    assert isinstance(disabled, NoOpTrace)\n+\n+    provider.set_disabled(False)\n+    enabled = provider.create_trace(\"enabled\")\n+    assert isinstance(enabled, TraceImpl)\n+\n+\n+def test_manual_override_env_disable(monkeypatch):\n+    \"\"\"Manual enable can override env disable flag.\"\"\"\n+    monkeypatch.setenv(\"OPENAI_AGENTS_DISABLE_TRACING\", \"1\")\n+    provider = DefaultTraceProvider()\n+\n+    env_disabled = provider.create_trace(\"env_disabled\")\n+    assert isinstance(env_disabled, NoOpTrace)\n+\n+    provider.set_disabled(False)\n+    reenabled = provider.create_trace(\"reenabled\")\n+\n+    assert isinstance(reenabled, TraceImpl)",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/f79f31bd11641b0c6674eef48d8e26d9a46498b4/tests%2Ftracing%2Ftest_tracing_env_disable.py",
+        "sha": "2cdb3559dd7321928999d51c24ef4754e9919f73",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:35.502018Z"
+}

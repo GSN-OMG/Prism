@@ -1,0 +1,131 @@
+{
+  "finished_at": "2026-01-20T04:54:41.110493Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "c1fd9858461f12e8",
+    "tag": "graphql_core_item2263"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2263,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2313",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:41 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DB2C:2324B0:16065AD:1F110D9:696F0A90",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4857",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "143",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 2,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "authorAssociation": "MEMBER",
+            "baseRefName": "main",
+            "body": "This release will include:\r\n- https://github.com/openai/openai-agents-python/pull/2260\r\n- https://github.com/openai/openai-agents-python/pull/2227\r\n- https://github.com/openai/openai-agents-python/pull/2225\r\n- https://github.com/openai/openai-agents-python/pull/2235\r\n- https://github.com/openai/openai-agents-python/pull/2226\r\n- https://github.com/openai/openai-agents-python/pull/2213\r\n- https://github.com/openai/openai-agents-python/pull/2243\r\n- https://github.com/openai/openai-agents-python/pull/2229\r\n- https://github.com/openai/openai-agents-python/pull/2158\r\n- https://github.com/openai/openai-agents-python/pull/2214\r\n- https://github.com/openai/openai-agents-python/pull/2238\r\n\r\nfull diff: https://github.com/openai/openai-agents-python/compare/v0.6.4...main\r\n",
+            "changedFiles": 2,
+            "closedAt": "2026-01-06T15:31:45Z",
+            "comments": {
+              "totalCount": 0
+            },
+            "createdAt": "2026-01-06T03:06:26Z",
+            "databaseId": 3148073298,
+            "deletions": 2,
+            "files": {
+              "totalCount": 2
+            },
+            "headRefName": "v0.6.5-release",
+            "headRefOid": "51ba1523419c09fced42e427d5983dffcdbc7773",
+            "id": "PR_kwDOOGidp867o8lS",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "e7cef1",
+                  "description": "",
+                  "name": "project"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "ace9f11ec9da6e5521e1b2bae970f06906ebb5fc",
+              "url": "https://github.com/openai/openai-agents-python/commit/ace9f11ec9da6e5521e1b2bae970f06906ebb5fc"
+            },
+            "mergedAt": "2026-01-06T15:31:44Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/192034341?u=354bf3446864cb9bc2cabd5ddbbf4cb7efad21ba&v=4",
+              "databaseId": 192034341,
+              "id": "U_kgDOC3I2JQ",
+              "login": "rm-openai",
+              "url": "https://github.com/rm-openai"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2263,
+            "reviews": {
+              "totalCount": 1
+            },
+            "state": "MERGED",
+            "title": "v0.6.5",
+            "updatedAt": "2026-01-06T15:31:47Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2263"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:40.471453Z"
+}

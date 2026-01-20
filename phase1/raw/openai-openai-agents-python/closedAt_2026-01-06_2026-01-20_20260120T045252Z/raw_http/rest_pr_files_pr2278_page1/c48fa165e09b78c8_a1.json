@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:55:23.111754Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "c48fa165e09b78c8",
+    "tag": "rest_pr_files_pr2278_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2278/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "6263",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:55:23 GMT",
+      "etag": "\"3eb0f9ff10d6f875be6d9edfd3b62c8bd355cbb6957c52cf828f75f49d909b19\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Thu, 08 Jan 2026 09:26:03 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DB8F:F2819:169FC78:1FAA14D:696F0ABA",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4970",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "30",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 47,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/858b898a276bb601f1ab054ebdf6dbebc3e6ad8e/src%2Fagents%2Frun.py",
+        "changes": 47,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Frun.py?ref=858b898a276bb601f1ab054ebdf6dbebc3e6ad8e",
+        "deletions": 0,
+        "filename": "src/agents/run.py",
+        "patch": "@@ -273,6 +273,53 @@ class RunConfig:\n     For example, you can use this to add a system prompt to the input.\n     \"\"\"\n \n+    def __repr__(self) -> str:\n+        \"\"\"Return a concise representation of the RunConfig for debugging.\n+\n+        Only shows non-default values to keep output readable.\n+        \"\"\"\n+        parts = [\"RunConfig(\"]\n+        if self.model is not None:\n+            model_name = self.model if isinstance(self.model, str) else type(self.model).__name__\n+            parts.append(f\"model={model_name!r}\")\n+        if self.workflow_name != \"Agent workflow\":\n+            parts.append(f\"workflow_name={self.workflow_name!r}\")\n+        if self.tracing_disabled:\n+            parts.append(\"tracing_disabled=True\")\n+        if self.nest_handoff_history is False:\n+            parts.append(\"nest_handoff_history=False\")\n+        if self.input_guardrails:\n+            parts.append(f\"input_guardrails=[{len(self.input_guardrails)} items]\")\n+        if self.output_guardrails:\n+            parts.append(f\"output_guardrails=[{len(self.output_guardrails)} items]\")\n+        if self.trace_id:\n+            parts.append(f\"trace_id={self.trace_id!r}\")\n+        if self.group_id:\n+            parts.append(f\"group_id={self.group_id!r}\")\n+\n+        if len(parts) == 1:\n+            return \"RunConfig()\"\n+        return \", \".join(parts) + \")\"\n+\n+    def copy(self, **overrides: Any) -> \"RunConfig\":\n+        \"\"\"Create a copy of this RunConfig with optional field overrides.\n+\n+        Args:\n+            **overrides: Field values to override in the copy.\n+\n+        Returns:\n+            A new RunConfig with the specified overrides applied.\n+\n+        Example:\n+            >>> config = RunConfig(workflow_name=\"Base\", tracing_disabled=True)\n+            >>> new_config = config.copy(workflow_name=\"Derived\")\n+        \"\"\"\n+        from dataclasses import fields\n+\n+        current_values = {f.name: getattr(self, f.name) for f in fields(self)}\n+        current_values.update(overrides)\n+        return RunConfig(**current_values)\n+\n \n class RunOptions(TypedDict, Generic[TContext]):\n     \"\"\"Arguments for ``AgentRunner`` methods.\"\"\"",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/858b898a276bb601f1ab054ebdf6dbebc3e6ad8e/src%2Fagents%2Frun.py",
+        "sha": "e200fe74469c2dfeeca76dc9b98d34f1780fef5b",
+        "status": "modified"
+      },
+      {
+        "additions": 65,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/858b898a276bb601f1ab054ebdf6dbebc3e6ad8e/tests%2Ftest_run_config_utility.py",
+        "changes": 65,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_run_config_utility.py?ref=858b898a276bb601f1ab054ebdf6dbebc3e6ad8e",
+        "deletions": 0,
+        "filename": "tests/test_run_config_utility.py",
+        "patch": "@@ -0,0 +1,65 @@\n+\"\"\"Tests for RunConfig utility methods.\"\"\"\n+\n+from __future__ import annotations\n+\n+from agents.run import RunConfig\n+\n+\n+class TestRunConfigUtilityMethods:\n+    \"\"\"Tests for RunConfig utility methods.\"\"\"\n+\n+    def test_repr_default_config(self) -> None:\n+        \"\"\"Default RunConfig should have concise repr.\"\"\"\n+        config = RunConfig()\n+        assert repr(config) == \"RunConfig()\"\n+\n+    def test_repr_with_model(self) -> None:\n+        \"\"\"RunConfig with model should show model in repr.\"\"\"\n+        config = RunConfig(model=\"gpt-4o\")\n+        assert \"model='gpt-4o'\" in repr(config)\n+\n+    def test_repr_with_custom_workflow_name(self) -> None:\n+        \"\"\"RunConfig with custom workflow name should show it.\"\"\"\n+        config = RunConfig(workflow_name=\"Custom Flow\")\n+        assert \"workflow_name='Custom Flow'\" in repr(config)\n+\n+    def test_repr_with_tracing_disabled(self) -> None:\n+        \"\"\"RunConfig with tracing disabled should show it.\"\"\"\n+        config = RunConfig(tracing_disabled=True)\n+        assert \"tracing_disabled=True\" in repr(config)\n+\n+    def test_repr_with_trace_id(self) -> None:\n+        \"\"\"RunConfig with trace_id should show it.\"\"\"\n+        config = RunConfig(trace_id=\"trace-123\")\n+        assert \"trace_id=\" in repr(config)\n+\n+    def test_copy_creates_new_instance(self) -> None:\n+        \"\"\"copy() should create a new instance.\"\"\"\n+        original = RunConfig(workflow_name=\"Original\")\n+        copied = original.copy()\n+        assert copied is not original\n+        assert copied.workflow_name == original.workflow_name\n+\n+    def test_copy_with_overrides(self) -> None:\n+        \"\"\"copy() should apply overrides.\"\"\"\n+        original = RunConfig(workflow_name=\"Original\", tracing_disabled=False)\n+        copied = original.copy(workflow_name=\"Modified\", tracing_disabled=True)\n+        \n+        assert original.workflow_name == \"Original\"\n+        assert original.tracing_disabled is False\n+        \n+        assert copied.workflow_name == \"Modified\"\n+        assert copied.tracing_disabled is True\n+\n+    def test_copy_preserves_other_fields(self) -> None:\n+        \"\"\"copy() should preserve fields not in overrides.\"\"\"\n+        original = RunConfig(\n+            workflow_name=\"Test\",\n+            trace_id=\"trace-123\",\n+            group_id=\"group-456\",\n+        )\n+        copied = original.copy(workflow_name=\"Modified\")\n+        \n+        assert copied.trace_id == \"trace-123\"\n+        assert copied.group_id == \"group-456\"\n+        assert copied.workflow_name == \"Modified\"",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/858b898a276bb601f1ab054ebdf6dbebc3e6ad8e/tests%2Ftest_run_config_utility.py",
+        "sha": "479d56656e4d50c91ab26a4b6880cf41d3fd0fcf",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:55:22.676696Z"
+}

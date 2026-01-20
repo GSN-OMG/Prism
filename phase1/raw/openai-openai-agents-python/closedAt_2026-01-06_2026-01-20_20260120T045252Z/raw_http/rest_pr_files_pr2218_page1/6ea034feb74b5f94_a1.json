@@ -1,0 +1,64 @@
+{
+  "finished_at": "2026-01-20T04:53:42.857690Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "6ea034feb74b5f94",
+    "tag": "rest_pr_files_pr2218_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2218/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "6334",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:42 GMT",
+      "etag": "\"f880e1ebe1140973798cf1322574c2a5f60cf474e3d26e3b5fdb039aa86f0685\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Fri, 16 Jan 2026 01:22:16 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DABA:F2819:169CD1E:1FA670A:696F0A56",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4994",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "6",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 139,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/d535802a3199b9a011f764da8eb52707d5f7b1f5/docs%2Fguardrails.md",
+        "changes": 140,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Fguardrails.md?ref=d535802a3199b9a011f764da8eb52707d5f7b1f5",
+        "deletions": 1,
+        "filename": "docs/guardrails.md",
+        "patch": "@@ -161,4 +161,142 @@ async def main():\n 1. This is the actual agent's output type.\n 2. This is the guardrail's output type.\n 3. This is the guardrail function that receives the agent's output, and returns the result.\n-4. This is the actual agent that defines the workflow.\n\\ No newline at end of file\n+4. This is the actual agent that defines the workflow.\n+\n+## Tool guardrails\n+\n+In addition to agent-level input and output guardrails, you can apply guardrails directly to individual tools. **Tool guardrails** validate the arguments passed to a tool or the results it returns, rather than the overall agent input/output.\n+\n+There are two types of tool guardrails:\n+\n+1. **Tool input guardrails** run *before* the tool executes, validating its arguments\n+2. **Tool output guardrails** run *after* the tool executes, validating its return value\n+\n+!!! Note\n+\n+    Tool guardrails are different from agent-level guardrails:\n+\n+    - **Agent guardrails** run on user input (first agent) or final output (last agent)\n+    - **Tool guardrails** run on every invocation of a specific tool, regardless of which agent calls it\n+\n+### Tool input guardrails\n+\n+Tool input guardrails run before the tool function executes. They receive a [`ToolInputGuardrailData`][agents.tool_guardrails.ToolInputGuardrailData] object containing:\n+\n+- The [`ToolContext`][agents.tool_context.ToolContext] with tool name, arguments, and call ID\n+- The [`Agent`][agents.agent.Agent] that is executing the tool\n+\n+```python\n+import json\n+\n+from agents import (\n+    ToolGuardrailFunctionOutput,\n+    ToolInputGuardrailData,\n+    function_tool,\n+    tool_input_guardrail,\n+)\n+\n+\n+@tool_input_guardrail\n+def validate_email_args(data: ToolInputGuardrailData) -> ToolGuardrailFunctionOutput:\n+    \"\"\"Block emails containing suspicious keywords.\"\"\"\n+    args = json.loads(data.context.tool_arguments) if data.context.tool_arguments else {}\n+\n+    blocked_words = [\"password\", \"hack\", \"exploit\"]\n+    for key, value in args.items():\n+        value_str = str(value).lower()\n+        for word in blocked_words:\n+            if word in value_str:\n+                return ToolGuardrailFunctionOutput.reject_content(\n+                    message=f\"Email blocked: contains '{word}'\",\n+                    output_info={\"blocked_word\": word},\n+                )\n+\n+    return ToolGuardrailFunctionOutput(output_info=\"Validated\")\n+\n+\n+@function_tool\n+def send_email(to: str, subject: str, body: str) -> str:\n+    \"\"\"Send an email.\"\"\"\n+    return f\"Email sent to {to}\"\n+\n+\n+# Attach the guardrail to the tool\n+send_email.tool_input_guardrails = [validate_email_args]\n+```\n+\n+### Tool output guardrails\n+\n+Tool output guardrails run after the tool function executes. They receive a [`ToolOutputGuardrailData`][agents.tool_guardrails.ToolOutputGuardrailData] object which extends the input data with:\n+\n+- The `output` produced by the tool function\n+\n+```python\n+from agents import (\n+    ToolGuardrailFunctionOutput,\n+    ToolOutputGuardrailData,\n+    ToolOutputGuardrailTripwireTriggered,\n+    function_tool,\n+    tool_output_guardrail,\n+)\n+\n+\n+@tool_output_guardrail\n+def block_sensitive_data(data: ToolOutputGuardrailData) -> ToolGuardrailFunctionOutput:\n+    \"\"\"Block outputs containing sensitive information like SSNs.\"\"\"\n+    output_str = str(data.output).lower()\n+\n+    if \"ssn\" in output_str or \"123-45-6789\" in output_str:\n+        # Halt execution completely for sensitive data.\n+        return ToolGuardrailFunctionOutput.raise_exception(\n+            output_info={\"blocked_pattern\": \"SSN\", \"tool\": data.context.tool_name},\n+        )\n+\n+    return ToolGuardrailFunctionOutput(output_info=\"Output validated\")\n+\n+\n+@function_tool\n+def get_user_data(user_id: str) -> dict:\n+    \"\"\"Get user data by ID.\"\"\"\n+    return {\"user_id\": user_id, \"name\": \"John\", \"ssn\": \"123-45-6789\"}\n+\n+\n+# Attach the guardrail to the tool\n+get_user_data.tool_output_guardrails = [block_sensitive_data]\n+```\n+\n+### Guardrail behavior types\n+\n+Tool guardrails return a [`ToolGuardrailFunctionOutput`][agents.tool_guardrails.ToolGuardrailFunctionOutput] that specifies how the system should respond:\n+\n+| Behavior | Method | Effect |\n+|----------|--------|--------|\n+| **Allow** | `ToolGuardrailFunctionOutput(output_info=...)` | Continue normal execution (default) |\n+| **Reject content** | `.reject_content(message, output_info)` | Block the tool call but continue agent execution with a message |\n+| **Raise exception** | `.raise_exception(output_info)` | Halt execution by raising `ToolInputGuardrailTripwireTriggered` or `ToolOutputGuardrailTripwireTriggered` |\n+\n+Use `reject_content` when you want to gracefully handle a violation and let the agent continue. Use `raise_exception` for critical violations that must stop all execution immediately.\n+\n+### Handling tool guardrail exceptions\n+\n+When a guardrail uses `raise_exception()`, you can catch it to handle the violation:\n+\n+```python\n+from agents import Agent, Runner, ToolOutputGuardrailTripwireTriggered\n+\n+\n+agent = Agent(\n+    name=\"Assistant\",\n+    instructions=\"You help users retrieve data.\",\n+    tools=[get_user_data],  # Tool with output guardrail attached\n+)\n+\n+\n+async def main():\n+    try:\n+        result = await Runner.run(agent, \"Get data for user123\")\n+        print(result.final_output)\n+    except ToolOutputGuardrailTripwireTriggered as e:\n+        print(f\"Blocked: {e.output.output_info}\")\n+        # Handle the violation appropriately\n+```\n\\ No newline at end of file",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/d535802a3199b9a011f764da8eb52707d5f7b1f5/docs%2Fguardrails.md",
+        "sha": "44c1d1b359f03b70eaee9a8957eb8394523a9a9f",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:42.384117Z"
+}

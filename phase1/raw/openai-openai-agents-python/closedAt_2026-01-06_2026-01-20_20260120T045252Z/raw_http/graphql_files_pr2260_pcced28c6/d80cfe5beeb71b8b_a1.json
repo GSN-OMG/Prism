@@ -1,0 +1,167 @@
+{
+  "finished_at": "2026-01-20T04:54:30.312967Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "d80cfe5beeb71b8b",
+    "tag": "graphql_files_pr2260_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetPRFilesPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      files(first: 100, after: $after) {\n        pageInfo { hasNextPage endCursor }\n        nodes {\n          path\n          additions\n          deletions\n          changeType\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2260,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "1565",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:30 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DB1B:3782ED:1628854:1F331FA:696F0A85",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4868",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "132",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "pullRequest": {
+            "files": {
+              "nodes": [
+                {
+                  "additions": 12,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "docs/config.md"
+                },
+                {
+                  "additions": 12,
+                  "changeType": "MODIFIED",
+                  "deletions": 1,
+                  "path": "docs/tracing.md"
+                },
+                {
+                  "additions": 4,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "src/agents/_run_impl.py"
+                },
+                {
+                  "additions": 6,
+                  "changeType": "MODIFIED",
+                  "deletions": 1,
+                  "path": "src/agents/run.py"
+                },
+                {
+                  "additions": 2,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "src/agents/tracing/__init__.py"
+                },
+                {
+                  "additions": 9,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "src/agents/tracing/config.py"
+                },
+                {
+                  "additions": 4,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "src/agents/tracing/create.py"
+                },
+                {
+                  "additions": 63,
+                  "changeType": "MODIFIED",
+                  "deletions": 52,
+                  "path": "src/agents/tracing/processors.py"
+                },
+                {
+                  "additions": 9,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "src/agents/tracing/provider.py"
+                },
+                {
+                  "additions": 17,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "src/agents/tracing/spans.py"
+                },
+                {
+                  "additions": 17,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "src/agents/tracing/traces.py"
+                },
+                {
+                  "additions": 2,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "src/agents/voice/pipeline.py"
+                },
+                {
+                  "additions": 4,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "src/agents/voice/pipeline_config.py"
+                },
+                {
+                  "additions": 2,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "tests/test_trace_processor.py"
+                },
+                {
+                  "additions": 7,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "tests/test_tracing.py"
+                },
+                {
+                  "additions": 50,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "tests/tracing/test_processor_api_key.py"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "MTY",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:29.734522Z"
+}

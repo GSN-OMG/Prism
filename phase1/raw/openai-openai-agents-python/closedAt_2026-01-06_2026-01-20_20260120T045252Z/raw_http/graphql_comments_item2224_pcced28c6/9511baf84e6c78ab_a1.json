@@ -1,0 +1,174 @@
+{
+  "finished_at": "2026-01-20T04:53:46.203420Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "9511baf84e6c78ab",
+    "tag": "graphql_comments_item2224_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2224,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "4772",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:46 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DABF:365621:16BD85B:1FC7479:696F0A59",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4931",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "69",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/154019945?u=2e2cd13dc870d4fc63830deb204279a1fd8d28b9&v=4",
+                    "databaseId": 154019945,
+                    "id": "U_kgDOCS4oaQ",
+                    "login": "ruskaruma",
+                    "url": "https://github.com/ruskaruma"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "Greetings @seratch and @ihower, this PR implements the core `responses.compact` support, aligned with the TypeScript SDK implementation ([#760](https://github.com/openai/openai-agents-js/pull/760)).\r\n\r\nFollowing the TS SDK approach, a few related enhancements could either be handled in follow-up PRs or incorporated here, depending on your preference:\r\n\r\n- **Usage tracking integration** (similar to [#785](https://github.com/openai/openai-agents-js/pull/785))\r\n- **Documentation updates** (similar to [#784](https://github.com/openai/openai-agents-js/pull/784))\r\n\r\nI’d appreciate your feedback on whether this aligns with the intended design for the issue, and I’m happy to adjust the implementation as needed.",
+                  "createdAt": "2025-12-23T12:07:30Z",
+                  "databaseId": 3686415159,
+                  "id": "IC_kwDOOGidp87bujs3",
+                  "updatedAt": "2025-12-23T12:07:30Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2224#issuecomment-3686415159"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "authorAssociation": "MEMBER",
+                  "body": "Thanks for sending this. This looks like a good port of the TS implementation I did. I will review the details early next year.",
+                  "createdAt": "2025-12-23T13:40:19Z",
+                  "databaseId": 3686672155,
+                  "id": "IC_kwDOOGidp87bvicb",
+                  "updatedAt": "2025-12-23T13:40:19Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2224#issuecomment-3686672155"
+                },
+                {
+                  "author": {
+                    "__typename": "Bot",
+                    "avatarUrl": "https://avatars.githubusercontent.com/in/15368?v=4",
+                    "databaseId": 41898282,
+                    "id": "MDM6Qm90NDE4OTgyODI=",
+                    "login": "github-actions",
+                    "url": "https://github.com/apps/github-actions"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "This PR is stale because it has been open for 10 days with no activity.",
+                  "createdAt": "2026-01-03T02:11:43Z",
+                  "databaseId": 3706603844,
+                  "id": "IC_kwDOOGidp87c7klE",
+                  "updatedAt": "2026-01-03T02:11:43Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2224#issuecomment-3706603844"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/154019945?u=2e2cd13dc870d4fc63830deb204279a1fd8d28b9&v=4",
+                    "databaseId": 154019945,
+                    "id": "U_kgDOCS4oaQ",
+                    "login": "ruskaruma",
+                    "url": "https://github.com/ruskaruma"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "Greetings @seratch, I have applied all requested changes. Apologies for the failed CI runs earlier, I have fixed them now. This should complete the work here",
+                  "createdAt": "2026-01-08T23:32:23Z",
+                  "databaseId": 3726371906,
+                  "id": "IC_kwDOOGidp87eG-xC",
+                  "updatedAt": "2026-01-08T23:32:23Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2224#issuecomment-3726371906"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "authorAssociation": "MEMBER",
+                  "body": "@codex review again",
+                  "createdAt": "2026-01-08T23:34:06Z",
+                  "databaseId": 3726377222,
+                  "id": "IC_kwDOOGidp87eHAEG",
+                  "updatedAt": "2026-01-08T23:34:06Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2224#issuecomment-3726377222"
+                },
+                {
+                  "author": {
+                    "__typename": "Bot",
+                    "avatarUrl": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                    "databaseId": 199175422,
+                    "id": "BOT_kgDOC98s_g",
+                    "login": "chatgpt-codex-connector",
+                    "url": "https://github.com/apps/chatgpt-codex-connector"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "Codex Review: Didn't find any major issues. You're on a roll.\n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](http://chatgpt.com/codex/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>",
+                  "createdAt": "2026-01-08T23:41:44Z",
+                  "databaseId": 3726394554,
+                  "id": "IC_kwDOOGidp87eHES6",
+                  "updatedAt": "2026-01-08T23:41:44Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2224#issuecomment-3726394554"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO3hxEug==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:45.569829Z"
+}

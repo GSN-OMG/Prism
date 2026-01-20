@@ -1,0 +1,99 @@
+{
+  "finished_at": "2026-01-20T04:56:19.170477Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "501bbb28de6b704d",
+    "tag": "graphql_core_item2296"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2296,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2563",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:19 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DC09:3CEC4D:15BF10E:1EC97B3:696F0AF2",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4719",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "281",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/23112888?u=1e6ce9629a9e7af73cfa131e43fff0ea3fa9e66a&v=4",
+              "databaseId": 23112888,
+              "id": "MDQ6VXNlcjIzMTEyODg4",
+              "login": "moseshu",
+              "url": "https://github.com/moseshu"
+            },
+            "authorAssociation": "NONE",
+            "body": "https://github.com/openai/openai-agents-python/blob/main/examples/basic/stream_function_call_args.py\nhttps://github.com/openai/openai-agents-python/blob/main/examples/basic/stream_items.py\n\nAre there any differences in how function calls and their status are obtained in these two files? I need to obtain the output content of the function call results and determine which specific function call was made based on the function call name. Are there any differences in the function call methods used in these two files?\nI can get the function call name using this method:\n```python\nif event.item.type == \"tool_call_item\":\n```\n\nalso get the function call name using this method \n```python\nif event.data.type == \"response.output_item.added\":\n                if getattr(event.data.item, \"type\", None) == \"function_call\":\n                    function_name = getattr(event.data.item, \"name\", \"unknown\")\n                    call_id = getattr(event.data.item, \"call_id\", \"unknown\")\n\n                    function_calls[call_id] = {\"name\": function_name, \"arguments\": \"\"}\n                    current_active_call_id = call_id\n                    print(f\"\\n📞 Function call streaming started: {function_name}()\")\n                    print(\"📝 Arguments building...\")\n\n            # Real-time argument streaming\n            elif isinstance(event.data, ResponseFunctionCallArgumentsDeltaEvent):\n                if current_active_call_id and current_active_call_id in function_calls:\n                    function_calls[current_active_call_id][\"arguments\"] += event.data.delta\n                    print(event.data.delta, end=\"\", flush=True)\n```\n",
+            "closedAt": "2026-01-12T07:29:55Z",
+            "comments": {
+              "totalCount": 2
+            },
+            "createdAt": "2026-01-12T05:45:52Z",
+            "databaseId": 3802852473,
+            "id": "I_kwDOOGidp87iqux5",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "0E8A16",
+                  "description": "Question about using the SDK",
+                  "name": "question"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": null,
+            "number": 2296,
+            "state": "CLOSED",
+            "title": "What are the differences in using different methods for function calls?",
+            "updatedAt": "2026-01-12T07:30:25Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2296"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:18.655403Z"
+}

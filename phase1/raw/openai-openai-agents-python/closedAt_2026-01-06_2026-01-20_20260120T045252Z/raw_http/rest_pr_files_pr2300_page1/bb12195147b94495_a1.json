@@ -1,0 +1,100 @@
+{
+  "finished_at": "2026-01-20T04:56:30.519495Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "bb12195147b94495",
+    "tag": "rest_pr_files_pr2300_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2300/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "5782",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:30 GMT",
+      "etag": "\"dab5c26d5da6ddb56342b8de0e2c4abc03bc6c266808e6fb2bfe57d4c268fe16\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Tue, 13 Jan 2026 03:09:06 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DC23:3E6F74:15FFB06:1F0A997:696F0AFE",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4954",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "46",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 6,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/8162900629333068d5effe47209dbdb98e53fda1/examples%2Fagent_patterns%2Fforcing_tool_use.py",
+        "changes": 10,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Fagent_patterns%2Fforcing_tool_use.py?ref=8162900629333068d5effe47209dbdb98e53fda1",
+        "deletions": 4,
+        "filename": "examples/agent_patterns/forcing_tool_use.py",
+        "patch": "@@ -89,11 +89,13 @@ async def main(tool_use_behavior: Literal[\"default\", \"first_tool\", \"custom\"] = \"\n         \"-t\",\n         \"--tool-use-behavior\",\n         type=str,\n-        required=True,\n+        default=\"default\",\n         choices=[\"default\", \"first_tool\", \"custom\"],\n-        help=\"The behavior to use for tool use. Default will cause tool outputs to be sent to the model. \"\n-        \"first_tool_result will cause the first tool result to be used as the final output. \"\n-        \"custom will use a custom tool use behavior function.\",\n+        help=(\n+            \"The behavior to use for tool use. \"\n+            \"default sends tool outputs back to the model, first_tool uses the first tool result as the final output, \"\n+            \"custom runs a custom tool use behavior function.\"\n+        ),\n     )\n     args = parser.parse_args()\n     asyncio.run(main(args.tool_use_behavior))",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/8162900629333068d5effe47209dbdb98e53fda1/examples%2Fagent_patterns%2Fforcing_tool_use.py",
+        "sha": "8539281e4eb7a7b4b1167cc6185d721ccdeee240",
+        "status": "modified"
+      },
+      {
+        "additions": 1,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/8162900629333068d5effe47209dbdb98e53fda1/examples%2Fbasic%2Fprompt_template.py",
+        "changes": 2,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Fbasic%2Fprompt_template.py?ref=8162900629333068d5effe47209dbdb98e53fda1",
+        "deletions": 1,
+        "filename": "examples/basic/prompt_template.py",
+        "patch": "@@ -18,7 +18,7 @@\n 4. Run the example with the `--prompt-id` flag.\n \"\"\"\n \n-DEFAULT_PROMPT_ID = \"pmpt_6850729e8ba481939fd439e058c69ee004afaa19c520b78b\"\n+DEFAULT_PROMPT_ID = \"pmpt_6965a984c7ac8194a8f4e79b00f838840118c1e58beb3332\"\n \n \n class DynamicContext:",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/8162900629333068d5effe47209dbdb98e53fda1/examples%2Fbasic%2Fprompt_template.py",
+        "sha": "11fbaa0d301512f25d4da5e562bc3ef091bc0ac4",
+        "status": "modified"
+      },
+      {
+        "additions": 38,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/8162900629333068d5effe47209dbdb98e53fda1/examples%2Fmcp%2Fstreamable_http_remote_example%2Fmain.py",
+        "changes": 38,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Fmcp%2Fstreamable_http_remote_example%2Fmain.py?ref=8162900629333068d5effe47209dbdb98e53fda1",
+        "deletions": 0,
+        "filename": "examples/mcp/streamable_http_remote_example/main.py",
+        "patch": "@@ -0,0 +1,38 @@\n+import asyncio\n+\n+from agents import Agent, Runner, gen_trace_id, trace\n+from agents.mcp import MCPServerStreamableHttp\n+\n+\n+async def main():\n+    async with MCPServerStreamableHttp(\n+        name=\"DeepWiki MCP Streamable HTTP Server\",\n+        params={\n+            \"url\": \"https://mcp.deepwiki.com/mcp\",\n+            # Allow more time for remote tool responses.\n+            \"timeout\": 15,\n+            \"sse_read_timeout\": 300,\n+        },\n+        # Retry slow/unstable remote calls a couple of times.\n+        max_retry_attempts=2,\n+        retry_backoff_seconds_base=2.0,\n+        client_session_timeout_seconds=15,\n+    ) as server:\n+        agent = Agent(\n+            name=\"DeepWiki Assistant\",\n+            instructions=\"Use the tools to respond to user requests.\",\n+            mcp_servers=[server],\n+        )\n+\n+        trace_id = gen_trace_id()\n+        with trace(workflow_name=\"DeepWiki Streamable HTTP Example\", trace_id=trace_id):\n+            print(f\"View trace: https://platform.openai.com/traces/trace?trace_id={trace_id}\\n\")\n+            result = await Runner.run(\n+                agent,\n+                \"For the repository openai/codex, tell me the primary programming language.\",\n+            )\n+            print(result.final_output)\n+\n+\n+if __name__ == \"__main__\":\n+    asyncio.run(main())",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/8162900629333068d5effe47209dbdb98e53fda1/examples%2Fmcp%2Fstreamable_http_remote_example%2Fmain.py",
+        "sha": "d0c48da7d9d5e0e31cf9f71e2c4c864db3d40f67",
+        "status": "added"
+      },
+      {
+        "additions": 1,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/8162900629333068d5effe47209dbdb98e53fda1/examples%2Freasoning_content%2Fmain.py",
+        "changes": 2,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Freasoning_content%2Fmain.py?ref=8162900629333068d5effe47209dbdb98e53fda1",
+        "deletions": 1,
+        "filename": "examples/reasoning_content/main.py",
+        "patch": "@@ -20,7 +20,7 @@\n from agents.models.interface import ModelTracing\n from agents.models.openai_provider import OpenAIProvider\n \n-MODEL_NAME = os.getenv(\"EXAMPLE_MODEL_NAME\") or \"gpt-5\"\n+MODEL_NAME = os.getenv(\"REASONING_MODEL_NAME\") or \"gpt-5\"\n \n \n async def stream_with_reasoning_content():",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/8162900629333068d5effe47209dbdb98e53fda1/examples%2Freasoning_content%2Fmain.py",
+        "sha": "7ccbab01b881d2340d669ce5462823dfde3a6e6f",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:30.007005Z"
+}

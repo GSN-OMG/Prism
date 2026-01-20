@@ -1,0 +1,107 @@
+{
+  "finished_at": "2026-01-20T04:54:50.337126Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "e4cccb972d3d1bf0",
+    "tag": "graphql_files_pr2267_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetPRFilesPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      files(first: 100, after: $after) {\n        pageInfo { hasNextPage endCursor }\n        nodes {\n          path\n          additions\n          deletions\n          changeType\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2267,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "671",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:50 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DB42:37BFB7:160D801:1F18386:696F0A9A",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4842",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "158",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "pullRequest": {
+            "files": {
+              "nodes": [
+                {
+                  "additions": 722,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "tests/test_example_workflows.py"
+                },
+                {
+                  "additions": 69,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "tests/test_items_helpers.py"
+                },
+                {
+                  "additions": 134,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "tests/test_process_model_response.py"
+                },
+                {
+                  "additions": 40,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "tests/test_usage.py"
+                },
+                {
+                  "additions": 51,
+                  "changeType": "MODIFIED",
+                  "deletions": 2,
+                  "path": "tests/utils/simple_session.py"
+                },
+                {
+                  "additions": 54,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "tests/utils/test_simple_session.py"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Ng",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:49.872991Z"
+}

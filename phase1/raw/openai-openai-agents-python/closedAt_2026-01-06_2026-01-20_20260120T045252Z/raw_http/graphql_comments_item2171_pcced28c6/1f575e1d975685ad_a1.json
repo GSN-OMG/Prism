@@ -1,0 +1,123 @@
+{
+  "finished_at": "2026-01-20T04:53:29.705732Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "1f575e1d975685ad",
+    "tag": "graphql_comments_item2171_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2171,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2574",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:29 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DAA4:29AB24:15F4149:1EFE0C5:696F0A49",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4954",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "46",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/58258368?u=35432c964709f5b15db0210d60a06a1fb3707c2e&v=4",
+                    "databaseId": 58258368,
+                    "id": "MDQ6VXNlcjU4MjU4MzY4",
+                    "login": "DanieleMorotti",
+                    "url": "https://github.com/DanieleMorotti"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "I'm using the same version `v0.6.2` but I'm not able to reproduce your output. I have got `[PASS] No duplication detected.` in multiple runs.",
+                  "createdAt": "2025-12-11T08:16:39Z",
+                  "databaseId": 3640758775,
+                  "id": "IC_kwDOOGidp87ZAZH3",
+                  "updatedAt": "2025-12-11T08:16:39Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2171#issuecomment-3640758775"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/7621696?u=28ff16788d9c4d12ab98e662ff94c912810af1e1&v=4",
+                    "databaseId": 7621696,
+                    "id": "MDQ6VXNlcjc2MjE2OTY=",
+                    "login": "pokliu",
+                    "url": "https://github.com/pokliu"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "@DanieleMorotti Sorry. The Python script I wrote in the message above incorrectly truncated the `content` string. I have now edited the message and updated the script to reproduce the problem. Could you try again?",
+                  "createdAt": "2025-12-11T08:43:29Z",
+                  "databaseId": 3640851129,
+                  "id": "IC_kwDOOGidp87ZAvq5",
+                  "updatedAt": "2025-12-11T08:43:29Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2171#issuecomment-3640851129"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/143676135?u=c7807204f738bc86d5066fd90421f2ca5cc818c9&v=4",
+                    "databaseId": 143676135,
+                    "id": "U_kgDOCJBS5w",
+                    "login": "AnkanMisra",
+                    "url": "https://github.com/AnkanMisra"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "I have actually made a fix to this issue\n\nWhat i think is the issue was that the filtering logic only checked for items with `role == \"assistant\"`, but tool calls and outputs don't have a role - they have a `type` instead , so they were not being filtered out\n\nThe fix filters items based on their type (`function_call`, `function_call_output`) so they don't get sent to the model alongside the summary\nSession history still keeps all items for observability\n\n@seratch @pokliu @DanieleMorotti \nPTAL for any more suggestion or ideas <3\n",
+                  "createdAt": "2026-01-03T13:50:44Z",
+                  "databaseId": 3707068511,
+                  "id": "IC_kwDOOGidp87c9WBf",
+                  "updatedAt": "2026-01-03T13:50:44Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2171#issuecomment-3707068511"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO3PVgXw==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:29.163107Z"
+}

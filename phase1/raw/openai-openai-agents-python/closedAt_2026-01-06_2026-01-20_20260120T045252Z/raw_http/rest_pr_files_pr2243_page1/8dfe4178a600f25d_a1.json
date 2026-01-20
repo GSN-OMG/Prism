@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:54:08.429292Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "8dfe4178a600f25d",
+    "tag": "rest_pr_files_pr2243_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2243/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "3685",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:08 GMT",
+      "etag": "\"9818c0414e8182d610e188f9d1e603df8003d379ce6a05a758b581d788ed27f7\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Tue, 06 Jan 2026 05:58:38 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DAF0:2B2B06:1668FCB:1F7351E:696F0A70",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4988",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "12",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 7,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/2f39f6158af689f32d7ca44259c05ea84b41ceed/src%2Fagents%2Frealtime%2Fsession.py",
+        "changes": 9,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Frealtime%2Fsession.py?ref=2f39f6158af689f32d7ca44259c05ea84b41ceed",
+        "deletions": 2,
+        "filename": "src/agents/realtime/session.py",
+        "patch": "@@ -8,7 +8,7 @@\n from typing_extensions import assert_never\n \n from ..agent import Agent\n-from ..exceptions import ModelBehaviorError, UserError\n+from ..exceptions import UserError\n from ..handoffs import Handoff\n from ..logger import logger\n from ..run_context import RunContextWrapper, TContext\n@@ -493,7 +493,12 @@ async def _handle_tool_call(\n                 )\n             )\n         else:\n-            raise ModelBehaviorError(f\"Tool {event.name} not found\")\n+            await self._put_event(\n+                RealtimeError(\n+                    info=self._event_info,\n+                    error={\"message\": f\"Tool {event.name} not found\"},\n+                )\n+            )\n \n     @classmethod\n     def _get_new_history(",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/2f39f6158af689f32d7ca44259c05ea84b41ceed/src%2Fagents%2Frealtime%2Fsession.py",
+        "sha": "941acdf09c9f52907f08a8011f2e5e2911c6375d",
+        "status": "modified"
+      },
+      {
+        "additions": 9,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/2f39f6158af689f32d7ca44259c05ea84b41ceed/tests%2Frealtime%2Ftest_session.py",
+        "changes": 17,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Frealtime%2Ftest_session.py?ref=2f39f6158af689f32d7ca44259c05ea84b41ceed",
+        "deletions": 8,
+        "filename": "tests/realtime/test_session.py",
+        "patch": "@@ -1067,11 +1067,7 @@ async def test_handoff_tool_handling(self, mock_model):\n \n     @pytest.mark.asyncio\n     async def test_unknown_tool_handling(self, mock_model, mock_agent, mock_function_tool):\n-        \"\"\"Test that unknown tools raise an error\"\"\"\n-        import pytest\n-\n-        from agents.exceptions import ModelBehaviorError\n-\n+        \"\"\"Test that unknown tools emit a RealtimeError event\"\"\"\n         # Set up agent to return different tool than what's called\n         mock_function_tool.name = \"known_tool\"\n         mock_agent.get_all_tools.return_value = [mock_function_tool]\n@@ -1083,9 +1079,14 @@ async def test_unknown_tool_handling(self, mock_model, mock_agent, mock_function\n             name=\"unknown_tool\", call_id=\"call_unknown\", arguments=\"{}\"\n         )\n \n-        # Should raise an error for unknown tool\n-        with pytest.raises(ModelBehaviorError, match=\"Tool unknown_tool not found\"):\n-            await session._handle_tool_call(tool_call_event)\n+        # Should emit a RealtimeError event for unknown tool\n+        await session._handle_tool_call(tool_call_event)\n+\n+        # Should have emitted a RealtimeError event\n+        assert session._event_queue.qsize() >= 1\n+        error_event = await session._event_queue.get()\n+        assert isinstance(error_event, RealtimeError)\n+        assert \"Tool unknown_tool not found\" in error_event.error.get(\"message\", \"\")\n \n         # Should not have called any tools\n         mock_function_tool.on_invoke_tool.assert_not_called()",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/2f39f6158af689f32d7ca44259c05ea84b41ceed/tests%2Frealtime%2Ftest_session.py",
+        "sha": "47d31606002b7ed23868e254fc2ae5660ab68b03",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:07.986356Z"
+}

@@ -1,0 +1,140 @@
+{
+  "finished_at": "2026-01-20T04:56:14.088525Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "651856d3b434258d",
+    "tag": "graphql_comments_item2294_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2294,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "4809",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:14 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DC00:365621:16C2029:1FCCC6E:696F0AED",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4726",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "274",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/4557?v=4",
+                    "databaseId": 4557,
+                    "id": "MDQ6VXNlcjQ1NTc=",
+                    "login": "ihower",
+                    "url": "https://github.com/ihower"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "@jaogarcia97 Guardrails are meant to look at the whole conversation, not only the latest message. If you check only the last message, users can bypass it. For example: a harmful request is blocked first. After a few normal messages, the user says, “Ok, now do my first request.” That message looks harmless by itself, but it is trying to bring back the blocked request. Without the full history, the guardrail can miss this.\n\nSo “latest message only” is usually not safe by default.\n\nThat said, you can reduce false triggers. One option is to modify the guardrail prompt less sensitive while still reading the full chat history, and allow some whitelisted inputs to pass. This works only if you are confident your lead agent is strong enough and won’t be compromised or influenced by earlier unsafe content.",
+                  "createdAt": "2026-01-11T17:30:00Z",
+                  "databaseId": 3735128599,
+                  "id": "IC_kwDOOGidp87eoYoX",
+                  "updatedAt": "2026-01-11T17:30:00Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2294#issuecomment-3735128599"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/93397590?u=f673ab1921d0326e28d31aba0b87ac0f00337a4d&v=4",
+                    "databaseId": 93397590,
+                    "id": "U_kgDOBZEiVg",
+                    "login": "jao-o-garcia",
+                    "url": "https://github.com/jao-o-garcia"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "@ihower Thanks for the clarification. It is very helpful.\n\nI understand this will vary depending on the application and risk tolerance, but once a guardrail is triggered and the run is halted (e.g., via an exception), I was curious what the recommended handling looks like on the application side.\n\nOne way I’m currently interpreting your suggestion is to think of a guardrail as a kind of “silent alarm” rather than always a hard stop. In other words, beyond fully blocking and ending a session, some possible approaches could be:\n\n- Soft handling: continue the conversation, but treat the guardrail trigger as a signal for logging, alerting, or follow-up investigation (e.g., via an API or monitoring pipeline)\n- Else, do a \"Hard stop\" : block the user and end the session\n\nI’m mainly trying to understand what the SDK is optimized for after a guardrail trip — whether stopping the session is the usual expectation, or if guardrails are also intended to support observability or policy-monitoring workflows.",
+                  "createdAt": "2026-01-11T17:43:52Z",
+                  "databaseId": 3735160662,
+                  "id": "IC_kwDOOGidp87eogdW",
+                  "updatedAt": "2026-01-11T23:37:11Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2294#issuecomment-3735160662"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "authorAssociation": "MEMBER",
+                  "body": "For the general expectations around guardrails, @ihower already explained them clearly, and I agree. If you want to explore possible approaches, you could consider the following:\n\n* You may want to use `RunConfig.session_input_callback` to adjust the items to save in your sessions store. If a specific message item in past turns or current turn, you can redact the text or simply remove the turn from the history. If you keep the session data clean this way, both the model and the guardrails receive a sanitized history.\n* If you switch to OpenAI's server-managed conversations (using `conversation_id` / `previous_response_id` without a local session), the SDK does not prepend any history, so the guardrails naturally see only the current turn while the server continues to maintain the full context.\n\nHope this helps.\n",
+                  "createdAt": "2026-01-12T02:00:01Z",
+                  "databaseId": 3736641926,
+                  "id": "IC_kwDOOGidp87euKGG",
+                  "updatedAt": "2026-01-12T02:00:01Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2294#issuecomment-3736641926"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/93397590?u=f673ab1921d0326e28d31aba0b87ac0f00337a4d&v=4",
+                    "databaseId": 93397590,
+                    "id": "U_kgDOBZEiVg",
+                    "login": "jao-o-garcia",
+                    "url": "https://github.com/jao-o-garcia"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "Thanks so much guys! @ihower @seratch ",
+                  "createdAt": "2026-01-12T02:47:01Z",
+                  "databaseId": 3736704695,
+                  "id": "IC_kwDOOGidp87euZa3",
+                  "updatedAt": "2026-01-12T02:47:01Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2294#issuecomment-3736704695"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO3rmWtw==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:13.580814Z"
+}

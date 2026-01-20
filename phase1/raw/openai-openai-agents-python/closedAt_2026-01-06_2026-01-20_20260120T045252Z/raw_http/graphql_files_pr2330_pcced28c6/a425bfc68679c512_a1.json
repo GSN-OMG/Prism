@@ -1,0 +1,113 @@
+{
+  "finished_at": "2026-01-20T04:58:09.549237Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "a425bfc68679c512",
+    "tag": "graphql_files_pr2330_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetPRFilesPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      files(first: 100, after: $after) {\n        pageInfo { hasNextPage endCursor }\n        nodes {\n          path\n          additions\n          deletions\n          changeType\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2330,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "863",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:58:09 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DD12:2324B0:160D9A8:1F19B9E:696F0B61",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4570",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "430",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "pullRequest": {
+            "files": {
+              "nodes": [
+                {
+                  "additions": 1,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "docs/examples.md"
+                },
+                {
+                  "additions": 12,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "examples/agent_patterns/README.md"
+                },
+                {
+                  "additions": 133,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "examples/agent_patterns/agent_skills.py"
+                },
+                {
+                  "additions": 130,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "examples/agent_patterns/agent_skills_shell.py"
+                },
+                {
+                  "additions": 14,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "examples/agent_patterns/skills/ascii_art/SKILL.md"
+                },
+                {
+                  "additions": 78,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "examples/agent_patterns/skills/ascii_art/scripts/tree_ascii.sh"
+                },
+                {
+                  "additions": 16,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "examples/agent_patterns/skills/support_transcript_summary/SKILL.md"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Nw",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:58:09.112252Z"
+}

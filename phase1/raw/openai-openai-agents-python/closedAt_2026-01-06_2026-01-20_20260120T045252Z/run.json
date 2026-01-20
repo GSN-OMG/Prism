@@ -1,0 +1,9 @@
+{
+  "notes": "Raw-only ingestion. No normalization or downstream processing performed.",
+  "repo": "openai/openai-agents-python",
+  "started_at": "2026-01-20T04:52:52.904783Z",
+  "window": {
+    "closedAt_end": "2026-01-20",
+    "closedAt_start": "2026-01-06"
+  }
+}

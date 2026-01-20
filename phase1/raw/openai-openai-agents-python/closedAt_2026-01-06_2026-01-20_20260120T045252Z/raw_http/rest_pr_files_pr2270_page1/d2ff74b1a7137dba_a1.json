@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:54:57.532645Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "d2ff74b1a7137dba",
+    "tag": "rest_pr_files_pr2270_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2270/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "3615",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:57 GMT",
+      "etag": "\"7b0f4f12a9286dbd0dfef48a7958bb8fc701d9e31aef4daa05182d6e4bdbe7d7\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Thu, 08 Jan 2026 04:41:41 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DB54:E9ECE:1615B69:1F20277:696F0AA1",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4977",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "23",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 17,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/0469f3cf2a8de5c79cd0648c0fab831d123a89bc/src%2Fagents%2Ftracing%2Fprovider.py",
+        "changes": 17,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Ftracing%2Fprovider.py?ref=0469f3cf2a8de5c79cd0648c0fab831d123a89bc",
+        "deletions": 0,
+        "filename": "src/agents/tracing/provider.py",
+        "patch": "@@ -1,5 +1,6 @@\n from __future__ import annotations\n \n+import logging\n import os\n import threading\n import uuid\n@@ -17,7 +18,23 @@\n \n def _safe_debug(message: str) -> None:\n     \"\"\"Best-effort debug logging that tolerates closed streams during shutdown.\"\"\"\n+\n+    def _has_closed_stream_handler(log: logging.Logger) -> bool:\n+        current: logging.Logger | None = log\n+        while current is not None:\n+            for handler in current.handlers:\n+                stream = getattr(handler, \"stream\", None)\n+                if stream is not None and getattr(stream, \"closed\", False):\n+                    return True\n+            if not current.propagate:\n+                break\n+            current = current.parent\n+        return False\n+\n     try:\n+        # Avoid emitting debug logs when any handler already owns a closed stream.\n+        if _has_closed_stream_handler(logger):\n+            return\n         logger.debug(message)\n     except Exception:\n         # Avoid noisy shutdown errors when the underlying stream is already closed.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/0469f3cf2a8de5c79cd0648c0fab831d123a89bc/src%2Fagents%2Ftracing%2Fprovider.py",
+        "sha": "1b912695246913ba85bc12074e1fe15f67367306",
+        "status": "modified"
+      },
+      {
+        "additions": 38,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/0469f3cf2a8de5c79cd0648c0fab831d123a89bc/tests%2Ftest_tracing_provider_safe_debug.py",
+        "changes": 38,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_tracing_provider_safe_debug.py?ref=0469f3cf2a8de5c79cd0648c0fab831d123a89bc",
+        "deletions": 0,
+        "filename": "tests/test_tracing_provider_safe_debug.py",
+        "patch": "@@ -0,0 +1,38 @@\n+from __future__ import annotations\n+\n+import io\n+import logging\n+\n+from agents.logger import logger\n+from agents.tracing.provider import _safe_debug\n+\n+\n+class _CapturingHandler(logging.Handler):\n+    def __init__(self) -> None:\n+        super().__init__()\n+        self.records: list[logging.LogRecord] = []\n+\n+    def emit(self, record: logging.LogRecord) -> None:  # pragma: no cover - trivial\n+        self.records.append(record)\n+\n+\n+def test_safe_debug_skips_logging_when_handler_stream_closed() -> None:\n+    original_handlers = logger.handlers[:]\n+    original_propagate = logger.propagate\n+\n+    closed_stream = io.StringIO()\n+    closed_handler = logging.StreamHandler(closed_stream)\n+    closed_stream.close()\n+\n+    capturing_handler = _CapturingHandler()\n+\n+    try:\n+        logger.handlers = [closed_handler, capturing_handler]\n+        logger.propagate = False\n+\n+        _safe_debug(\"should not log\")\n+\n+        assert capturing_handler.records == []\n+    finally:\n+        logger.handlers = original_handlers\n+        logger.propagate = original_propagate",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/0469f3cf2a8de5c79cd0648c0fab831d123a89bc/tests%2Ftest_tracing_provider_safe_debug.py",
+        "sha": "d49441171cc33902071f67e066010d937e4208bc",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:57.087462Z"
+}

@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:55:33.898419Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "0481ce63fc38f43e",
+    "tag": "rest_pr_files_pr2281_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2281/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "4805",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:55:33 GMT",
+      "etag": "\"77468bfaaab002d4be263b83149eea46cf2320cf23a6de05b55845ed26117e75\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Thu, 08 Jan 2026 10:14:38 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DBA4:2324B0:16081FF:1F13308:696F0AC5",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4967",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "33",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 33,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/39550635e3ddcb6a857ca5d04d0d1ac727069b9d/src%2Fagents%2Fmodel_settings.py",
+        "changes": 33,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Fmodel_settings.py?ref=39550635e3ddcb6a857ca5d04d0d1ac727069b9d",
+        "deletions": 0,
+        "filename": "src/agents/model_settings.py",
+        "patch": "@@ -189,3 +189,36 @@ def to_json_dict(self) -> dict[str, Any]:\n                 json_dict[field_name] = value\n \n         return json_dict\n+\n+    @property\n+    def is_default(self) -> bool:\n+        \"\"\"Check if this ModelSettings has all default (None) values.\n+\n+        Returns:\n+            True if all fields are None, False otherwise.\n+        \"\"\"\n+        return all(getattr(self, f.name) is None for f in fields(self))\n+\n+    def __repr__(self) -> str:\n+        \"\"\"Return a concise representation showing only non-None values.\"\"\"\n+        non_none = {\n+            f.name: getattr(self, f.name)\n+            for f in fields(self)\n+            if getattr(self, f.name) is not None\n+        }\n+        if not non_none:\n+            return \"ModelSettings()\"\n+        parts = \", \".join(f\"{k}={v!r}\" for k, v in non_none.items())\n+        return f\"ModelSettings({parts})\"\n+\n+    def copy(self, **overrides: Any) -> \"ModelSettings\":\n+        \"\"\"Create a copy of this ModelSettings with optional field overrides.\n+\n+        Args:\n+            **overrides: Field values to override in the copy.\n+\n+        Returns:\n+            A new ModelSettings with the specified overrides applied.\n+        \"\"\"\n+        return replace(self, **overrides)\n+",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/39550635e3ddcb6a857ca5d04d0d1ac727069b9d/src%2Fagents%2Fmodel_settings.py",
+        "sha": "20cd3e3efb186ebbd51ff7e4dd10202ea0c4c62e",
+        "status": "modified"
+      },
+      {
+        "additions": 52,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/39550635e3ddcb6a857ca5d04d0d1ac727069b9d/tests%2Ftest_model_settings_utility.py",
+        "changes": 52,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_model_settings_utility.py?ref=39550635e3ddcb6a857ca5d04d0d1ac727069b9d",
+        "deletions": 0,
+        "filename": "tests/test_model_settings_utility.py",
+        "patch": "@@ -0,0 +1,52 @@\n+\"\"\"Tests for ModelSettings utility methods.\"\"\"\n+\n+from __future__ import annotations\n+\n+from agents.model_settings import ModelSettings\n+\n+\n+class TestModelSettingsUtilityMethods:\n+    \"\"\"Tests for ModelSettings utility methods.\"\"\"\n+\n+    def test_is_default_true_for_empty(self) -> None:\n+        \"\"\"is_default should be True for default ModelSettings.\"\"\"\n+        settings = ModelSettings()\n+        assert settings.is_default is True\n+\n+    def test_is_default_false_with_values(self) -> None:\n+        \"\"\"is_default should be False when values are set.\"\"\"\n+        settings = ModelSettings(temperature=0.7)\n+        assert settings.is_default is False\n+\n+    def test_repr_empty_settings(self) -> None:\n+        \"\"\"repr should be concise for default settings.\"\"\"\n+        settings = ModelSettings()\n+        assert repr(settings) == \"ModelSettings()\"\n+\n+    def test_repr_with_temperature(self) -> None:\n+        \"\"\"repr should show non-None values.\"\"\"\n+        settings = ModelSettings(temperature=0.5)\n+        assert \"temperature=0.5\" in repr(settings)\n+\n+    def test_repr_with_multiple_values(self) -> None:\n+        \"\"\"repr should show multiple non-None values.\"\"\"\n+        settings = ModelSettings(temperature=0.5, max_tokens=100)\n+        result = repr(settings)\n+        assert \"temperature=0.5\" in result\n+        assert \"max_tokens=100\" in result\n+\n+    def test_copy_creates_new_instance(self) -> None:\n+        \"\"\"copy() should create a new instance.\"\"\"\n+        original = ModelSettings(temperature=0.7)\n+        copied = original.copy()\n+        assert copied is not original\n+        assert copied.temperature == original.temperature\n+\n+    def test_copy_with_overrides(self) -> None:\n+        \"\"\"copy() should apply overrides.\"\"\"\n+        original = ModelSettings(temperature=0.7, max_tokens=100)\n+        copied = original.copy(temperature=0.5)\n+        \n+        assert original.temperature == 0.7\n+        assert copied.temperature == 0.5\n+        assert copied.max_tokens == 100",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/39550635e3ddcb6a857ca5d04d0d1ac727069b9d/tests%2Ftest_model_settings_utility.py",
+        "sha": "3ca978a1ef15655929364393622de65cb06e48b1",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:55:33.388932Z"
+}

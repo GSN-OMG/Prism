@@ -1,0 +1,174 @@
+{
+  "finished_at": "2026-01-20T04:53:17.227625Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "35c3f4c17a2495d4",
+    "tag": "graphql_comments_item2137_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2137,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "4764",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:17 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DA87:2B2B06:1667737:1F716D1:696F0A3C",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4970",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "30",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/4557?v=4",
+                    "databaseId": 4557,
+                    "id": "MDQ6VXNlcjQ1NTc=",
+                    "login": "ihower",
+                    "url": "https://github.com/ihower"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "FYI, this issue is about Gemini 3 Pro support in OpenAIChatCompletionsModel. It is similar to the LiteLLM issue here: \nhttps://github.com/openai/openai-agents-python/issues/2109",
+                  "createdAt": "2025-12-01T15:57:01Z",
+                  "databaseId": 3597352115,
+                  "id": "IC_kwDOOGidp87Wazyz",
+                  "updatedAt": "2025-12-01T15:57:22Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2137#issuecomment-3597352115"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/193485845?v=4",
+                    "databaseId": 193485845,
+                    "id": "U_kgDOC4hcFQ",
+                    "login": "silvasw",
+                    "url": "https://github.com/silvasw"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "Not reflecting when using Agent. ",
+                  "createdAt": "2025-12-01T22:00:39Z",
+                  "databaseId": 3599145546,
+                  "id": "IC_kwDOOGidp87WhppK",
+                  "updatedAt": "2025-12-01T22:00:39Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2137#issuecomment-3599145546"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/193485845?v=4",
+                    "databaseId": 193485845,
+                    "id": "U_kgDOC4hcFQ",
+                    "login": "silvasw",
+                    "url": "https://github.com/silvasw"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "The problem is that if u are using orchestration for multi agents the initial call may not have tools calling so your implementation to fails to extract signature.\n\n```\nChatCompletionMessage(content='Hello! How can I help you with your trading analysis or visualization today?', refusal=None, role='assistant', annotations=None, audio=None, function_call=None, tool_calls=None, extra_content={'google': {'thought_signature': 'CrYCAePx/177L7ysX5ant4Z3QWssMk9VJVCVOYEoYJX3bDkezrYUcV9fNkBCsNSzmzjHMNuinA9bYobyI+DEv7AdVtRKku1UQx5cf0H955AoTzSYkatK4pA4BQUYfhiOqGQ8QXdvkfs+y+2np+RFjH98X59qX6bm+u59KwkdNHISAX+mF2Ql31je+dt1D/69G3Oy/01V2tgTtcthYfpL9K94kFLTyafyLASxqfj4nKm0/eXMqwGCTf8KhCkVkTYMEodUTEo2YUL1iEiLOwFGYm9remHN/TmvH+w9lJvT5NRxNytQLFilsCXNvvQtECbhTddL3V+GlDsALt54k5iBLDuT0YYeW4QAYijyCKoxPtnblZeUmZauKcxTQQtf7S/+L1gpxoC2ZDy1cDXLMl5Rtp/loFjCRf4XCg=='}}) \n```",
+                  "createdAt": "2025-12-02T09:44:42Z",
+                  "databaseId": 3601134771,
+                  "id": "IC_kwDOOGidp87WpPSz",
+                  "updatedAt": "2025-12-02T09:44:42Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2137#issuecomment-3601134771"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/130514439?v=4",
+                    "databaseId": 130514439,
+                    "id": "U_kgDOB8d-Bw",
+                    "login": "stelgic",
+                    "url": "https://github.com/stelgic"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "Here some changes made to get gemini 3 pro works with agents.Runner. \nNote that this changes was on specific tag versions.\n\nDev from `openai-python` suggest to make changes using `model_extra` https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel.model_extra\n\nhttps://github.com/stelgic/openai-python/tree/gemini\nhttps://github.com/stelgic/openai-agents-python/tree/gemini",
+                  "createdAt": "2025-12-04T12:55:48Z",
+                  "databaseId": 3612128130,
+                  "id": "IC_kwDOOGidp87XTLOC",
+                  "updatedAt": "2025-12-04T13:02:15Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2137#issuecomment-3612128130"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/4557?v=4",
+                    "databaseId": 4557,
+                    "id": "MDQ6VXNlcjQ1NTc=",
+                    "login": "ihower",
+                    "url": "https://github.com/ihower"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "@stelgic I’ve sent a pull request: https://github.com/openai/openai-agents-python/pull/2158\n\nRegarding the case where the initial call may not include any tool calls: the thought_signature is not required by the Gemini API in that situation, so I didn’t handle it for now. However, my PR lays the groundwork to support that in the future if needed.",
+                  "createdAt": "2025-12-07T06:27:59Z",
+                  "databaseId": 3621694710,
+                  "id": "IC_kwDOOGidp87X3qz2",
+                  "updatedAt": "2025-12-07T06:27:59Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2137#issuecomment-3621694710"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "authorAssociation": "MEMBER",
+                  "body": "Resolved by https://github.com/openai/openai-agents-python/pull/2158",
+                  "createdAt": "2026-01-07T01:35:52Z",
+                  "databaseId": 3716972283,
+                  "id": "IC_kwDOOGidp87djH77",
+                  "updatedAt": "2026-01-07T01:35:52Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2137#issuecomment-3716972283"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO3Yx--w==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:16.684146Z"
+}

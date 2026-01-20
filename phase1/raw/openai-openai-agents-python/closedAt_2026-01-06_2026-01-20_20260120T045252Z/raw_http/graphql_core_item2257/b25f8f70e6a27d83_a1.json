@@ -1,0 +1,114 @@
+{
+  "finished_at": "2026-01-20T04:54:23.838579Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "b25f8f70e6a27d83",
+    "tag": "graphql_core_item2257"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2257,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "6208",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:23 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DB0F:EFCF3:161ACCD:1F2505B:696F0A7F",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4878",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "122",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/103291953?u=f7d7f2473c34637c1453e7fc6f556057f2d101ce&v=4",
+              "databaseId": 103291953,
+              "id": "U_kgDOBigcMQ",
+              "login": "sebastianherreramonterrosa",
+              "url": "https://github.com/sebastianherreramonterrosa"
+            },
+            "authorAssociation": "NONE",
+            "body": "I'm trying this Agent with tools and structured output in Open AI Agents SDK with Gemini. \n\n\n```python\nimport os\nimport random\nfrom typing import List, Literal\n\nfrom agents import Agent, ItemHelpers, Runner, function_tool, set_tracing_disabled\nfrom agents.extensions.models.litellm_model import LitellmModel\nfrom pydantic import BaseModel, Field\n\nset_tracing_disabled(disabled=True)\nos.environ[\"GOOGLE_API_KEY\"] = \"...\"\n\nmodel = LitellmModel(model=\"gemini/gemini-3-flash-preview\", api_key=os.getenv(\"GOOGLE_API_KEY\"))\nclass Joke(BaseModel):\n    setup: str = Field(description=\"Joke setup\")\n    punchline: str = Field(description=\"Joke punchline\")\n\n\nclass JokesResponse(BaseModel):\n    count: int = Field(description=\"Total number of jokes generated\")\n    style: Literal[\"dad\", \"dark\", \"absurd\", \"clean\"] = Field(description=\"Chosen style\")\n    jokes: List[Joke] = Field(description=\"List of jokes\")\n\n\nclass JokePlan(BaseModel):\n    count: int = Field(ge=1, le=5, description=\"How many jokes to tell (1..5)\")\n    style: Literal[\"dad\", \"dark\", \"absurd\", \"clean\"] = Field(description=\"Joke style\")\n\n\nclass JokerAgentToolStructured:\n    def __init__(self):\n        self.agent = Agent(\n            name=\"Joker+Structured\",\n            instructions=(\n                \"First, ALWAYS call the `make_joke_plan` tool.\\n\"\n                \"Then generate the FINAL response as JSON strictly compatible with `JokesResponse`:\\n\"\n                \"- `count` must match the plan\\n\"\n                \"- `style` must match the plan\\n\"\n                \"- `jokes` must contain exactly `count` elements\\n\"\n                \"Keep the jokes in Spanish.\"\n            ),\n            tools=[self.make_joke_plan],\n            output_type=JokesResponse,\n            model=model,\n        )\n\n    @staticmethod\n    @function_tool\n    def make_joke_plan() -> JokePlan:\n        \"\"\"Decide how many jokes and which style to use.\"\"\"\n        return JokePlan(\n            count=random.randint(1, 5),\n            style=random.choice([\"dad\", \"absurd\", \"clean\", \"dark\"]),\n        )\n\n    async def run(self, input: str):\n        result = Runner.run_streamed(self.agent, input=input)\n\n        print(\"=== Run starting ===\")\n\n        async for event in result.stream_events():\n            if event.type == \"raw_response_event\":\n                continue\n\n            elif event.type == \"agent_updated_stream_event\":\n                print(f\"Agent updated: {event.new_agent.name}\")\n                continue\n\n            elif event.type == \"run_item_stream_event\":\n                item = event.item\n\n                if item.type == \"tool_call_item\":\n                    print(\"-- Tool was called\")\n\n                elif item.type == \"tool_call_output_item\":\n                    print(f\"-- Tool output: {item.output}\")\n\n                elif item.type == \"message_output_item\":\n                    print(f\"-- Message output:\\n{ItemHelpers.text_message_output(item)}\")\n\n        print(\"=== Run complete ===\")\n\n        final: JokesResponse = result.final_output\n        print(\"\\n=== Final structured output (Pydantic object) ===\")\n        print(final.model_dump_json(indent=2))\n\n\nasync def main():\n    agent = JokerAgentToolStructured()\n    await agent.run(\"I want jokes for a work meeting.\")\n\nawait main()\n```\n\n### Relevant log output\n\n```shell\nFile c:\\Users\\sejohermo\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\agents\\models\\chatcmpl_stream_handler.py:91, in ChatCmplStreamHandler.handle_stream(cls, response, stream)\n     89 state = StreamingState()\n     90 sequence_number = SequenceNumber()\n---> 91 async for chunk in stream:\n     92     if not state.started:\n     93         state.started = True\n\nFile c:\\Users\\sejohermo\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\litellm\\litellm_core_utils\\streaming_handler.py:2013, in CustomStreamWrapper.__anext__(self)\n   2010 except Exception as e:\n   2011     from litellm.exceptions import MidStreamFallbackError\n-> 2013     raise MidStreamFallbackError(\n   2014         message=str(e),\n   2015         model=self.model,\n   2016         llm_provider=self.custom_llm_provider or \"anthropic\",\n   2017         original_exception=e,\n   2018         generated_content=self.response_uptil_now,\n   2019         is_pre_first_chunk=not self.sent_first_chunk,\n   2020     )\n\nMidStreamFallbackError: litellm.ServiceUnavailableError: litellm.MidStreamFallbackError: litellm.BadRequestError: Vertex_ai_betaException BadRequestError - b'{\\n  \"error\": {\\n    \"code\": 400,\\n    \"message\": \"Request contains an invalid argument.\",\\n    \"status\": \"INVALID_ARGUMENT\"\\n  }\\n}\\n' Original exception: BadRequestError: litellm.BadRequestError: Vertex_ai_betaException BadRequestError - b'{\\n  \"error\": {\\n    \"code\": 400,\\n    \"message\": \"Request contains an invalid argument.\",\\n    \"status\": \"INVALID_ARGUMENT\"\\n  }\\n}\\n'\n```",
+            "closedAt": "2026-01-16T02:17:03Z",
+            "comments": {
+              "totalCount": 4
+            },
+            "createdAt": "2026-01-04T05:54:55Z",
+            "databaseId": 3778877643,
+            "id": "I_kwDOOGidp87hPRjL",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "0E8A16",
+                  "description": "Question about using the SDK",
+                  "name": "question"
+                },
+                {
+                  "color": "ededed",
+                  "description": null,
+                  "name": "stale"
+                },
+                {
+                  "color": "77cf69",
+                  "description": "",
+                  "name": "feature:chat-completions"
+                },
+                {
+                  "color": "a95c3a",
+                  "description": "",
+                  "name": "feature:lite-llm"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": null,
+            "number": 2257,
+            "state": "CLOSED",
+            "title": "Structured Output + Tool Calling is not working with Gemini in Open AI Agents SDK",
+            "updatedAt": "2026-01-16T02:17:03Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2257"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:23.284583Z"
+}

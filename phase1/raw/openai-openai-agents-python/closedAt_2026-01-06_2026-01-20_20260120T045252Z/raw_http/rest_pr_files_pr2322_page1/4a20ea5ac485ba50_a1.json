@@ -1,0 +1,88 @@
+{
+  "finished_at": "2026-01-20T04:57:40.148123Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "4a20ea5ac485ba50",
+    "tag": "rest_pr_files_pr2322_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2322/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "11554",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:57:40 GMT",
+      "etag": "\"1ee12c0c113551dfc27675d54c015eccc0d921293c942614874484aef6a631f7\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Fri, 16 Jan 2026 12:28:01 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DCD4:EFCF3:1620A4A:1F2C31A:696F0B43",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4938",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "62",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 23,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/d2f0bb2f29d9d4d7f2ad192b567bbb0add9f6795/src%2Fagents%2Fmemory%2Fopenai_responses_compaction_session.py",
+        "changes": 23,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Fmemory%2Fopenai_responses_compaction_session.py?ref=d2f0bb2f29d9d4d7f2ad192b567bbb0add9f6795",
+        "deletions": 0,
+        "filename": "src/agents/memory/openai_responses_compaction_session.py",
+        "patch": "@@ -121,6 +121,7 @@ def __init__(\n         self._compaction_candidate_items: list[TResponseInputItem] | None = None\n         self._session_items: list[TResponseInputItem] | None = None\n         self._response_id: str | None = None\n+        self._deferred_response_id: str | None = None\n \n     @property\n     def client(self) -> AsyncOpenAI:\n@@ -153,6 +154,7 @@ async def run_compaction(self, args: OpenAIResponsesCompactionArgs | None = None\n             logger.debug(f\"skip: decision hook declined compaction for {self._response_id}\")\n             return\n \n+        self._deferred_response_id = None\n         logger.debug(f\"compact: start for {self._response_id} using {self.model}\")\n \n         compacted = await self.client.responses.compact(\n@@ -187,6 +189,26 @@ async def run_compaction(self, args: OpenAIResponsesCompactionArgs | None = None\n     async def get_items(self, limit: int | None = None) -> list[TResponseInputItem]:\n         return await self.underlying_session.get_items(limit)\n \n+    async def _defer_compaction(self, response_id: str) -> None:\n+        if self._deferred_response_id is not None:\n+            return\n+        compaction_candidate_items, session_items = await self._ensure_compaction_candidates()\n+        should_compact = self.should_trigger_compaction(\n+            {\n+                \"response_id\": response_id,\n+                \"compaction_candidate_items\": compaction_candidate_items,\n+                \"session_items\": session_items,\n+            }\n+        )\n+        if should_compact:\n+            self._deferred_response_id = response_id\n+\n+    def _get_deferred_compaction_response_id(self) -> str | None:\n+        return self._deferred_response_id\n+\n+    def _clear_deferred_compaction(self) -> None:\n+        self._deferred_response_id = None\n+\n     async def add_items(self, items: list[TResponseInputItem]) -> None:\n         await self.underlying_session.add_items(items)\n         if self._compaction_candidate_items is not None:\n@@ -207,6 +229,7 @@ async def clear_session(self) -> None:\n         await self.underlying_session.clear_session()\n         self._compaction_candidate_items = []\n         self._session_items = []\n+        self._deferred_response_id = None\n \n     async def _ensure_compaction_candidates(\n         self,",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/d2f0bb2f29d9d4d7f2ad192b567bbb0add9f6795/src%2Fagents%2Fmemory%2Fopenai_responses_compaction_session.py",
+        "sha": "f495d3ef5d29f15857d1acd5eb2a14ee39d24488",
+        "status": "modified"
+      },
+      {
+        "additions": 28,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/d2f0bb2f29d9d4d7f2ad192b567bbb0add9f6795/src%2Fagents%2Frun.py",
+        "changes": 29,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Frun.py?ref=d2f0bb2f29d9d4d7f2ad192b567bbb0add9f6795",
+        "deletions": 1,
+        "filename": "src/agents/run.py",
+        "patch": "@@ -49,12 +49,14 @@\n from .handoffs import Handoff, HandoffHistoryMapper, HandoffInputFilter, handoff\n from .items import (\n     HandoffCallItem,\n+    HandoffOutputItem,\n     ItemHelpers,\n     ModelResponse,\n     ReasoningItem,\n     RunItem,\n     ToolCallItem,\n     ToolCallItemTypes,\n+    ToolCallOutputItem,\n     TResponseInputItem,\n )\n from .lifecycle import AgentHooksBase, RunHooks, RunHooksBase\n@@ -2094,7 +2096,32 @@ async def _save_result_to_session(\n \n         # Run compaction if session supports it and we have a response_id\n         if response_id and is_openai_responses_compaction_aware_session(session):\n-            await session.run_compaction({\"response_id\": response_id})\n+            has_local_tool_outputs = any(\n+                isinstance(item, (ToolCallOutputItem, HandoffOutputItem)) for item in new_items\n+            )\n+            if has_local_tool_outputs:\n+                defer_compaction = getattr(session, \"_defer_compaction\", None)\n+                if callable(defer_compaction):\n+                    result = defer_compaction(response_id)\n+                    if inspect.isawaitable(result):\n+                        await result\n+                logger.debug(\n+                    \"skip: deferring compaction for response %s due to local tool outputs\",\n+                    response_id,\n+                )\n+                return\n+            deferred_response_id = None\n+            get_deferred = getattr(session, \"_get_deferred_compaction_response_id\", None)\n+            if callable(get_deferred):\n+                deferred_response_id = get_deferred()\n+            force_compaction = deferred_response_id is not None\n+            if force_compaction:\n+                logger.debug(\n+                    \"compact: forcing for response %s after deferred %s\",\n+                    response_id,\n+                    deferred_response_id,\n+                )\n+            await session.run_compaction({\"response_id\": response_id, \"force\": force_compaction})\n \n     @staticmethod\n     async def _input_guardrail_tripwire_triggered_for_stream(",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/d2f0bb2f29d9d4d7f2ad192b567bbb0add9f6795/src%2Fagents%2Frun.py",
+        "sha": "8d3c311b0d5690e638ff3b8fc9b5c8bc233310d6",
+        "status": "modified"
+      },
+      {
+        "additions": 113,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/d2f0bb2f29d9d4d7f2ad192b567bbb0add9f6795/tests%2Fmemory%2Ftest_openai_responses_compaction_session.py",
+        "changes": 114,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Fmemory%2Ftest_openai_responses_compaction_session.py?ref=d2f0bb2f29d9d4d7f2ad192b567bbb0add9f6795",
+        "deletions": 1,
+        "filename": "tests/memory/test_openai_responses_compaction_session.py",
+        "patch": "@@ -20,7 +20,7 @@\n     select_compaction_candidate_items,\n )\n from tests.fake_model import FakeModel\n-from tests.test_responses import get_text_message\n+from tests.test_responses import get_function_tool, get_function_tool_call, get_text_message\n from tests.utils.simple_session import SimpleListSession\n \n \n@@ -289,6 +289,118 @@ async def test_compaction_runs_during_runner_flow(self) -> None:\n         items = await session.get_items()\n         assert any(isinstance(item, dict) and item.get(\"type\") == \"compaction\" for item in items)\n \n+    @pytest.mark.asyncio\n+    async def test_compaction_skips_when_tool_outputs_present(self) -> None:\n+        underlying = SimpleListSession()\n+        mock_client = MagicMock()\n+        mock_client.responses.compact = AsyncMock()\n+\n+        session = OpenAIResponsesCompactionSession(\n+            session_id=\"demo\",\n+            underlying_session=underlying,\n+            client=mock_client,\n+            should_trigger_compaction=lambda ctx: True,\n+        )\n+\n+        tool = get_function_tool(name=\"do_thing\", return_value=\"done\")\n+        model = FakeModel(initial_output=[get_function_tool_call(\"do_thing\")])\n+        agent = Agent(\n+            name=\"assistant\",\n+            model=model,\n+            tools=[tool],\n+            tool_use_behavior=\"stop_on_first_tool\",\n+        )\n+\n+        await Runner.run(agent, \"hello\", session=session)\n+\n+        mock_client.responses.compact.assert_not_called()\n+\n+    @pytest.mark.asyncio\n+    async def test_compaction_runs_after_deferred_tool_outputs_when_due(self) -> None:\n+        underlying = SimpleListSession()\n+        compacted = SimpleNamespace(\n+            output=[{\"type\": \"compaction\", \"summary\": \"compacted\"}],\n+        )\n+        mock_client = MagicMock()\n+        mock_client.responses.compact = AsyncMock(return_value=compacted)\n+\n+        def should_trigger_compaction(context: dict[str, Any]) -> bool:\n+            return any(\n+                isinstance(item, dict) and item.get(\"type\") == \"function_call_output\"\n+                for item in context[\"session_items\"]\n+            )\n+\n+        session = OpenAIResponsesCompactionSession(\n+            session_id=\"demo\",\n+            underlying_session=underlying,\n+            client=mock_client,\n+            should_trigger_compaction=should_trigger_compaction,\n+        )\n+\n+        tool = get_function_tool(name=\"do_thing\", return_value=\"done\")\n+        model = FakeModel()\n+        model.add_multiple_turn_outputs(\n+            [\n+                [get_function_tool_call(\"do_thing\")],\n+                [get_text_message(\"ok\")],\n+            ]\n+        )\n+        agent = Agent(\n+            name=\"assistant\",\n+            model=model,\n+            tools=[tool],\n+            tool_use_behavior=\"stop_on_first_tool\",\n+        )\n+\n+        await Runner.run(agent, \"hello\", session=session)\n+        await Runner.run(agent, \"followup\", session=session)\n+\n+        mock_client.responses.compact.assert_awaited_once()\n+\n+    @pytest.mark.asyncio\n+    async def test_deferred_compaction_persists_across_tool_turns(self) -> None:\n+        underlying = SimpleListSession()\n+        compacted = SimpleNamespace(\n+            output=[{\"type\": \"compaction\", \"summary\": \"compacted\"}],\n+        )\n+        mock_client = MagicMock()\n+        mock_client.responses.compact = AsyncMock(return_value=compacted)\n+\n+        should_compact_calls = {\"count\": 0}\n+\n+        def should_trigger_compaction(context: dict[str, Any]) -> bool:\n+            should_compact_calls[\"count\"] += 1\n+            return should_compact_calls[\"count\"] == 1\n+\n+        session = OpenAIResponsesCompactionSession(\n+            session_id=\"demo\",\n+            underlying_session=underlying,\n+            client=mock_client,\n+            should_trigger_compaction=should_trigger_compaction,\n+        )\n+\n+        tool = get_function_tool(name=\"do_thing\", return_value=\"done\")\n+        model = FakeModel()\n+        model.add_multiple_turn_outputs(\n+            [\n+                [get_function_tool_call(\"do_thing\")],\n+                [get_function_tool_call(\"do_thing\")],\n+                [get_text_message(\"ok\")],\n+            ]\n+        )\n+        agent = Agent(\n+            name=\"assistant\",\n+            model=model,\n+            tools=[tool],\n+            tool_use_behavior=\"stop_on_first_tool\",\n+        )\n+\n+        await Runner.run(agent, \"hello\", session=session)\n+        await Runner.run(agent, \"again\", session=session)\n+        await Runner.run(agent, \"final\", session=session)\n+\n+        mock_client.responses.compact.assert_awaited_once()\n+\n \n class TestTypeGuard:\n     def test_is_compaction_aware_session_true(self) -> None:",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/d2f0bb2f29d9d4d7f2ad192b567bbb0add9f6795/tests%2Fmemory%2Ftest_openai_responses_compaction_session.py",
+        "sha": "41b397225b05d7ae6e98d8c63512752fc3074d08",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:57:39.598880Z"
+}
