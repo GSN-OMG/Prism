@@ -84,6 +84,46 @@ class EnhancedDocGapOutput:
 
 
 @dataclass(frozen=True, slots=True)
+class RepoDocFile:
+    """Documentation file in a repository."""
+    path: str
+    name: str
+    url: str
+
+
+@dataclass(frozen=True, slots=True)
+class RepoDocsInfo:
+    """Documentation structure info for a repository."""
+    repo: str
+    docs_path: str
+    files: tuple[RepoDocFile, ...]
+    topics: tuple[str, ...]
+    total_files: int
+
+
+@dataclass(frozen=True, slots=True)
+class DocsComparisonResult:
+    """Result of comparing documentation between repositories."""
+    target_repo: str
+    reference_repos: tuple[str, ...]
+    target_docs: RepoDocsInfo | None
+    reference_docs: tuple[RepoDocsInfo, ...]
+    missing_topics: tuple[str, ...]
+    missing_docs: tuple[str, ...]  # Suggested doc paths
+    coverage_ratio: float
+    suggestions: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class GitHubEnhancedDocGapOutput:
+    """Doc gap analysis with GitHub-based documentation comparison."""
+    gap_analysis: "DocGapOutput"
+    docs_comparison: DocsComparisonResult | None
+    reference_examples: tuple[RepoDocFile, ...]  # Example docs from reference repos
+    suggested_structure: tuple[str, ...]  # Recommended doc structure
+
+
+@dataclass(frozen=True, slots=True)
 class Contributor:
     login: str
     areas: tuple[str, ...] = ()
