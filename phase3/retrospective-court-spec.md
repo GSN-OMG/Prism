@@ -1,4 +1,4 @@
-# 회고 법정 모듈 스펙 (v0.4)
+# 회고 법정 모듈 스펙 (v0.5)
 
 목표: 인간/AI의 활동 기록(컨텍스트)을 “사건(Case)”으로 재구성하고, 멀티 에이전트 회고(판사/검사/변호사/배심원)를 통해 **역할(Role)별 교훈(Lesson)** 을 도출·선별하여 PostgreSQL에 축적한다. 축적된 교훈은 검색/추천에 활용되며, 필요 시 **역할별 기본 프롬프트(Base Prompt)** 업데이트(진화)를 트리거한다.
 
@@ -19,6 +19,7 @@
 - **교훈 중복 처리**: 유사 교훈은 **병합 또는 승계(supersede)** 를 고려한다(최종은 Judge가 결정).
 - **민감정보 처리**: 정의서를 별도로 둔다. 초기에는 디폴트 정책(JSON)을 제공하고 사용자가 업데이트 가능하도록 한다. (`phase3/sensitive-info-spec.md`)
 - **민감정보 정책 업데이트(MVP)**: 정책은 **파일 기반(JSON)** 으로 시작하고, 변경 사항은 **재시작 시 반영**한다(DB 즉시 갱신/핫리로드는 추후).
+- **원문 저장(MVP)**: DB에는 **마스킹된 원문만 저장**한다. 마스킹 전 원문은 저장하지 않는다.
 
 ## 2) 시스템 입력/출력
 
@@ -86,9 +87,9 @@
   - `id`, `created_at`, `source`, `summary`, `status`
   - (선택) `redaction_policy_id`, `redaction_policy_version`
 - `case_events`
-  - `id`, `case_id`, `ts`, `actor_type`(human/ai/tool), `actor_id`, `event_type`, `content`, `meta`(jsonb)
+  - `id`, `case_id`, `ts`, `actor_type`(human/ai/tool), `actor_id`, `event_type`, `content`(redacted), `meta`(jsonb)
 - `court_runs`
-  - `id`, `case_id`, `model`, `started_at`, `ended_at`, `status`, `artifacts`(jsonb: 원문 응답/토큰/비용 등)
+  - `id`, `case_id`, `model`, `started_at`, `ended_at`, `status`, `artifacts`(jsonb: redacted 응답/토큰/비용 등)
 - `lessons`
   - `id`, `case_id`, `role`, `polarity`(do/dont), `title`, `content`, `rationale`, `confidence`
   - `tags`(text[]), `evidence_event_ids`(uuid[] 또는 bigint[])
@@ -149,4 +150,3 @@
 ## 8) 오픈 질문(결정 필요)
 
 1. **병합/승계 기준**: 임베딩 유사도 임계값, “동일 내용” 판정 기준, 충돌 시 우선순위(최신/신뢰도/심각도) 정의.
-2. **원문 보관/저장 정책**: `case_events.content` 원문을 어느 수준까지 보관할지(완전 미보관/부분 보관/암호화 보관)와 운영 원칙.
