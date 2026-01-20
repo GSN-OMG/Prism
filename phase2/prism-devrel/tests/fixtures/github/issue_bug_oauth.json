@@ -1,0 +1,10 @@
+{
+  "number": 101,
+  "title": "OAuth2 authentication fails silently",
+  "body": "When completing the OAuth callback, the app fails with an error.\\n\\nSteps:\\n1) Start auth\\n2) Complete callback\\n\\nExpected: token stored\\nActual: error thrown\\n\\nLogs: stack trace mentions auth redirect.",
+  "labels": [
+    { "name": "bug" },
+    { "name": "auth" }
+  ]
+}
+

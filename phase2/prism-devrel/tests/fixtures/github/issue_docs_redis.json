@@ -1,0 +1,10 @@
+{
+  "number": 103,
+  "title": "Redis cache setup guide?",
+  "body": "Is there a guide for setting up Redis cache? I couldn't find an example config.",
+  "labels": [
+    { "name": "documentation" },
+    { "name": "question" }
+  ]
+}
+
