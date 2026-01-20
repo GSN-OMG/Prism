@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .types import AgentOutput, Issue, IssueKind
+from .types import DocGapOutput, Issue, Priority
 
 
 @dataclass(frozen=True, slots=True)
@@ -16,10 +16,15 @@ def detect_doc_gaps(issues: list[Issue]) -> list[DocGapCandidate]:
     candidates: dict[str, list[int]] = {}
     for issue in issues:
         labels = {label.lower() for label in issue.labels}
-        if "documentation" in labels or "docs" in issue.title.lower():
+        title_lower = issue.title.lower()
+        body_lower = issue.body.lower()
+
+        if "documentation" in labels or "docs" in title_lower:
             key = "documentation"
-        elif "redis" in issue.title.lower() or "redis" in issue.body.lower():
+        elif "redis" in title_lower or "redis" in body_lower:
             key = "redis"
+        elif "logging" in title_lower or "debug" in title_lower or "logging" in body_lower:
+            key = "logging"
         else:
             continue
         candidates.setdefault(key, []).append(issue.number)
@@ -36,15 +41,39 @@ def detect_doc_gaps(issues: list[Issue]) -> list[DocGapCandidate]:
     return results
 
 
-def draft_docs_issue(candidate: DocGapCandidate) -> AgentOutput:
+def to_doc_gap_output(candidate: DocGapCandidate) -> DocGapOutput:
     numbers = ", ".join(f"#{n}" for n in candidate.evidence_issue_numbers)
-    body = (
-        "We’ve seen repeated questions that indicate a documentation gap.\n\n"
-        f"Topic: {candidate.topic}\n"
-        f"Evidence: {numbers}\n\n"
-        "Proposed action:\n"
-        "- Add a short guide and troubleshooting section\n"
-        "- Link example configs in `examples/`\n"
-    )
-    return AgentOutput(title=f"Docs gap: {candidate.topic}", body=body)
 
+    topic = candidate.topic
+    if topic == "redis":
+        doc_path = "docs/cache/redis.md"
+        outline = (
+            "Overview",
+            "Installation",
+            "Configuration",
+            "Common errors",
+            "Example config",
+        )
+        priority = Priority.HIGH
+    elif topic == "logging":
+        doc_path = "docs/debugging/logging.md"
+        outline = ("Enable debug logging", "Log locations", "Common troubleshooting")
+        priority = Priority.MEDIUM
+    else:
+        doc_path = "docs/README.md"
+        outline = ("Problem statement", "How to", "FAQ")
+        priority = Priority.MEDIUM
+
+    return DocGapOutput(
+        has_gap=True,
+        gap_topic=topic,
+        affected_issues=candidate.evidence_issue_numbers,
+        suggested_doc_path=doc_path,
+        suggested_outline=outline,
+        priority=priority,
+    )
+
+
+def summarize_doc_gap(candidate: DocGapCandidate) -> str:
+    numbers = ", ".join(f"#{n}" for n in candidate.evidence_issue_numbers)
+    return f"Topic={candidate.topic}, evidence={numbers}, rationale={candidate.rationale}"

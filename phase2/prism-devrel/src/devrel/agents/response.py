@@ -1,22 +1,35 @@
 from __future__ import annotations
 
-from .types import AgentOutput, Issue, IssueAnalysis
+from .types import Issue, IssueAnalysisOutput, ResponseOutput, ResponseStrategy
 
 
-def draft_response(issue: Issue, analysis: IssueAnalysis) -> AgentOutput:
-    if analysis.missing_info_questions:
-        questions = "\n".join(f"- {q}" for q in analysis.missing_info_questions)
+def draft_response(issue: Issue, analysis: IssueAnalysisOutput) -> ResponseOutput:
+    if analysis.needs_more_info:
         body = (
             "Thanks for the report — to help us reproduce and confirm the fix, could you provide:\n"
-            f"{questions}\n"
+            "- Steps to reproduce\n"
+            "- Expected vs actual behavior\n"
+            "- Environment/version\n"
+            "- Relevant logs/stack traces\n"
         )
-        return AgentOutput(title=f"Info request for #{issue.number}", body=body)
+        return ResponseOutput(
+            strategy=ResponseStrategy.REQUEST_INFO,
+            response_text=body,
+            confidence=0.6,
+            references=(),
+            follow_up_needed=True,
+        )
 
     body = (
-        "Thanks for reaching out. Based on the details provided, here are a few next steps:\n"
-        "- Please confirm your environment/version.\n"
-        "- Share any logs or error messages.\n"
-        "- If possible, provide a minimal reproduction.\n"
+        "Thanks for reaching out. Here are a few next steps to unblock:\n"
+        "- Confirm your environment/version\n"
+        "- Share logs or errors\n"
+        "- Provide a minimal reproduction if possible\n"
     )
-    return AgentOutput(title=f"Draft response for #{issue.number}", body=body)
-
+    return ResponseOutput(
+        strategy=analysis.suggested_action,
+        response_text=body,
+        confidence=0.5,
+        references=(),
+        follow_up_needed=False,
+    )
