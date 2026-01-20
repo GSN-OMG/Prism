@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import uuid
 from dataclasses import dataclass
 from datetime import datetime
 from functools import cached_property
@@ -32,6 +33,10 @@ class InvalidStateError(StorageError):
 
 def _uuid(value: str | UUID) -> UUID:
     return value if isinstance(value, UUID) else UUID(value)
+
+
+def _new_uuid() -> UUID:
+    return uuid.uuid4()
 
 
 def _vector_literal(values: Sequence[float]) -> str:
@@ -76,14 +81,20 @@ class PostgresStorage:
         assert_no_sensitive_data(metadata, policy=self.redaction_policy)
 
         metadata = metadata or {}
+        case_id = _new_uuid()
         with self._connect() as conn, conn.cursor() as cur:
             cur.execute(
                 """
-                INSERT INTO cases (source, metadata, redaction_policy_version)
-                VALUES (%s, %s, %s)
+                INSERT INTO cases (id, source, metadata, redaction_policy_version)
+                VALUES (%s, %s, %s, %s)
                 RETURNING id;
                 """,
-                (Jsonb(dict(source)), Jsonb(dict(metadata)), redaction_policy_version),
+                (
+                    case_id,
+                    Jsonb(dict(source)),
+                    Jsonb(dict(metadata)),
+                    redaction_policy_version,
+                ),
             )
             row = cur.fetchone()
             assert row is not None
@@ -100,8 +111,11 @@ class PostgresStorage:
                 raise StorageError("case_events[] requires event_type.")
             assert_no_sensitive_data(event, policy=self.redaction_policy)
 
+            raw_event_id = event.get("id")
+            event_id = _uuid(raw_event_id) if raw_event_id is not None else _new_uuid()
             rows.append(
                 (
+                    event_id,
                     cid,
                     event.get("court_run_id"),
                     event.get("ts"),
@@ -122,6 +136,7 @@ class PostgresStorage:
             cur.executemany(
                 """
                 INSERT INTO case_events (
+                  id,
                   case_id,
                   court_run_id,
                   ts,
@@ -134,7 +149,7 @@ class PostgresStorage:
                   meta,
                   usage
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
                 """,
                 rows,
             )
@@ -148,13 +163,14 @@ class PostgresStorage:
     ) -> UUID:
         cid = _uuid(case_id)
         with self._connect() as conn, conn.cursor() as cur:
+            court_run_id = _new_uuid()
             cur.execute(
                 """
-                INSERT INTO court_runs (case_id, model, started_at, status)
-                VALUES (%s, %s, %s, 'running')
+                INSERT INTO court_runs (id, case_id, model, started_at, status)
+                VALUES (%s, %s, %s, %s, 'running')
                 RETURNING id;
                 """,
-                (cid, model, started_at),
+                (court_run_id, cid, model, started_at),
             )
             row = cur.fetchone()
             assert row is not None
@@ -202,13 +218,14 @@ class PostgresStorage:
         assert_no_sensitive_data(decision_json, policy=self.redaction_policy)
 
         with self._connect() as conn, conn.cursor() as cur:
+            judgement_id = _new_uuid()
             cur.execute(
                 """
-                INSERT INTO judgements (case_id, court_run_id, decision)
-                VALUES (%s, %s, %s)
+                INSERT INTO judgements (id, case_id, court_run_id, decision)
+                VALUES (%s, %s, %s, %s)
                 RETURNING id;
                 """,
-                (cid, rid, Jsonb(dict(decision_json))),
+                (judgement_id, cid, rid, Jsonb(dict(decision_json))),
             )
             row = cur.fetchone()
             assert row is not None
@@ -251,8 +268,10 @@ class PostgresStorage:
                 else:
                     embedding_param = list(embedding_value)
 
+            lesson_id = _new_uuid()
             rows.append(
                 (
+                    lesson_id,
                     cid,
                     lesson["role"],
                     lesson.get("polarity"),
@@ -273,6 +292,7 @@ class PostgresStorage:
             cur.executemany(
                 """
                 INSERT INTO lessons (
+                  id,
                   case_id,
                   role,
                   polarity,
@@ -287,7 +307,7 @@ class PostgresStorage:
                   embedding_dim,
                   supersedes_lesson_id
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
                 """,
                 rows,
             )
@@ -314,13 +334,14 @@ class PostgresStorage:
         )
 
         with self._connect() as conn, conn.cursor() as cur:
+            prompt_update_id = _new_uuid()
             cur.execute(
                 """
-                INSERT INTO prompt_updates (case_id, agent_id, role, from_version, proposal, reason, status)
-                VALUES (%s, %s, %s, %s, %s, %s, 'proposed')
+                INSERT INTO prompt_updates (id, case_id, agent_id, role, from_version, proposal, reason, status)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, 'proposed')
                 RETURNING id;
                 """,
-                (cid, agent_id, role, from_version, proposal, reason),
+                (prompt_update_id, cid, agent_id, role, from_version, proposal, reason),
             )
             row = cur.fetchone()
             assert row is not None
@@ -388,13 +409,14 @@ class PostgresStorage:
                 assert max_version_row is not None
                 new_version = int(max_version_row[0]) + 1
 
+                role_prompt_id = _new_uuid()
                 cur.execute(
                     """
-                    INSERT INTO role_prompts (role, version, prompt, is_active)
-                    VALUES (%s, %s, %s, true)
+                    INSERT INTO role_prompts (id, role, version, prompt, is_active)
+                    VALUES (%s, %s, %s, %s, true)
                     RETURNING id;
                     """,
-                    (role, new_version, proposal),
+                    (role_prompt_id, role, new_version, proposal),
                 )
                 new_prompt_id_row = cur.fetchone()
                 assert new_prompt_id_row is not None

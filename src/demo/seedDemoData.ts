@@ -10,6 +10,11 @@ export async function seedDemoData(pool: Pool): Promise<void> {
   if ((existing.rows[0]?.count ?? 0) > 0) return;
 
   const caseId = randomUUID();
+  const ev1Id = randomUUID();
+  const ev2Id = randomUUID();
+  const ev3Id = randomUUID();
+  const ev4Id = randomUUID();
+
   await pool.query(
     `
     INSERT INTO cases (id, source, metadata, summary, status, redaction_policy_version)
@@ -57,7 +62,7 @@ export async function seedDemoData(pool: Pool): Promise<void> {
   await pool.query(
     `
     INSERT INTO prompt_updates (id, case_id, agent_id, role, from_version, proposal, reason, status)
-    VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7, $8);
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
     `,
     [
       promptUpdateId,
@@ -65,10 +70,7 @@ export async function seedDemoData(pool: Pool): Promise<void> {
       'judge',
       'issue-analysis-agent',
       1,
-      JSON.stringify({
-        prompt: proposedPromptV2,
-        evidence_event_ids: [1, 2],
-      }),
+      proposedPromptV2,
       'Add evidence linking and reinforce redaction expectations.',
       'proposed',
     ],
@@ -97,7 +99,7 @@ export async function seedDemoData(pool: Pool): Promise<void> {
               polarity: 'do',
               title: 'Always link claims to evidence',
               content: 'Add evidence_event_ids for each classification decision.',
-              evidence_event_ids: [1, 2],
+              evidence_event_ids: [ev1Id, ev2Id],
             },
           ],
         },
@@ -114,7 +116,7 @@ export async function seedDemoData(pool: Pool): Promise<void> {
               role: 'issue-analysis-agent',
               title: 'Evidence-first',
               content: 'Include evidence_event_ids for each key claim.',
-              evidence_event_ids: [1, 2],
+              evidence_event_ids: [ev1Id, ev2Id],
             },
           ],
           prompt_update_proposals: [
@@ -129,55 +131,92 @@ export async function seedDemoData(pool: Pool): Promise<void> {
     ],
   );
 
-  await pool.query(
-    `
-    INSERT INTO case_events (case_id, ts, seq, actor_type, actor_id, role, event_type, content, meta, court_run_id)
-    VALUES
-      ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, NULL),
-      ($1, $10, $11, $12, $13, $14, $15, $16, $17::jsonb, NULL),
-      ($1, $18, $19, $20, $21, $22, $23, $24, $25::jsonb, $26),
-      ($1, $27, $28, $29, $30, $31, $32, $33, $34::jsonb, $26);
-    `,
-    [
-      caseId,
-      daysAgo(1),
-      1,
-      'human',
-      'reporter',
-      null,
-      'message',
-      'When using a custom OAuth provider, token refresh fails with 401 (redacted).',
-      JSON.stringify({ stage: 'ingest' }),
-      daysAgo(1),
-      2,
-      'tool',
-      'github',
-      null,
-      'tool_call',
-      'GET github issue + labels (redacted)',
-      JSON.stringify({ stage: 'ingest', tool: 'github.getIssue' }),
-      daysAgo(1),
-      3,
-      'ai',
-      'issue-analysis-agent',
-      'issue-analysis-agent',
-      'model_result',
-      '{"issue_type":"bug","priority":"high","summary":"Token refresh fails with 401..."}',
-      JSON.stringify({
-        stage: 'analysis',
-        usage: { input_tokens: 420, output_tokens: 250, cost_usd: 0.0042 },
-      }),
-      courtRunId,
-      daysAgo(0),
-      4,
-      'system',
-      'court',
-      'judge',
-      'artifact',
-      'Stored judge artifacts + prompt update proposal (redacted).',
-      JSON.stringify({ stage: 'court', prompt_update_id: promptUpdateId }),
-    ],
-  );
+  const events: Array<{
+    id: string;
+    ts: Date;
+    seq: number;
+    actor_type: string;
+    actor_id: string;
+    role: string | null;
+    event_type: string;
+    content: string;
+    meta: Record<string, unknown>;
+    usage?: Record<string, unknown> | null;
+    court_run_id: string | null;
+  }> = [
+    {
+      id: ev1Id,
+      ts: daysAgo(1),
+      seq: 1,
+      actor_type: 'human',
+      actor_id: 'reporter',
+      role: null,
+      event_type: 'message',
+      content: 'When using a custom OAuth provider, token refresh fails with 401 (redacted).',
+      meta: { stage: 'ingest' },
+      court_run_id: null,
+    },
+    {
+      id: ev2Id,
+      ts: daysAgo(1),
+      seq: 2,
+      actor_type: 'tool',
+      actor_id: 'github',
+      role: null,
+      event_type: 'tool_call',
+      content: 'GET github issue + labels (redacted)',
+      meta: { stage: 'ingest', tool: 'github.getIssue' },
+      court_run_id: null,
+    },
+    {
+      id: ev3Id,
+      ts: daysAgo(1),
+      seq: 3,
+      actor_type: 'ai',
+      actor_id: 'issue-analysis-agent',
+      role: 'issue-analysis-agent',
+      event_type: 'model_result',
+      content: '{"issue_type":"bug","priority":"high","summary":"Token refresh fails with 401..."}',
+      meta: { stage: 'analysis' },
+      usage: { input_tokens: 420, output_tokens: 250, cost_usd: 0.0042 },
+      court_run_id: courtRunId,
+    },
+    {
+      id: ev4Id,
+      ts: daysAgo(0),
+      seq: 4,
+      actor_type: 'system',
+      actor_id: 'court',
+      role: 'judge',
+      event_type: 'artifact',
+      content: 'Stored judge artifacts + prompt update proposal (redacted).',
+      meta: { stage: 'court', prompt_update_id: promptUpdateId },
+      court_run_id: courtRunId,
+    },
+  ];
+
+  for (const ev of events) {
+    await pool.query(
+      `
+      INSERT INTO case_events (id, case_id, ts, seq, actor_type, actor_id, role, event_type, content, meta, usage, court_run_id)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::jsonb, $11::jsonb, $12);
+      `,
+      [
+        ev.id,
+        caseId,
+        ev.ts,
+        ev.seq,
+        ev.actor_type,
+        ev.actor_id,
+        ev.role,
+        ev.event_type,
+        ev.content,
+        JSON.stringify(ev.meta),
+        ev.usage ? JSON.stringify(ev.usage) : null,
+        ev.court_run_id,
+      ],
+    );
+  }
 
   const caseId2 = randomUUID();
   await pool.query(

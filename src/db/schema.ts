@@ -23,8 +23,9 @@ export const schemaStatements = [
   `,
   `
   CREATE TABLE IF NOT EXISTS case_events (
-    id bigserial PRIMARY KEY,
+    id uuid PRIMARY KEY,
     case_id uuid NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+    court_run_id uuid REFERENCES court_runs(id) ON DELETE SET NULL,
     ts timestamptz,
     seq bigint,
     ingested_at timestamptz NOT NULL DEFAULT now(),
@@ -34,7 +35,7 @@ export const schemaStatements = [
     event_type text NOT NULL,
     content text NOT NULL,
     meta jsonb NOT NULL DEFAULT '{}'::jsonb,
-    court_run_id uuid REFERENCES court_runs(id) ON DELETE SET NULL
+    usage jsonb
   );
   `,
   `
@@ -51,11 +52,11 @@ export const schemaStatements = [
   `
   CREATE TABLE IF NOT EXISTS prompt_updates (
     id uuid PRIMARY KEY,
-    case_id uuid NOT NULL REFERENCES cases(id) ON DELETE CASCADE,
+    case_id uuid REFERENCES cases(id) ON DELETE SET NULL,
     agent_id text,
     role text NOT NULL,
     from_version integer,
-    proposal jsonb NOT NULL,
+    proposal text NOT NULL,
     reason text,
     status text NOT NULL DEFAULT 'proposed',
     created_at timestamptz NOT NULL DEFAULT now(),

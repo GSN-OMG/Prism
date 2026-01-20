@@ -270,6 +270,11 @@ export function createGuiRouter(opts: { pool: Pool }): Router {
             <div class="card__body">
               <div class="muted">Content</div>
               <pre class="pre">${escapeHtml(ev.content)}</pre>
+              ${
+                typeof ev.usage !== 'undefined' && ev.usage !== null
+                  ? `<div class="muted">Usage</div>${renderJson(ev.usage)}`
+                  : ''
+              }
               <div class="muted">Meta</div>
               ${renderJson(ev.meta)}
             </div>

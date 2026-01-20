@@ -23,7 +23,7 @@ export type CourtRunRow = {
 };
 
 export type CaseEventRow = {
-  id: number;
+  id: string;
   case_id: string;
   ts: Date | null;
   seq: string | number | null;
@@ -34,6 +34,7 @@ export type CaseEventRow = {
   event_type: string;
   content: string;
   meta: unknown;
+  usage?: unknown;
   court_run_id: string | null;
 };
 
@@ -176,7 +177,7 @@ export async function listCaseEvents(
     SELECT *
     FROM case_events
     WHERE ${conditions.join(' AND ')}
-    ORDER BY ts NULLS LAST, seq NULLS LAST, id ASC;
+    ORDER BY ts NULLS LAST, seq NULLS LAST, ingested_at ASC, id ASC;
     `,
     params,
   );
