@@ -40,6 +40,45 @@ function extractProposedPrompt(proposal: unknown): string | null {
   return null;
 }
 
+function stageFromMeta(meta: unknown): string | null {
+  if (!meta || typeof meta !== 'object') return null;
+  const v = (meta as Record<string, unknown>).stage;
+  if (typeof v !== 'string' || v.length === 0) return null;
+  return v;
+}
+
+function eventKind(eventType: string): string {
+  const t = eventType.toLowerCase();
+  if (t === 'error' || t.endsWith('.error') || t.includes('error')) return 'error';
+  if (t === 'model_call') return 'model_call';
+  if (t === 'model_result') return 'model_result';
+  if (t === 'tool_call') return 'tool_call';
+  if (t === 'tool_result') return 'tool_result';
+  if (t === 'artifact') return 'artifact';
+  if (t.startsWith('github.')) return 'github';
+  return 'event';
+}
+
+function eventIcon(opts: { actorType: string; stage: string | null; eventType: string }): string {
+  if (opts.stage === 'judge') return 'J';
+  if (opts.stage === 'prosecutor') return 'P';
+  if (opts.stage === 'defense') return 'D';
+  if (opts.stage === 'jury') return 'Y';
+
+  const kind = eventKind(opts.eventType);
+  if (kind === 'error') return 'ERR';
+  if (kind === 'model_call') return 'CALL';
+  if (kind === 'model_result') return 'AI';
+  if (kind === 'tool_call') return 'TL';
+  if (kind === 'tool_result') return 'TL';
+  if (kind === 'artifact') return 'AR';
+
+  if (opts.actorType === 'human') return 'H';
+  if (opts.actorType === 'ai') return 'AI';
+  if (opts.actorType === 'tool') return 'TL';
+  return 'SYS';
+}
+
 function renderPromptUpdateItem(
   promptUpdate: PromptUpdateRow,
   opts: {
@@ -253,7 +292,10 @@ export function createGuiRouter(opts: { pool: Pool }): Router {
       });
 
       const timelineHtml = events
-        .map((ev) => {
+        .map((ev, idx) => {
+          const stage = stageFromMeta(ev.meta);
+          const icon = eventIcon({ actorType: ev.actor_type, stage, eventType: ev.event_type });
+          const kind = eventKind(ev.event_type);
           const parts = [
             ev.ts ? formatDate(ev.ts) : '',
             ev.seq ? `seq=${escapeHtml(String(ev.seq))}` : '',
@@ -263,8 +305,18 @@ export function createGuiRouter(opts: { pool: Pool }): Router {
             ev.actor_id ? `(${ev.actor_id})` : '',
             ev.role ? `[${ev.role}]` : '',
           ].filter(Boolean);
-          return `<details class="card">
-            <summary class="card__summary">
+          const dataAttrs = [
+            `data-kind="${escapeHtml(kind)}"`,
+            `data-actor-type="${escapeHtml(ev.actor_type)}"`,
+            `data-event-type="${escapeHtml(ev.event_type)}"`,
+            stage ? `data-stage="${escapeHtml(stage)}"` : '',
+            `style="--i:${idx}"`,
+          ]
+            .filter(Boolean)
+            .join(' ');
+
+          return `<details class="card event" ${dataAttrs}>
+            <summary class="card__summary" data-icon="${escapeHtml(icon)}">
               <span class="mono">${escapeHtml(parts.join(' '))}</span>
             </summary>
             <div class="card__body">
@@ -386,6 +438,26 @@ export function createGuiRouter(opts: { pool: Pool }): Router {
             </details>
 
             <h2>Timeline</h2>
+            <div class="timeline-toolbar" data-timeline-toolbar>
+              <div class="timeline-toolbar__left">
+                <div class="hud">
+                  <div class="hud__item"><span class="muted">Events</span> <span class="mono">${events.length}</span></div>
+                  <div class="hud__item"><span class="muted">Proposed</span> <span class="mono">${promptUpdates.length}</span></div>
+                  <div class="hud__item"><span class="muted">Approved</span> <span class="mono">${approvedPromptUpdates.length}</span></div>
+                </div>
+              </div>
+              <div class="timeline-toolbar__right">
+                <button class="button button--primary" type="button" data-timeline-play>Play</button>
+                <button class="button" type="button" data-timeline-pause disabled>Pause</button>
+                <label class="label label--inline">
+                  <span class="label__title">Speed</span>
+                  <input class="range" type="range" min="0.5" max="3" step="0.5" value="1" data-timeline-speed />
+                </label>
+                <div class="timeline-progress" aria-label="Replay progress">
+                  <div class="timeline-progress__bar" data-timeline-progress></div>
+                </div>
+              </div>
+            </div>
             <form method="get" class="filters">
               <div class="row">
                 <label class="label"><span class="label__title">actor_type</span><input class="input" name="actor_type" value="${escapeHtml(filters.actor_type ?? '')}" /></label>
@@ -402,7 +474,9 @@ export function createGuiRouter(opts: { pool: Pool }): Router {
                 <a class="button" href="/cases/${escapeHtml(caseId)}/events?${escapeHtml(queryString)}">API</a>
               </div>
             </form>
-            ${timelineHtml || `<div class="muted">No events</div>`}
+            <div class="timeline" data-timeline>
+              ${timelineHtml || `<div class="muted">No events</div>`}
+            </div>
 
             <h2>Court runs</h2>
             ${runsHtml || `<div class="muted">No runs</div>`}
