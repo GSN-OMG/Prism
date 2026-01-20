@@ -8,6 +8,10 @@ OMG (Oh My GPT)
 <img width="512" height="512" alt="image" src="https://github.com/user-attachments/assets/94202945-8b1d-4d75-a16b-6769e09577f2" />
 
 
+# 데모
+
+URL: Prism: Self-Evolving DevRel OS Demo Video[https://drive.google.com/file/d/113XJM26LzezM00laSdarMALvds_6ErSj/view?usp=sharing] 
+
 > **"조직의 DNA를 복제하여 전문성을 스케일링하다."**
 
 > Prism은 Closed 데이터에서 조직의 협업 패턴을 추출하고, 멀티 에이전트 기반의 '회고 법정(Retrospective Court)'을 통해 스스로 성능을 고도화하는 기업용 DevRel 운영 자동화 플랫폼입니다.
