@@ -1,0 +1,14 @@
+[project]
+name = "prism-devrel-phase2"
+version = "0.0.0"
+description = "Phase 2 (Agents) scaffold for PRISM DevRel Agent"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0.0"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
