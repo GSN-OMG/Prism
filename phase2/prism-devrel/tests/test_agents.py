@@ -19,6 +19,13 @@ def test_analyze_issue_bug_sets_priority_and_action() -> None:
     assert "oauth" in analysis.keywords
 
 
+def test_analyze_issue_documentation() -> None:
+    issue = Issue(number=20, title="Docs: Redis configuration guide", body="Please add docs", labels=())
+    analysis = analyze_issue(issue)
+    assert analysis.issue_type == IssueType.DOCUMENTATION
+    assert "docs" in analysis.required_skills
+
+
 def test_analyze_issue_needs_more_info_when_body_missing() -> None:
     issue = Issue(number=2, title="Redis cache setup guide?", body="", labels=("question",))
     analysis = analyze_issue(issue)
@@ -40,12 +47,26 @@ def test_recommend_assignee_prefers_skill_overlap() -> None:
     assert len(output.alternative_assignees) <= 1
 
 
+def test_recommend_assignee_handles_empty_inputs() -> None:
+    analysis = analyze_issue(Issue(number=30, title="Anything", body="", labels=()))
+    output = recommend_assignee(analysis, [], limit=3)
+    assert output.recommended_assignee == ""
+    assert output.confidence == 0.0
+
+
 def test_draft_response_requests_info_when_needed() -> None:
     issue = Issue(number=4, title="How do I enable debug logging?", body="", labels=("question",))
     analysis = analyze_issue(issue)
     resp = draft_response(issue, analysis)
     assert resp.strategy == ResponseStrategy.REQUEST_INFO
     assert resp.follow_up_needed is True
+
+
+def test_draft_response_uses_suggested_action_when_info_sufficient() -> None:
+    issue = Issue(number=5, title="How do I enable debug logging?", body="I am on v1.2.3", labels=("question",))
+    analysis = analyze_issue(issue)
+    resp = draft_response(issue, analysis)
+    assert resp.strategy == analysis.suggested_action
 
 
 def test_detect_doc_gaps_and_convert_to_output() -> None:
@@ -64,6 +85,10 @@ def test_detect_doc_gaps_and_convert_to_output() -> None:
     assert gap.gap_topic == "redis"
     assert gap.priority in (Priority.HIGH, Priority.MEDIUM)
 
+    logging_candidate = next(c for c in candidates if c.topic == "logging")
+    logging_gap = to_doc_gap_output(logging_candidate)
+    assert logging_gap.suggested_doc_path
+
 
 def test_promotion_evaluation() -> None:
     contributor = Contributor(login="contrib", recent_activity_score=3.0, merged_prs=2, reviews=5)
@@ -71,3 +96,8 @@ def test_promotion_evaluation() -> None:
     assert promo.current_stage in ("REGULAR", "FIRST_TIMER", "NEW", "CORE", "MAINTAINER")
     assert 0.0 <= promo.confidence <= 1.0
 
+
+def test_promotion_stage_progression() -> None:
+    c = Contributor(login="c", recent_activity_score=3.0, merged_prs=10, reviews=0)
+    promo = evaluate_promotion(c)
+    assert promo.current_stage == "CORE"
