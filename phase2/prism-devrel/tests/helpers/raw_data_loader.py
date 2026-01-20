@@ -10,6 +10,29 @@ from typing import Any
 
 from devrel.agents.types import Contributor
 
+# 봇 및 CI/CD 계정 패턴
+BOT_PATTERNS = (
+    "[bot]",
+    "github-actions",
+    "dependabot",
+    "renovate",
+    "copilot",
+    "chatgpt-codex-connector",
+    "codecov",
+    "stale",
+    "mergify",
+    "semantic-release",
+)
+
+
+def is_bot_account(login: str) -> bool:
+    """Check if the login is a bot or CI/CD account."""
+    login_lower = login.lower()
+    for pattern in BOT_PATTERNS:
+        if pattern in login_lower:
+            return True
+    return False
+
 
 def raw_data_dir() -> Path:
     return Path(__file__).resolve().parent.parent.parent / "raw_data"
@@ -88,8 +111,16 @@ def compute_activity_score(activities: list[UserActivity], days: int = 30) -> fl
     return round(len(recent) / 10.0, 2)  # Normalize to reasonable range
 
 
-def build_contributors_from_raw_data(repo: str | None = None) -> list[Contributor]:
-    """Build Contributor objects from raw_data CSVs."""
+def build_contributors_from_raw_data(
+    repo: str | None = None,
+    exclude_bots: bool = True,
+) -> list[Contributor]:
+    """Build Contributor objects from raw_data CSVs.
+
+    Args:
+        repo: Repository name to filter by (e.g., "openai/openai-agents-python")
+        exclude_bots: If True, exclude bot and CI/CD accounts (default: True)
+    """
     users = load_repo_users(repo)
     activities = load_user_activities(repo)
 
@@ -100,6 +131,10 @@ def build_contributors_from_raw_data(repo: str | None = None) -> list[Contributo
 
     contributors: list[Contributor] = []
     for user in users:
+        # Skip bots if exclude_bots is True
+        if exclude_bots and is_bot_account(user.user_id):
+            continue
+
         user_acts = user_activities.get(user.user_id, [])
         if not user_acts:
             continue  # Skip users with no activity
@@ -128,9 +163,19 @@ def build_contributors_from_raw_data(repo: str | None = None) -> list[Contributo
     return contributors
 
 
-def get_active_contributors(repo: str | None = None, min_activity: int = 3) -> list[Contributor]:
-    """Get contributors with minimum activity threshold."""
-    all_contributors = build_contributors_from_raw_data(repo)
+def get_active_contributors(
+    repo: str | None = None,
+    min_activity: int = 3,
+    exclude_bots: bool = True,
+) -> list[Contributor]:
+    """Get contributors with minimum activity threshold.
+
+    Args:
+        repo: Repository name to filter by
+        min_activity: Minimum merged_prs + reviews count
+        exclude_bots: If True, exclude bot and CI/CD accounts (default: True)
+    """
+    all_contributors = build_contributors_from_raw_data(repo, exclude_bots=exclude_bots)
     return [c for c in all_contributors if c.merged_prs + c.reviews >= min_activity]
 
 
