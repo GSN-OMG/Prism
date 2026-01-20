@@ -9,3 +9,17 @@ cd phase2/prism-devrel
 python -m pytest
 ```
 
+## Fixtures (터미널에서 결과 보기)
+
+```bash
+cd phase2/prism-devrel
+python scripts/run_fixtures.py
+```
+
+LLM-as-a-judge를 켜려면:
+
+```bash
+export RUN_LLM_JUDGE=1
+export OPENAI_API_KEY=...
+python scripts/run_fixtures.py
+```
