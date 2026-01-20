@@ -12,15 +12,39 @@ import {
 } from '@/types';
 import { getContributors, getAllContributorsWithEvaluations } from '@/lib/data';
 
+const BACKEND_API_URL = process.env.BACKEND_API_URL || 'http://localhost:8000';
+const USE_BACKEND = process.env.USE_BACKEND === 'true';
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { issue, agent } = body as { issue: GitHubIssue; agent: AgentType };
 
-    // Simulate processing time
-    await new Promise((resolve) => setTimeout(resolve, 1000 + Math.random() * 2000));
-
     const startTime = new Date().toISOString();
+
+    // Try backend for supported agents if enabled
+    if (USE_BACKEND && (agent === 'issue_analysis' || agent === 'response')) {
+      try {
+        const backendResult = await runAgentViaBackend(agent, issue);
+        const endTime = new Date().toISOString();
+
+        const agentResult: AgentResult = {
+          agent,
+          status: 'completed',
+          startTime,
+          endTime,
+          durationMs: new Date(endTime).getTime() - new Date(startTime).getTime(),
+          output: backendResult.output,
+          decisionTrace: backendResult.decisionTrace,
+        };
+        return NextResponse.json(agentResult);
+      } catch (backendError) {
+        console.warn('Backend call failed, falling back to local:', backendError);
+      }
+    }
+
+    // Fallback to local implementation
+    await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 1000));
     const result = await runAgent(agent, issue);
     const endTime = new Date().toISOString();
 
@@ -42,6 +66,71 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+async function runAgentViaBackend(
+  agent: AgentType,
+  issue: GitHubIssue
+): Promise<{ output: AgentResult['output']; decisionTrace: DecisionStep[] }> {
+  if (agent === 'issue_analysis') {
+    const res = await fetch(`${BACKEND_API_URL}/api/agents/analyze?use_llm=true`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        number: issue.number,
+        title: issue.title,
+        body: issue.body,
+        labels: issue.labels,
+      }),
+    });
+    if (!res.ok) throw new Error(`Backend error: ${res.status}`);
+    const data = await res.json();
+
+    return {
+      output: data as IssueAnalysisOutput,
+      decisionTrace: [
+        {
+          step_number: 1,
+          step_name: 'RAG-Enhanced Analysis',
+          input: { title: issue.title },
+          output: data,
+          reasoning: 'Used FastAPI backend with RAG for issue analysis',
+          timestamp: new Date().toISOString(),
+        },
+      ],
+    };
+  }
+
+  if (agent === 'response') {
+    const res = await fetch(`${BACKEND_API_URL}/api/agents/response?use_llm=true&use_rag=true`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        number: issue.number,
+        title: issue.title,
+        body: issue.body,
+        labels: issue.labels,
+      }),
+    });
+    if (!res.ok) throw new Error(`Backend error: ${res.status}`);
+    const data = await res.json();
+
+    return {
+      output: data as ResponseOutput,
+      decisionTrace: [
+        {
+          step_number: 1,
+          step_name: 'RAG-Enhanced Response',
+          input: { title: issue.title },
+          output: { strategy: data.strategy, hasReferences: data.references?.length > 0 },
+          reasoning: `Generated response using RAG with ${data.references?.length || 0} KB references`,
+          timestamp: new Date().toISOString(),
+        },
+      ],
+    };
+  }
+
+  throw new Error(`Agent ${agent} not supported via backend`);
 }
 
 async function runAgent(

@@ -4,6 +4,7 @@ import json
 
 from devrel.llm.client import JsonSchema, LlmClient
 from devrel.llm.model_selector import LlmTask
+from devrel.search.rag_client import RAGClient
 
 from .types import (
     Issue,
@@ -97,3 +98,41 @@ def draft_response_llm(
         max_output_tokens=1200,
     )
     return response_output_from_dict(data)
+
+
+def draft_response_with_rag(
+    llm: LlmClient,
+    rag: RAGClient,
+    *,
+    issue: Issue,
+    analysis: IssueAnalysisOutput,
+    search_limit: int = 5,
+    repo_filter: str | None = None,
+) -> ResponseOutput:
+    """Generate a response using RAG-enhanced context from the knowledge base.
+
+    This function:
+    1. Builds a search query from issue title and keywords
+    2. Searches the KB using hybrid search (keyword + vector)
+    3. Formats results as references
+    4. Passes to LLM for response generation
+    """
+    query_parts = [issue.title]
+    if analysis.keywords:
+        query_parts.extend(analysis.keywords[:3])
+    search_query = " ".join(query_parts)
+
+    kb_docs = rag.search_hybrid(
+        search_query,
+        limit=search_limit,
+        repo_filter=repo_filter,
+    )
+
+    references = rag.format_references(kb_docs)
+
+    return draft_response_llm(
+        llm,
+        issue=issue,
+        analysis=analysis,
+        references=references,
+    )
