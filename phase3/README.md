@@ -41,6 +41,55 @@ npm run dev
 
 - (선택) 데모 데이터 시드: `npm run seed` 또는 `SEED_DEMO_DATA=true npm run dev`
 
+### Postgres가 로컬에 없을 때 (Docker/Colima)
+
+macOS 기준 예시입니다. Docker Desktop을 쓰는 경우에는 Colima 단계만 생략하면 됩니다.
+
+```bash
+# 0) Docker 런타임 준비(Colima)
+brew install colima docker
+colima start --cpu 2 --memory 4 --disk 20
+
+# 1) Postgres 컨테이너 기동
+docker volume create prism_phase3_pgdata
+docker run -d --name prism-phase3-pg \
+  -e POSTGRES_USER=prism \
+  -e POSTGRES_PASSWORD=prism \
+  -e POSTGRES_DB=prism \
+  -p 5432:5432 \
+  -v prism_phase3_pgdata:/var/lib/postgresql/data \
+  postgres:16-alpine
+
+# 준비 완료 확인
+docker exec prism-phase3-pg pg_isready -U prism -d prism
+```
+
+이후 `DATABASE_URL`을 아래처럼 설정하고(또는 `.env`에 반영) 마이그레이션/시드/서버를 실행합니다:
+
+```bash
+export DATABASE_URL=postgresql://prism:prism@127.0.0.1:5432/prism
+python3 -m prism.storage.migrate
+npm run seed
+npm run dev
+```
+
+정리(데이터 유지):
+
+```bash
+docker rm -f prism-phase3-pg
+colima stop
+```
+
+정리(데이터 삭제 포함):
+
+```bash
+docker rm -f prism-phase3-pg
+docker volume rm prism_phase3_pgdata
+colima stop
+```
+
+참고: `pgvector`는 기본 Postgres 이미지에 포함되지 않는 경우가 많습니다. 이 프로젝트는 마이그레이션에서 `pgvector`가 없으면 `lessons.embedding`을 `float8[]`로 폴백하지만, 벡터 유사도 검색을 쓰려면 `pgvector` 설치가 필요합니다.
+
 ## 환경 변수 (.env)
 
 템플릿: `.env.example` (실제 키/토큰은 커밋하지 마세요)
@@ -117,6 +166,13 @@ npm run dev
 ```
 
 - 서버를 재시작해도 Case/Timeline/Prompt updates가 유지되는지 확인합니다.
+
+### 4) Postgres 연동 테스트(pytest)
+
+```bash
+cd phase3
+DATABASE_URL=postgresql://... python3 -m pytest -q
+```
 
 ## Python 유틸리티 (MVP)
 
