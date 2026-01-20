@@ -48,7 +48,7 @@ Prism은 세 가지 핵심 레이어를 통해 DevRel 워크플로우를 만들�
 
 신규 이슈 발생 시, 전문화된 에이전트 군단이 유기적으로 협업합니다.
 
-<img width="2594" height="1474" alt="image" src="https://github.com/user-attachments/assets/c77a2448-283f-409a-a557-f7466e6534b9" />
+<img width="1297" height="737" alt="image" src="https://github.com/user-attachments/assets/c77a2448-283f-409a-a557-f7466e6534b9" />
 
 
 1. **Issue Analysis**: 기술적 핵심 파악 및 긴급도 분류.
@@ -59,9 +59,9 @@ Prism은 세 가지 핵심 레이어를 통해 DevRel 워크플로우를 만들�
 
 ### 3단계: Retrospective Court (Self-Evolution & Quality Assurance)
 
-<img width="1324" height="1268" alt="image" src="https://github.com/user-attachments/assets/5c2179c5-3305-475b-80f5-349b3b75b88c" />
+<img width="662" height="634" alt="image" src="https://github.com/user-attachments/assets/5c2179c5-3305-475b-80f5-349b3b75b88c" />
 
-<img width="1306" height="1172" alt="image" src="https://github.com/user-attachments/assets/c63a2a0f-42b7-4702-8ca1-7d12cbea1930" />
+<img width="653" height="586" alt="image" src="https://github.com/user-attachments/assets/c63a2a0f-42b7-4702-8ca1-7d12cbea1930" />
 
 
 * **기능**: 에이전트의 수행 결과와 사용자의 피드백을 기반으로 '검사-변호사-판사' 에이전트가 공방(Debate)을 벌입니다.
