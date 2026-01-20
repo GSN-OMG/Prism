@@ -10,7 +10,7 @@ OMG (Oh My GPT)
 
 # 데모
 
-URL: Prism: [Self-Evolving DevRel OS Demo Video](https://drive.google.com/file/d/113XJM26LzezM00laSdarMALvds_6ErSj/view?usp=sharing)
+URL: [Prism: Self-Evolving DevRel OS Demo Video](https://drive.google.com/file/d/113XJM26LzezM00laSdarMALvds_6ErSj/view?usp=sharing)
 
 > **"조직의 DNA를 복제하여 전문성을 스케일링하다."**
 
