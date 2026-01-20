@@ -1,0 +1,136 @@
+{
+  "finished_at": "2026-01-20T04:56:08.475331Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "af6a5c05b26c9eac",
+    "tag": "graphql_core_item2292"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2292,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "3424",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:08 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DBF1:29AB24:15FA813:1F058DB:696F0AE7",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4735",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "265",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 105,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "authorAssociation": "MEMBER",
+            "baseRefName": "main",
+            "body": "This pull request fixes dependency warnings by raising the optional litellm constraint to >=1.80.10,<2 and regenerating uv.lock:\r\n\r\n```\r\n================================================================== warnings summary ===================================================================\r\n.venv/lib/python3.12/site-packages/litellm/types/llms/anthropic.py:531\r\n  ~/openai-agents-python/.venv/lib/python3.12/site-packages/litellm/types/llms/anthropic.py:531: PydanticDeprecatedSince20: Support f\r\nor class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at ht\r\ntps://errors.pydantic.dev/2.12/migration/\r\n    class AnthropicResponseContentBlockToolUse(BaseModel):\r\n\r\n.venv/lib/python3.12/site-packages/litellm/types/rag.py:181\r\n  ~/openai-agents-python/.venv/lib/python3.12/site-packages/litellm/types/rag.py:181: PydanticDeprecatedSince20: Support for class-ba\r\nsed `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://error\r\ns.pydantic.dev/2.12/migration/\r\n    class RAGIngestRequest(BaseModel):\r\n\r\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\r\n==================================================== 1458 passed, 4 skipped, 2 warnings in 34.88s =====================================================\r\n```\r\n\r\nThe lock update pulls in litellm 1.80.13 (which replaces deprecated Pydantic Config usage) and adjusts Python 3.14 resolution markers along with grpcio splits for >=3.14 vs older interpreters. These changes quiet the PydanticDeprecatedSince20 warnings seen during tests while keeping compatibility across supported Python versions.",
+            "changedFiles": 2,
+            "closedAt": "2026-01-11T07:49:23Z",
+            "comments": {
+              "totalCount": 0
+            },
+            "createdAt": "2026-01-11T07:46:56Z",
+            "databaseId": 3162943726,
+            "deletions": 15,
+            "files": {
+              "totalCount": 2
+            },
+            "headRefName": "fix/litellm-pydantic-warning",
+            "headRefOid": "eac294f049880e08d7c5ac2149b4c8a623a9076a",
+            "id": "PR_kwDOOGidp868hrDu",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a95c3a",
+                  "description": "",
+                  "name": "feature:lite-llm"
+                },
+                {
+                  "color": "d0ceac",
+                  "description": "",
+                  "name": "dependencies"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "87af6e3256d0bdff63e0779e7af49bf29eb5472d",
+              "url": "https://github.com/openai/openai-agents-python/commit/87af6e3256d0bdff63e0779e7af49bf29eb5472d"
+            },
+            "mergedAt": "2026-01-11T07:49:23Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2292,
+            "reviews": {
+              "totalCount": 0
+            },
+            "state": "MERGED",
+            "title": "fix: bump litellm to resolve pydantic deprecation warnings",
+            "updatedAt": "2026-01-11T07:49:24Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2292"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:07.657890Z"
+}

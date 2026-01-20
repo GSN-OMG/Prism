@@ -1,0 +1,70 @@
+{
+  "finished_at": "2026-01-20T04:58:27.004059Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "0bd3d67acad27561",
+    "tag": "graphql_reviews_pr2336_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetPRReviewsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      reviews(first: 100, after: $after) {\n        pageInfo { hasNextPage endCursor }\n        nodes {\n          id\n          databaseId\n          author {\n            __typename\n            login\n            url\n            avatarUrl\n            ... on User { id databaseId }\n            ... on Organization { id databaseId }\n            ... on Bot { id databaseId }\n            ... on Mannequin { id databaseId }\n          }\n          state\n          body\n          submittedAt\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2336,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "115",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:58:27 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DD39:F2819:16A567C:1FB0F6D:696F0B72",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4545",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "455",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "pullRequest": {
+            "reviews": {
+              "nodes": [],
+              "pageInfo": {
+                "endCursor": null,
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:58:26.634042Z"
+}

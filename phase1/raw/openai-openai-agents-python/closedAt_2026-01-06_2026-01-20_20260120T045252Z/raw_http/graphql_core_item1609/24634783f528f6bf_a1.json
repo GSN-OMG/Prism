@@ -1,0 +1,109 @@
+{
+  "finished_at": "2026-01-20T04:52:56.706227Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "24634783f528f6bf",
+    "tag": "graphql_core_item1609"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 1609,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "5081",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:52:56 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DA57:2324B0:1602F18:1F0CEFB:696F0A28",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4999",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "1",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/3247978?u=9cf726d2109e4ab541255b83b46751050c83e54a&v=4",
+              "databaseId": 3247978,
+              "id": "MDQ6VXNlcjMyNDc5Nzg=",
+              "login": "mattlgroff",
+              "url": "https://github.com/mattlgroff"
+            },
+            "authorAssociation": "NONE",
+            "body": "## Problem Description\n\nThe OpenAI Realtime API's MCP (Model Context Protocol) integration currently only supports a single authorization field for authentication with remote MCP servers. This limits integration with servers that require\ncustom headers such as X-API-KEY, multiple authentication headers, or other custom headers for routing, versioning, or identification.\n\n## Current Limitation\n\nThe current MCP configuration only allows:\n\n```\n{\n  \"type\": \"mcp\",\n  \"server_url\": \"https://example-mcp-server.com/mcp\",\n  \"authorization\": \"Bearer token\",  // Only supports Authorization header\n  \"server_label\": \"example\",\n  \"require_approval\": \"never\"\n}\n```\n\nThis translates to a single header:\n\nAuthorization: Bearer token\n\n## Real-World Authentication Scenarios Not Supported\n\nMany MCP servers and APIs use different authentication patterns:\n\n1. API Key Headers:\nX-API-KEY: your-api-key-here\n\n2. Multiple Auth Headers:\nX-Client-ID: client-123\nX-Client-Secret: secret-456\n\n3. Custom Headers for Routing/Versioning:\nX-API-Version: 2024-11-05\nX-Tenant-ID: tenant-123\nX-Environment: production\n\n4. Non-Bearer Authorization:\nAuthorization: ApiKey your-key-here\nAuthorization: Basic base64encoded\n\n\n## Feature Request\n\nAdd support for custom headers in MCP server configuration. This would allow developers to specify any headers required by their MCP servers.\n\n## Proposed Implementation\n\n### Option 1: Headers Object (Recommended)\n\n```\n{\n  \"type\": \"mcp\",\n  \"server_url\": \"https://example-mcp-server.com/mcp\",\n  \"server_label\": \"example\",\n  \"headers\": {\n    \"X-API-KEY\": \"your-api-key-here\",\n    \"X-Client-ID\": \"client-123\",\n    \"X-API-Version\": \"2024-11-05\"\n  },\n  \"require_approval\": \"never\"\n}\n```\n\n### Option 2: Headers Array\n\n```\n{\n  \"type\": \"mcp\",\n  \"server_url\": \"https://example-mcp-server.com/mcp\",\n  \"server_label\": \"example\",\n  \"headers\": [\n    {\"name\": \"X-API-KEY\", \"value\": \"your-api-key-here\"},\n    {\"name\": \"X-Client-ID\", \"value\": \"client-123\"}\n  ],\n  \"require_approval\": \"never\"\n}\n```\n\n### Option 3: Keep Authorization + Add Custom Headers\n\n```\n{\n  \"type\": \"mcp\",\n  \"server_url\": \"https://example-mcp-server.com/mcp\",\n  \"server_label\": \"example\",\n  \"authorization\": \"Bearer token\",  // Backward compatible\n  \"custom_headers\": {  // Additional headers\n    \"X-API-KEY\": \"additional-key\",\n    \"X-Tenant-ID\": \"tenant-123\"\n  },\n  \"require_approval\": \"never\"\n}\n```\n\n## Example Use Case from Our Implementation\n\nHere's how we currently have to work around this limitation by hardcoding our API key:\n\nFor example an MCP Server might expect:\n\nX-API-KEY: your-api-key-here\n\nBut we're forced to use:\n\nAuthorization: your-api-key-here\n\nThis requires specifically supporting only Authorization headers with Bearer tokens on your MCP Server, and if you're using someone else's and they don't support that exact setup you can't use the Realtime API with that MCP Server.\n\n## Benefits of This Feature\n\n1. Compatibility: Support MCP servers with existing authentication schemes\n2. Security: Allow proper multi-factor authentication with multiple headers\n3. Flexibility: Support enterprise scenarios with custom routing/tenant headers\n4. Standards Compliance: Many APIs use X-API-KEY as the standard for API key authentication\n5. No Server Modifications: Connect to existing MCP servers without modifications\n\n## Impact\n\nThis is a backward-compatible enhancement that would:\n\n• Keep existing authorization field for simple Bearer token cases\n• Add optional headers field for advanced use cases\n• Significantly expand the number of MCP servers that can integrate with Realtime API\n\n## Request Summary\n\nPlease add support for custom headers in MCP server configuration for the Realtime API. This would remove a significant limitation and allow integration with MCP servers that use standard API authentication\npatterns beyond Bearer tokens.",
+            "closedAt": "2026-01-16T08:12:47Z",
+            "comments": {
+              "totalCount": 3
+            },
+            "createdAt": "2025-08-29T01:25:39Z",
+            "databaseId": 3365124003,
+            "id": "I_kwDOOGidp87Ik7ej",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a2eeef",
+                  "description": "New feature or request",
+                  "name": "enhancement"
+                },
+                {
+                  "color": "307a20",
+                  "description": "",
+                  "name": "feature:mcp"
+                },
+                {
+                  "color": "d3cbd8",
+                  "description": "",
+                  "name": "feature:realtime"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": null,
+            "number": 1609,
+            "state": "CLOSED",
+            "title": "Feature Request: Support Custom Headers for MCP Servers in OpenAI Realtime API",
+            "updatedAt": "2026-01-16T09:05:42Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/1609"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:52:56.255573Z"
+}

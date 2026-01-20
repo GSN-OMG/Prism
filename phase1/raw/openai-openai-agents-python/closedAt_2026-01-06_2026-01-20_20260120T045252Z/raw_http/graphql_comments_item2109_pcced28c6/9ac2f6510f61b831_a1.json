@@ -1,0 +1,191 @@
+{
+  "finished_at": "2026-01-20T04:53:15.022101Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "9ac2f6510f61b831",
+    "tag": "graphql_comments_item2109_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2109,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "4630",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:15 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DA83:365621:16BCA2F:1FC6304:696F0A3A",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4973",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "27",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/4557?v=4",
+                    "databaseId": 4557,
+                    "id": "MDQ6VXNlcjQ1NTc=",
+                    "login": "ihower",
+                    "url": "https://github.com/ihower"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "This will need a proper LiteLLM release that supports Gemini 3 Pro first.\nLiteLLM has an early implementation here: https://github.com/BerriAI/litellm/pull/16719 but there is no PyPI release for it yet.\n\nOnce LiteLLM ships a release with this support, I can provide a hotfix PR as soon as possible.",
+                  "createdAt": "2025-11-20T08:28:57Z",
+                  "databaseId": 3556541651,
+                  "id": "IC_kwDOOGidp87T_ITT",
+                  "updatedAt": "2025-11-20T08:28:57Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2109#issuecomment-3556541651"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/79788571?v=4",
+                    "databaseId": 79788571,
+                    "id": "MDQ6VXNlcjc5Nzg4NTcx",
+                    "login": "kkwhale7",
+                    "url": "https://github.com/kkwhale7"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "https://github.com/BerriAI/litellm/issues/16780\nI noticed that LiteLLM already appears to support Gemini 3",
+                  "createdAt": "2025-11-24T09:43:22Z",
+                  "databaseId": 3569797482,
+                  "id": "IC_kwDOOGidp87Uxslq",
+                  "updatedAt": "2025-11-24T09:43:22Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2109#issuecomment-3569797482"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/63661278?u=0a90e8a055d46ec44b835c1a93677b22e4ae4645&v=4",
+                    "databaseId": 63661278,
+                    "id": "MDQ6VXNlcjYzNjYxMjc4",
+                    "login": "lawalkeyd",
+                    "url": "https://github.com/lawalkeyd"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "Released in [1.80.5](https://github.com/BerriAI/litellm/releases/tag/v1.80.5-nightly)",
+                  "createdAt": "2025-11-24T09:48:37Z",
+                  "databaseId": 3569819419,
+                  "id": "IC_kwDOOGidp87Uxx8b",
+                  "updatedAt": "2025-11-24T09:48:37Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2109#issuecomment-3569819419"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/4557?v=4",
+                    "databaseId": 4557,
+                    "id": "MDQ6VXNlcjQ1NTc=",
+                    "login": "ihower",
+                    "url": "https://github.com/ihower"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "@kkwhale7 @lawalkeyd @Nifury Quick update on the progress: I’ve finished the first implementation on my fork branch  https://github.com/ihower/openai-agents-python/pull/2, and it works on my side.\n\nIf you want to try it early, you can install it with:\n\n```\nuv add \"openai-agents@git+ssh://git@github.com/ihower/openai-agents-python.git@add-gemini-reasoning-support-v3\"\n```\n\nAnd please make sure your LiteLLM version is upgraded to **1.80.5**.\n\nI’m now preparing the formal pull request and expect to submit it later this week.\n",
+                  "createdAt": "2025-11-24T10:02:37Z",
+                  "databaseId": 3569877969,
+                  "id": "IC_kwDOOGidp87UyAPR",
+                  "updatedAt": "2025-11-24T10:04:27Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2109#issuecomment-3569877969"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/223736604?v=4",
+                    "databaseId": 223736604,
+                    "id": "U_kgDODVXzHA",
+                    "login": "ralliesai",
+                    "url": "https://github.com/ralliesai"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "@ihower thanks so much for working on this. Any updates here?",
+                  "createdAt": "2025-12-04T00:53:32Z",
+                  "databaseId": 3609439750,
+                  "id": "IC_kwDOOGidp87XI64G",
+                  "updatedAt": "2025-12-04T00:53:32Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2109#issuecomment-3609439750"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/75930156?u=53c1477f9f036e48a3b0a1751726934a7ed156f9&v=4",
+                    "databaseId": 75930156,
+                    "id": "MDQ6VXNlcjc1OTMwMTU2",
+                    "login": "ZILECAO",
+                    "url": "https://github.com/ZILECAO"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "goat @ihower , thank you",
+                  "createdAt": "2026-01-07T00:53:39Z",
+                  "databaseId": 3716900402,
+                  "id": "IC_kwDOOGidp87di2Yy",
+                  "updatedAt": "2026-01-07T00:53:39Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2109#issuecomment-3716900402"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "authorAssociation": "MEMBER",
+                  "body": "resolved by https://github.com/openai/openai-agents-python/pull/2158",
+                  "createdAt": "2026-01-07T01:35:35Z",
+                  "databaseId": 3716971792,
+                  "id": "IC_kwDOOGidp87djH0Q",
+                  "updatedAt": "2026-01-07T01:35:35Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2109#issuecomment-3716971792"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO3Yx9EA==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:14.441385Z"
+}

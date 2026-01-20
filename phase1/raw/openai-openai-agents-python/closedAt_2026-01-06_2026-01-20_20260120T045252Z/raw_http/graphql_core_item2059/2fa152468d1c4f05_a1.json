@@ -1,0 +1,131 @@
+{
+  "finished_at": "2026-01-20T04:53:08.838729Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "2fa152468d1c4f05",
+    "tag": "graphql_core_item2059"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2059,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2551",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:08 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DA78:2B2B06:166731E:1F711DF:696F0A34",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4982",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "18",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 67,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/154019945?u=2e2cd13dc870d4fc63830deb204279a1fd8d28b9&v=4",
+              "databaseId": 154019945,
+              "id": "U_kgDOCS4oaQ",
+              "login": "ruskaruma",
+              "url": "https://github.com/ruskaruma"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "baseRefName": "main",
+            "body": "### Summary\r\nIn #2010 we noticed realtime PCM16 audio was being reported in microseconds. The root cause was our fallback branch in `calculate_audio_length_ms`, which divided by `24 * 2` and then by 1000, effectively treating every byte as a millisecond. I normalized the format first, split g711 from PCM handling, and introduced explicit constants for the sample rate and sample width so PCM16 now returns the true millisecond duration. This also covers empty buffers and any future lowercase/uppercase format variants.\r\n\r\nTo keep coverage honest, I updated the realtime playback tracker tests to assert against the corrected math using `pytest.approx`, and refreshed the manual tracker test to reflect the new millisecond totals.\r\n\r\n### Test plan\r\n- uv run pytest tests/realtime/test_playback_tracker_manual_unit.py tests/realtime/test_playback_tracker.py tests/realtime/test_openai_realtime.py\r\n- uv run pytest\r\n\r\nFixes #2009\r\nFixes #2010",
+            "changedFiles": 5,
+            "closedAt": "2026-01-08T06:57:33Z",
+            "comments": {
+              "totalCount": 8
+            },
+            "createdAt": "2025-11-07T21:41:27Z",
+            "databaseId": 2990230866,
+            "deletions": 22,
+            "files": {
+              "totalCount": 5
+            },
+            "headRefName": "main",
+            "headRefOid": "ec558230cde6d6ca49048d9d0ad204312dd1249c",
+            "id": "PR_kwDOOGidp86yO01S",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "d3cbd8",
+                  "description": "",
+                  "name": "feature:realtime"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "b5d9152a273fb506d7fa32a10fdecf7f3cc61bc1",
+              "url": "https://github.com/openai/openai-agents-python/commit/b5d9152a273fb506d7fa32a10fdecf7f3cc61bc1"
+            },
+            "mergedAt": "2026-01-08T06:57:33Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2059,
+            "reviews": {
+              "totalCount": 1
+            },
+            "state": "MERGED",
+            "title": "fix: #2009 #2010 Improve PCM duration calculation and handle VAD truncation",
+            "updatedAt": "2026-01-08T06:57:33Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2059"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:08.216194Z"
+}

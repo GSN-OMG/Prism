@@ -1,0 +1,101 @@
+{
+  "finished_at": "2026-01-20T04:53:47.705634Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "e9be5f35c0e025c0",
+    "tag": "graphql_reviews_pr2224_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetPRReviewsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      reviews(first: 100, after: $after) {\n        pageInfo { hasNextPage endCursor }\n        nodes {\n          id\n          databaseId\n          author {\n            __typename\n            login\n            url\n            avatarUrl\n            ... on User { id databaseId }\n            ... on Organization { id databaseId }\n            ... on Bot { id databaseId }\n            ... on Mannequin { id databaseId }\n          }\n          state\n          body\n          submittedAt\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2224,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "6664",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:47 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DAC1:EFCF3:1619B89:1F23B16:696F0A5B",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4929",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "71",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "pullRequest": {
+            "reviews": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "body": "Thank you again for working on this!\n\nI've checked the code changes and found a few changes would be necessary:\n\n```diff\ndiff --git a/examples/memory/compaction_session_example.py b/examples/memory/compaction_session_example.py\nindex c84822e3..cc1f6cf5 100644\n--- a/examples/memory/compaction_session_example.py\n+++ b/examples/memory/compaction_session_example.py\n@@ -50,7 +50,8 @@ async def main():\n     print(\"=== Final Session State ===\")\n     print(f\"Total items: {len(items)}\")\n     for item in items:\n-        item_type = item.get(\"type\", \"unknown\")\n+        # Some inputs are stored as easy messages (only `role` and `content`).\n+        item_type = item.get(\"type\") or (\"message\" if \"role\" in item else \"unknown\")\n         if item_type == \"compaction\":\n             print(\"  - compaction (encrypted content)\")\n         elif item_type == \"message\":\ndiff --git a/src/agents/memory/openai_responses_compaction_session.py b/src/agents/memory/openai_responses_compaction_session.py\nindex e23c5909..95b9a61d 100644\n--- a/src/agents/memory/openai_responses_compaction_session.py\n+++ b/src/agents/memory/openai_responses_compaction_session.py\n@@ -29,12 +29,19 @@ def select_compaction_candidate_items(\n \n     Excludes user messages and compaction items.\n     \"\"\"\n+\n+    def _is_user_message(item: TResponseInputItem) -> bool:\n+        if not isinstance(item, dict):\n+            return False\n+        if item.get(\"type\") == \"message\":\n+            return item.get(\"role\") == \"user\"\n+        return item.get(\"role\") == \"user\" and \"content\" in item\n+\n     return [\n         item\n         for item in items\n         if not (\n-            (item.get(\"type\") == \"message\" and item.get(\"role\") == \"user\")\n-            or item.get(\"type\") == \"compaction\"\n+            _is_user_message(item) or (isinstance(item, dict) and item.get(\"type\") == \"compaction\")\n         )\n     ]\n \n@@ -160,7 +167,11 @@ class OpenAIResponsesCompactionSession(SessionABC, OpenAIResponsesCompactionAwar\n                 if isinstance(item, dict):\n                     output_items.append(item)\n                 else:\n-                    output_items.append(item.model_dump(exclude_unset=True))  # type: ignore\n+                    # Suppress Pydantic literal warnings: responses.compact can return\n+                    # user-style input_text content inside ResponseOutputMessage.\n+                    output_items.append(\n+                        item.model_dump(exclude_unset=True, warnings=False)  # type: ignore\n+                    )\n \n         if output_items:\n             await self.underlying_session.add_items(output_items)\ndiff --git a/tests/memory/test_openai_responses_compaction_session.py b/tests/memory/test_openai_responses_compaction_session.py\nindex 204dbcb1..0b528701 100644\n--- a/tests/memory/test_openai_responses_compaction_session.py\n+++ b/tests/memory/test_openai_responses_compaction_session.py\n@@ -1,5 +1,6 @@\n from __future__ import annotations\n \n+import warnings as warnings_module\n from typing import cast\n from unittest.mock import AsyncMock, MagicMock\n \n@@ -62,6 +63,15 @@ class TestSelectCompactionCandidateItems:\n         assert len(result) == 1\n         assert result[0].get(\"type\") == \"message\"\n \n+    def test_excludes_easy_user_messages_without_type(self) -> None:\n+        items: list[TResponseInputItem] = [\n+            cast(TResponseInputItem, {\"content\": \"hi\", \"role\": \"user\"}),\n+            cast(TResponseInputItem, {\"type\": \"message\", \"role\": \"assistant\", \"content\": \"hello\"}),\n+        ]\n+        result = select_compaction_candidate_items(items)\n+        assert len(result) == 1\n+        assert result[0].get(\"role\") == \"assistant\"\n+\n \n class TestOpenAIResponsesCompactionSession:\n     def create_mock_session(self) -> MagicMock:\n@@ -205,6 +215,43 @@ class TestOpenAIResponsesCompactionSession:\n \n         mock_client.responses.compact.assert_called_once()\n \n+    @pytest.mark.asyncio\n+    async def test_run_compaction_suppresses_model_dump_warnings(self) -> None:\n+        mock_session = self.create_mock_session()\n+        mock_session.get_items.return_value = [\n+            cast(TResponseInputItem, {\"type\": \"message\", \"role\": \"assistant\", \"content\": \"hi\"})\n+            for _ in range(DEFAULT_COMPACTION_THRESHOLD)\n+        ]\n+\n+        class WarningModel:\n+            def __init__(self) -> None:\n+                self.received_warnings_arg: bool | None = None\n+\n+            def model_dump(self, *, exclude_unset: bool, warnings: bool | None = None) -> dict:\n+                self.received_warnings_arg = warnings\n+                if warnings:\n+                    warnings_module.warn(\"unexpected warning\", stacklevel=2)\n+                return {\"type\": \"message\", \"role\": \"assistant\", \"content\": \"ok\"}\n+\n+        warning_model = WarningModel()\n+        mock_compact_response = MagicMock()\n+        mock_compact_response.output = [warning_model]\n+\n+        mock_client = MagicMock()\n+        mock_client.responses.compact = AsyncMock(return_value=mock_compact_response)\n+\n+        session = OpenAIResponsesCompactionSession(\n+            session_id=\"test\",\n+            underlying_session=mock_session,\n+            client=mock_client,\n+        )\n+\n+        with warnings_module.catch_warnings():\n+            warnings_module.simplefilter(\"error\")\n+            await session.run_compaction({\"response_id\": \"resp-123\"})\n+\n+        assert warning_model.received_warnings_arg is False\n+\n \n class TestTypeGuard:\n     def test_is_compaction_aware_session_true(self) -> None:\n```",
+                  "databaseId": 3637601687,
+                  "id": "PRR_kwDOOGidp87Y0WWX",
+                  "state": "CHANGES_REQUESTED",
+                  "submittedAt": "2026-01-08T04:28:05Z"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "body": "",
+                  "databaseId": 3641890884,
+                  "id": "PRR_kwDOOGidp87ZEthE",
+                  "state": "APPROVED",
+                  "submittedAt": "2026-01-09T00:42:06Z"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpO5MjAyNi0wMS0wOVQwOTo0MjowNiswOTowMLkyMDI2LTAxLTA5VDA5OjQyOjA2KzA5OjAwztkS2EQ=",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:47.191651Z"
+}

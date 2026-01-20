@@ -1,0 +1,109 @@
+{
+  "finished_at": "2026-01-20T04:56:11.793709Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "8b9de48e5f0d7ed5",
+    "tag": "graphql_core_item2293"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2293,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "5629",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:11 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DBF9:E9ECE:1617FB8:1F22ED3:696F0AEB",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4730",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "270",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/93397590?u=f673ab1921d0326e28d31aba0b87ac0f00337a4d&v=4",
+              "databaseId": 93397590,
+              "id": "U_kgDOBZEiVg",
+              "login": "jao-o-garcia",
+              "url": "https://github.com/jao-o-garcia"
+            },
+            "authorAssociation": "NONE",
+            "body": "## Summary\nWhen using the REPL helper (`run_demo_loop`) or other demo/REPL flows, the SDK emits session/output items that contain `\"id\": \"__fake_id__\"`. Those objects are passed unchanged into input guardrails and/or forwarded to the Responses API. The Responses API rejects items with IDs that don't begin with `msg`, producing a 400 BadRequest:\n\n> openai.BadRequestError: Error code: 400 - {'error': {'message': \"Invalid 'input[1].id': '__fake_id__'. Expected an ID that begins with 'msg'.\", ... }}\n\nThis breaks guardrails that call `Runner.run(...)` with the same items received (e.g., input guardrails that call a guardrail agent). It is surprising because the guardrails docs do not call out this id-validation edge case.\n\n## Reproduction steps\n1. Run the REPL demo loop (e.g., `run_demo_loop(agent, context=...)`) or any flow that uses the REPL helper.\n2. Use an agent with an input guardrail that calls `Runner.run(sub_agent, input)` (i.e., the guardrail runs a sub-agent and forwards the input it received).\n3. Observe the SDK/REPL prints where session/output items contain `\"id\": \"__fake_id__\"`.\n4. Runner.run will ultimately send those items to the Responses API, which returns a 400 with the message above.\n\n## Example REPL output (from my run)\n```json\n{\n  \"truncation\": null,\n  \"id\": \"__fake_id__\",\n  \"tool_choice\": \"auto\",\n  \"object\": \"response\",\n  \"created_at\": 1768118260.184021,\n  \"model\": \"anthropic/claude-sonnet-4-5-20250929\",\n  \"output\": [\n    {\n      \"id\": \"__fake_id__\",\n      \"content\": [\n        {\n          \"text\": \"Great! Your appointment has been successfully booked! ✅ ...\",\n          \"type\": \"output_text\"\n        }\n      ],\n      \"status\": \"completed\",\n      \"role\": \"assistant\",\n      \"type\": \"message\"\n    }\n  ],\n  \"error\": null\n}\n```\n\n## Stack Trace\n```text\nFile \".../openai/_base_client.py\", line 1597, in request\n  raise self._make_status_error_from_response(err.response) from None\nopenai.BadRequestError: Error code: 400 - {\n  'error': {\n    'message': \"Invalid 'input[1].id': '__fake_id__'. Expected an ID that begins with 'msg'.\",\n    'type': 'invalid_request_error',\n    'param': 'input[1].id',\n    'code': 'invalid_value'\n  }\n}\n```\n\n## Suggested Fixes\n- Documentation: Add a note to the guardrails docs and the REPL docs warning that guardrails may receive SDK-constructed items and that forwarding items containing invalid ids will cause API 400s. Provide example defensive code for sanitizing id fields.\n- Sanitize IDs before forwarding, or update the SDK to normalize IDs before sending to Responses API. \n\n## Why this matters\n- ❌ No documentation warning in Guardrails\n- ❌ Beginners/Tutorials might use REPL (Run Demo Loop) to showcase how guardrails are used.\n\n## Temporary solution (Working ✅)\n```Python\n##Create a function that sanitizes the input\ndef _extract_latest_user_text(input_data: str | list[TResponseInputItem]) -> str:\n    \"\"\"Extract only the most recent user message text.\"\"\"\n    if isinstance(input_data, str):\n        return input_data\n\n    for item in reversed(input_data):\n        if isinstance(item, dict):\n            if item.get(\"role\") == \"user\":\n                content = item.get(\"content\", \"\")\n                return content if isinstance(content, str) else \"\"\n        else:\n            if getattr(item, \"role\", None) == \"user\":\n                content = getattr(item, \"content\", \"\")\n                return content if isinstance(content, str) else \"\"\n    \n    return \"\"\n\n## Use the function to extract the input message\n@input_guardrail(run_in_parallel=False)  # BLOCK before booking tool executes\nasync def booking_abuse_guardrail(\n    ctx: RunContextWrapper[None],\n    agent: Agent,\n    input: str | list[TResponseInputItem]\n) -> GuardrailFunctionOutput:\n    \"\"\"\n    Detect and block booking abuse attempts.\n    \n    Uses blocking execution (run_in_parallel=False) to prevent\n    the booking tool from executing if abuse is detected.\n    \"\"\"\n    #For Run Demo Loop (Repl)\n    latest_text = _extract_latest_user_text(input)\n    result = await Runner.run(booking_abuse_detector, latest_text)\n\n    #For Regular Sessions\n    #result = await Runner.run(booking_abuse_detector, input)\n    \n    return GuardrailFunctionOutput(\n        output_info=result.final_output,\n        tripwire_triggered=result.final_output.is_abuse_attempt,\n    )\n\n```\n",
+            "closedAt": "2026-01-11T09:44:31Z",
+            "comments": {
+              "totalCount": 2
+            },
+            "createdAt": "2026-01-11T08:44:30Z",
+            "databaseId": 3800966786,
+            "id": "I_kwDOOGidp87ijiaC",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "0E8A16",
+                  "description": "Question about using the SDK",
+                  "name": "question"
+                },
+                {
+                  "color": "d4a1ab",
+                  "description": "Waiting for a reply/more info from the author",
+                  "name": "needs-more-info"
+                },
+                {
+                  "color": "a95c3a",
+                  "description": "",
+                  "name": "feature:lite-llm"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": null,
+            "number": 2293,
+            "state": "CLOSED",
+            "title": "run_demo_loop / REPL injects \"__fake_id__\" in session items and causes Responses API 400: \"Expected an ID that begins with 'msg'\"",
+            "updatedAt": "2026-01-11T09:44:31Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2293"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:11.243073Z"
+}

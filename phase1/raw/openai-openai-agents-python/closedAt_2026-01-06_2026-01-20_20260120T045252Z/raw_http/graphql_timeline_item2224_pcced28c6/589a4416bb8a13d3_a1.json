@@ -1,0 +1,265 @@
+{
+  "finished_at": "2026-01-20T04:53:47.190248Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "589a4416bb8a13d3",
+    "tag": "graphql_timeline_item2224_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemTimelinePage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        timelineItems(\n          first: 100\n          after: $after\n          itemTypes: [\n            CLOSED_EVENT, REOPENED_EVENT,\n            LABELED_EVENT, UNLABELED_EVENT,\n            ASSIGNED_EVENT, UNASSIGNED_EVENT,\n            MILESTONED_EVENT, DEMILESTONED_EVENT,\n            RENAMED_TITLE_EVENT,\n            CROSS_REFERENCED_EVENT, REFERENCED_EVENT\n          ]\n        ) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            __typename\n            ... on ClosedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n            }\n            ... on ReopenedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n            }\n            ... on LabeledEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              label { name color }\n            }\n            ... on UnlabeledEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              label { name color }\n            }\n            ... on AssignedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              assignee { __typename ... on User { login id id } }\n            }\n            ... on UnassignedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              assignee { __typename ... on User { login id id } }\n            }\n            ... on MilestonedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              milestoneTitle\n            }\n            ... on DemilestonedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              milestoneTitle\n            }\n            ... on RenamedTitleEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              previousTitle\n              currentTitle\n            }\n            ... on CrossReferencedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              source {\n                __typename\n                ... on Issue { number url title }\n                ... on PullRequest { number url title }\n              }\n            }\n            ... on ReferencedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              commit { oid url }\n              commitRepository { nameWithOwner }\n            }\n          }\n        }\n      }\n      ... on PullRequest {\n        timelineItems(\n          first: 100\n          after: $after\n          itemTypes: [\n            CLOSED_EVENT, REOPENED_EVENT,\n            LABELED_EVENT, UNLABELED_EVENT,\n            ASSIGNED_EVENT, UNASSIGNED_EVENT,\n            MILESTONED_EVENT, DEMILESTONED_EVENT,\n            RENAMED_TITLE_EVENT,\n            CROSS_REFERENCED_EVENT, REFERENCED_EVENT\n          ]\n        ) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            __typename\n            ... on ClosedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n            }\n            ... on ReopenedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n            }\n            ... on LabeledEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              label { name color }\n            }\n            ... on UnlabeledEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              label { name color }\n            }\n            ... on AssignedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              assignee { __typename ... on User { login id id } }\n            }\n            ... on UnassignedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              assignee { __typename ... on User { login id id } }\n            }\n            ... on MilestonedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              milestoneTitle\n            }\n            ... on DemilestonedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              milestoneTitle\n            }\n            ... on RenamedTitleEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              previousTitle\n              currentTitle\n            }\n            ... on CrossReferencedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              source {\n                __typename\n                ... on Issue { number url title }\n                ... on PullRequest { number url title }\n              }\n            }\n            ... on ReferencedEvent {\n              id\n              createdAt\n              actor {\n                __typename\n                login\n                url\n                avatarUrl\n                ... on User { id databaseId }\n                ... on Organization { id databaseId }\n                ... on Bot { id databaseId }\n                ... on Mannequin { id databaseId }\n              }\n              commit { oid url }\n              commitRepository { nameWithOwner }\n            }\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2224,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "5079",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:47 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DAC0:2324B0:16047F7:1F0ED40:696F0A5A",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4930",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "70",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "timelineItems": {
+              "nodes": [
+                {
+                  "__typename": "LabeledEvent",
+                  "actor": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "createdAt": "2025-12-23T13:39:41Z",
+                  "id": "LE_lADOOGidp87f7sfhzwAAAAUO9X8x",
+                  "label": {
+                    "color": "a2eeef",
+                    "name": "enhancement"
+                  }
+                },
+                {
+                  "__typename": "LabeledEvent",
+                  "actor": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "createdAt": "2025-12-23T13:39:41Z",
+                  "id": "LE_lADOOGidp87f7sfhzwAAAAUO9X9G",
+                  "label": {
+                    "color": "b2fdef",
+                    "name": "feature:core"
+                  }
+                },
+                {
+                  "__typename": "LabeledEvent",
+                  "actor": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "createdAt": "2025-12-23T13:39:41Z",
+                  "id": "LE_lADOOGidp87f7sfhzwAAAAUO9X9O",
+                  "label": {
+                    "color": "90669a",
+                    "name": "feature:sessions"
+                  }
+                },
+                {
+                  "__typename": "MilestonedEvent",
+                  "actor": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "createdAt": "2025-12-23T13:39:43Z",
+                  "id": "MIE_lADOOGidp87f7sfhzwAAAAUO9YF1",
+                  "milestoneTitle": "0.7.x"
+                },
+                {
+                  "__typename": "RenamedTitleEvent",
+                  "actor": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "createdAt": "2025-12-23T14:07:53Z",
+                  "currentTitle": "feat: #2206  Add responses.compact: auto-compact long conversations",
+                  "id": "RTE_lADOOGidp87f7sfhzwAAAAUO_goi",
+                  "previousTitle": "Add responses.compact: auto-compact long conversations (#2206)"
+                },
+                {
+                  "__typename": "CrossReferencedEvent",
+                  "actor": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/21352040?u=0be845711495bbd7b756e13fcaeb8efc1ebd78ba&v=4",
+                    "databaseId": 21352040,
+                    "id": "MDQ6VXNlcjIxMzUyMDQw",
+                    "login": "Filimoa",
+                    "url": "https://github.com/Filimoa"
+                  },
+                  "createdAt": "2025-12-29T20:35:38Z",
+                  "id": "CRE_kwDOOGidp8789Cc3",
+                  "source": {
+                    "__typename": "Issue",
+                    "number": 2244,
+                    "title": "Runner level context compaction ideas",
+                    "url": "https://github.com/openai/openai-agents-python/issues/2244"
+                  }
+                },
+                {
+                  "__typename": "LabeledEvent",
+                  "actor": {
+                    "__typename": "Bot",
+                    "avatarUrl": "https://avatars.githubusercontent.com/in/15368?v=4",
+                    "databaseId": 41898282,
+                    "id": "MDM6Qm90NDE4OTgyODI=",
+                    "login": "github-actions",
+                    "url": "https://github.com/apps/github-actions"
+                  },
+                  "createdAt": "2026-01-03T02:11:43Z",
+                  "id": "LE_lADOOGidp87f7sfhzwAAAAUVZnC3",
+                  "label": {
+                    "color": "ededed",
+                    "name": "stale"
+                  }
+                },
+                {
+                  "__typename": "UnlabeledEvent",
+                  "actor": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "createdAt": "2026-01-05T02:41:49Z",
+                  "id": "UNLE_lADOOGidp87f7sfhzwAAAAUWEqGY",
+                  "label": {
+                    "color": "ededed",
+                    "name": "stale"
+                  }
+                },
+                {
+                  "__typename": "DemilestonedEvent",
+                  "actor": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "createdAt": "2026-01-08T04:31:11Z",
+                  "id": "DEME_lADOOGidp87f7sfhzwAAAAUaIf8P",
+                  "milestoneTitle": "0.7.x"
+                },
+                {
+                  "__typename": "MilestonedEvent",
+                  "actor": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "createdAt": "2026-01-08T04:31:11Z",
+                  "id": "MIE_lADOOGidp87f7sfhzwAAAAUaIf8W",
+                  "milestoneTitle": "0.6.x"
+                },
+                {
+                  "__typename": "ClosedEvent",
+                  "actor": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "createdAt": "2026-01-09T00:42:15Z",
+                  "id": "CE_lADOOGidp87f7sfhzwAAAAUbf75t"
+                },
+                {
+                  "__typename": "CrossReferencedEvent",
+                  "actor": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "createdAt": "2026-01-10T04:46:35Z",
+                  "id": "CRE_kwDOOGidp88AAAABAlPnQA",
+                  "source": {
+                    "__typename": "PullRequest",
+                    "number": 2287,
+                    "title": "fix: Fix compaction run item typing and lifecycle handling",
+                    "url": "https://github.com/openai/openai-agents-python/pull/2287"
+                  }
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpPPAAABm6Y6Q_gCqjQzMzQwMjA0MTY=",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:46.204541Z"
+}

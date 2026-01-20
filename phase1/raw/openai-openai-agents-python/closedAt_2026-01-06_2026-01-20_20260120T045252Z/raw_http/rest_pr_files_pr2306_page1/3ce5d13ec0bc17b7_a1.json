@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:56:50.704549Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "3ce5d13ec0bc17b7",
+    "tag": "rest_pr_files_pr2306_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2306/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "8667",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:50 GMT",
+      "etag": "\"f85ec445ff534c97835a2dd7ad1978ef9eb9410ed84b3099eb95ffdfb08f0a24\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Thu, 15 Jan 2026 01:04:11 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DC55:F2819:16A26C2:1FAD531:696F0B12",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4949",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "51",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 76,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/24f2b9d245e55793f58ba3554dd14d88440038d0/.codex%2Fskills%2Fdocs-sync%2FSKILL.md",
+        "changes": 76,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Fdocs-sync%2FSKILL.md?ref=24f2b9d245e55793f58ba3554dd14d88440038d0",
+        "deletions": 0,
+        "filename": ".codex/skills/docs-sync/SKILL.md",
+        "patch": "@@ -0,0 +1,76 @@\n+---\n+name: docs-sync\n+description: Analyze main branch implementation and configuration to find missing, incorrect, or outdated documentation in docs/. Use when asked to audit doc coverage, sync docs with code, or propose doc updates/structure changes. Only update English docs under docs/** and never touch translated docs under docs/ja, docs/ko, or docs/zh. Provide a report and ask for approval before editing docs.\n+---\n+\n+# Docs Sync\n+\n+## Overview\n+\n+Identify doc coverage gaps and inaccuracies by comparing main branch features and configuration options against the current docs structure, then propose targeted improvements.\n+\n+## Workflow\n+\n+1. Confirm scope and base branch\n+   - Identify the current branch and default branch (usually `main`).\n+   - Prefer analyzing the current branch to keep work aligned with in-flight changes.\n+   - If the current branch is not `main`, analyze only the diff vs `main` to scope doc updates.\n+   - Avoid switching branches if it would disrupt local changes; use `git show main:<path>` or `git worktree add` when needed.\n+\n+2. Build a feature inventory from the selected scope\n+   - If on `main`: inventory the full surface area and review docs comprehensively.\n+   - If not on `main`: inventory only changes vs `main` (feature additions/changes/removals).\n+   - Focus on user-facing behavior: public exports, configuration options, environment variables, CLI commands, default values, and documented runtime behaviors.\n+   - Capture evidence for each item (file path + symbol/setting).\n+   - Use targeted search to find option types and feature flags (for example: `rg \"Settings\"`, `rg \"Config\"`, `rg \"os.environ\"`, `rg \"OPENAI_\"`).\n+   - When the topic involves OpenAI platform features, invoke `$openai-knowledge` to pull current details from the OpenAI Developer Docs MCP server instead of guessing, while treating the SDK source code as the source of truth when discrepancies appear.\n+\n+3. Doc-first pass: review existing pages\n+   - Walk each relevant page under `docs/` (excluding `docs/ja`, `docs/ko`, and `docs/zh`).\n+   - Identify missing mentions of important, supported options (opt-in flags, env vars), customization points, or new features from `src/agents/` and `examples/`.\n+   - Propose additions where users would reasonably expect to find them on that page.\n+\n+4. Code-first pass: map features to docs\n+   - Review the current docs information architecture under `docs/` and `mkdocs.yml`.\n+   - Determine the best page/section for each feature based on existing patterns and the API reference structure under `docs/ref`.\n+   - Identify features that lack any doc page or have a page but no corresponding content.\n+   - Note when a structural adjustment would improve discoverability.\n+   - When improving `docs/ref/*` pages, treat the corresponding docstrings/comments in `src/` as the source of truth. Prefer updating those code comments so regenerated reference docs stay correct, instead of hand-editing the generated pages.\n+\n+5. Detect gaps and inaccuracies\n+   - **Missing**: features/configs present in main but absent in docs.\n+   - **Incorrect/outdated**: names, defaults, or behaviors that diverge from main.\n+   - **Structural issues** (optional): pages overloaded, missing overviews, or mis-grouped topics.\n+\n+6. Produce a Docs Sync Report and ask for approval\n+   - Provide a clear report with evidence, suggested doc locations, and proposed edits.\n+   - Ask the user whether to proceed with doc updates.\n+\n+7. If approved, apply changes (English only)\n+   - Edit only English docs in `docs/**`.\n+   - Do **not** edit `docs/ja`, `docs/ko`, or `docs/zh`.\n+   - Keep changes aligned with the existing docs style and navigation.\n+   - Update `mkdocs.yml` when adding or renaming pages.\n+   - Build docs with `make build-docs` after edits to verify the docs site still builds.\n+\n+## Output format\n+\n+Use this template when reporting findings:\n+\n+Docs Sync Report\n+\n+- Doc-first findings\n+  - Page + missing content -> evidence + suggested insertion point\n+- Code-first gaps\n+  - Feature + evidence -> suggested doc page/section (or missing page)\n+- Incorrect or outdated docs\n+  - Doc file + issue + correct info + evidence\n+- Structural suggestions (optional)\n+  - Proposed change + rationale\n+- Proposed edits\n+  - Doc file -> concise change summary\n+- Questions for the user\n+\n+## References\n+\n+- `references/doc-coverage-checklist.md`",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/24f2b9d245e55793f58ba3554dd14d88440038d0/.codex%2Fskills%2Fdocs-sync%2FSKILL.md",
+        "sha": "32b3bb46da9c52863c8be8c446fe90881b8a88dc",
+        "status": "added"
+      },
+      {
+        "additions": 56,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/24f2b9d245e55793f58ba3554dd14d88440038d0/.codex%2Fskills%2Fdocs-sync%2Freferences%2Fdoc-coverage-checklist.md",
+        "changes": 56,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Fdocs-sync%2Freferences%2Fdoc-coverage-checklist.md?ref=24f2b9d245e55793f58ba3554dd14d88440038d0",
+        "deletions": 0,
+        "filename": ".codex/skills/docs-sync/references/doc-coverage-checklist.md",
+        "patch": "@@ -0,0 +1,56 @@\n+# Doc Coverage Checklist\n+\n+Use this checklist to scan the selected scope (main = comprehensive, or current-branch diff) and validate documentation coverage.\n+\n+## Feature inventory targets\n+\n+- Public exports: classes, functions, types, and module entry points.\n+- Configuration options: `*Settings` types, default config objects, and builder patterns.\n+- Environment variables or runtime flags.\n+- CLI commands, scripts, and example entry points that define supported usage.\n+- User-facing behaviors: retry, timeouts, streaming, errors, logging, telemetry, and data handling.\n+- Deprecations, removals, or renamed settings.\n+\n+## Doc-first pass (page-by-page)\n+\n+- Review each relevant English page (excluding `docs/ja`, `docs/ko`, and `docs/zh`).\n+- Look for missing opt-in flags, env vars, or customization options that the page implies.\n+- Add new features that belong on that page based on user intent and navigation.\n+\n+## Code-first pass (feature inventory)\n+\n+- Map features to the closest existing page based on the docs navigation in `mkdocs.yml`.\n+- Prefer updating existing pages over creating new ones unless the topic is clearly new.\n+- Use conceptual pages for cross-cutting concerns (auth, errors, streaming, tracing, tools).\n+- Keep quick-start flows minimal; move advanced details into deeper pages.\n+\n+## Evidence capture\n+\n+- Record the main-branch file path and symbol/setting name.\n+- Note defaults or behavior-critical details for accuracy checks.\n+- Avoid large code dumps; a short identifier is enough.\n+\n+## Red flags for outdated or incorrect docs\n+\n+- Option names/types no longer exist or differ from code.\n+- Default values or allowed ranges do not match implementation.\n+- Features removed in code but still documented.\n+- New behaviors introduced without corresponding docs updates.\n+\n+## When to propose structural changes\n+\n+- A page mixes unrelated audiences (quick-start + deep reference) without clear separation.\n+- Multiple pages duplicate the same concept without cross-links.\n+- New feature areas have no obvious home in the nav structure.\n+\n+## Diff mode guidance (current branch vs main)\n+\n+- Focus only on changed behavior: new exports/options, modified defaults, removed features, or renamed settings.\n+- Use `git diff main...HEAD` (or equivalent) to constrain analysis.\n+- Document removals explicitly so docs can be pruned if needed.\n+\n+## Patch guidance\n+\n+- Keep edits scoped and aligned with existing tone and format.\n+- Update cross-links when moving or renaming sections.\n+- Leave translated docs untouched; English-only updates.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/24f2b9d245e55793f58ba3554dd14d88440038d0/.codex%2Fskills%2Fdocs-sync%2Freferences%2Fdoc-coverage-checklist.md",
+        "sha": "01d144c1702ea8650b34c2ea4aa2973054d2b39e",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:50.214707Z"
+}

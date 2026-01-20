@@ -1,0 +1,131 @@
+{
+  "finished_at": "2026-01-20T04:58:14.064843Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "3a745081a10d0d3c",
+    "tag": "graphql_core_item2332"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2332,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "3245",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:58:14 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DD1C:E9ECE:161B8E8:1F27540:696F0B65",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4564",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "436",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 2,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "Bot",
+              "avatarUrl": "https://avatars.githubusercontent.com/in/15368?v=4",
+              "databaseId": 41898282,
+              "id": "MDM6Qm90NDE4OTgyODI=",
+              "login": "github-actions",
+              "url": "https://github.com/apps/github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "baseRefName": "main",
+            "body": "### Release readiness review (v0.6.7 -> TARGET e6d20422e49b9c595e1f9c8562c7bc6ba830fb92)\n\nThis is a release readiness report done by `$final-release-review` skill.\n\n### Diff\n\nhttps://github.com/openai/openai-agents-python/compare/v0.6.7...e6d20422e49b9c595e1f9c8562c7bc6ba830fb92\n\n### Release call:\n**🟢 GREEN LIGHT TO SHIP** Changes are largely docs/CI with focused runtime fixes and tests; no blocking risks found.\n\n### Scope summary:\n- 108 files changed (+3228/-2259); key areas touched: MCP server error handling, DeepSeek reasoning_content conversion, LiteLLM model ordering and dependency bump, CI workflows, doc translations.\n\n### Risk assessment (ordered by impact):\n1) MCP error handling now wraps HTTP failures into UserError and suppresses some cleanup exceptions.\n   - Risk: LOW. Impact: error type/messages may change for callers, but behavior is more precise and still re-raises non-HTTP exceptions.\n   - Files: src/agents/mcp/server.py, src/agents/mcp/util.py\n2) DeepSeek reasoning_content injection for tool-call messages.\n   - Risk: LOW. Impact: only affects DeepSeek/tool-call conversions; guarded by model/provider checks and covered by new tests.\n   - Files: src/agents/models/chatcmpl_converter.py, tests/models/test_deepseek_reasoning_content.py\n3) LiteLLM optional dependency bump and tool message reordering for Gemini.\n   - Risk: LOW. Impact: minor behavior shifts for LiteLLM users; change is targeted to fix API ordering constraints.\n   - Files: src/agents/extensions/models/litellm_model.py, pyproject.toml, uv.lock\n\n### Notes:\n- BASE_TAG from local tags: v0.6.7; TARGET: e6d20422e49b9c595e1f9c8562c7bc6ba830fb92.\n- Local verification not run; assume CI has executed the required checks.",
+            "changedFiles": 2,
+            "closedAt": "2026-01-19T01:39:13Z",
+            "comments": {
+              "totalCount": 0
+            },
+            "createdAt": "2026-01-19T01:35:06Z",
+            "databaseId": 3186024150,
+            "deletions": 2,
+            "files": {
+              "totalCount": 2
+            },
+            "headRefName": "release/v0.6.8",
+            "headRefOid": "e6d20422e49b9c595e1f9c8562c7bc6ba830fb92",
+            "id": "PR_kwDOOGidp8695t7W",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "e7cef1",
+                  "description": "",
+                  "name": "project"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "e449a2dc7b15a2aba04a991840ea279fafe7028a",
+              "url": "https://github.com/openai/openai-agents-python/commit/e449a2dc7b15a2aba04a991840ea279fafe7028a"
+            },
+            "mergedAt": "2026-01-19T01:39:13Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2332,
+            "reviews": {
+              "totalCount": 0
+            },
+            "state": "MERGED",
+            "title": "Release 0.6.8",
+            "updatedAt": "2026-01-19T01:39:15Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2332"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:58:13.470587Z"
+}

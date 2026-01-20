@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:56:23.974406Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "53dea28be3ca3a26",
+    "tag": "rest_pr_files_pr2298_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2298/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "9692",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:24 GMT",
+      "etag": "\"144287030bfa3809e85170de702890a6c0de4506e7daecb3b9e94a867ef74030\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Mon, 12 Jan 2026 09:37:51 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DC14:3E6F74:15FF800:1F0A5E3:696F0AF7",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4956",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "44",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 14,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/85995f709d3a2e92a8c994e6a488470e054a54d0/AGENTS.md",
+        "changes": 25,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/AGENTS.md?ref=85995f709d3a2e92a8c994e6a488470e054a54d0",
+        "deletions": 11,
+        "filename": "AGENTS.md",
+        "patch": "@@ -7,16 +7,17 @@ This guide helps new contributors get started with the OpenAI Agents Python repo\n ## Table of Contents\n \n 1. [Mandatory Skill Usage](#mandatory-skill-usage)\n-2. [Overview](#overview)\n-3. [Repo Structure & Important Files](#repo-structure--important-files)\n-4. [Testing & Automated Checks](#testing--automated-checks)\n-5. [Repo-Specific Utilities](#repo-specific-utilities)\n-6. [Style, Linting & Type Checking](#style-linting--type-checking)\n-7. [Development Workflow](#development-workflow)\n-8. [Pull Request & Commit Guidelines](#pull-request--commit-guidelines)\n-9. [Review Process & What Reviewers Look For](#review-process--what-reviewers-look-for)\n-10. [Tips for Navigating the Repo](#tips-for-navigating-the-repo)\n-11. [Prerequisites](#prerequisites)\n+2. [ExecPlans](#planning-execplans)\n+3. [Overview](#overview)\n+4. [Repo Structure & Important Files](#repo-structure--important-files)\n+5. [Testing & Automated Checks](#testing--automated-checks)\n+6. [Repo-Specific Utilities](#repo-specific-utilities)\n+7. [Style, Linting & Type Checking](#style-linting--type-checking)\n+8. [Development Workflow](#development-workflow)\n+9. [Pull Request & Commit Guidelines](#pull-request--commit-guidelines)\n+10. [Review Process & What Reviewers Look For](#review-process--what-reviewers-look-for)\n+11. [Tips for Navigating the Repo](#tips-for-navigating-the-repo)\n+12. [Prerequisites](#prerequisites)\n \n ## Mandatory Skill Usage\n \n@@ -36,10 +37,12 @@ You can skip `$code-change-verification` for docs-only or repo-meta changes (for\n \n When working on OpenAI API or OpenAI platform integrations in this repo (Responses API, tools, streaming, Realtime API, auth, models, rate limits, MCP, Agents SDK or ChatGPT Apps SDK), use `$openai-knowledge` to pull authoritative docs via the OpenAI Developer Docs MCP server (and guide setup if it is not configured).\n \n-### Planning expectations\n+## Planning & ExecPlans\n \n Call out potential backward compatibility or public API risks early in your plan and confirm the approach before implementing changes that could impact users.\n \n+Use an ExecPlan when work is multi-step, spans several files, involves new features or refactors, or is likely to take more than about an hour. Start with the template and rules in `PLANS.md`, keep milestones and living sections (Progress, Surprises & Discoveries, Decision Log, Outcomes & Retrospective) up to date as you execute, and rewrite the plan if scope shifts. If you intentionally skip an ExecPlan for a complex task, note why in your response so reviewers understand the choice.\n+\n ## Overview\n \n The OpenAI Agents Python repository provides the Python Agents SDK, examples, and documentation built with MkDocs. Use `uv run python ...` for Python commands to ensure a consistent environment.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/85995f709d3a2e92a8c994e6a488470e054a54d0/AGENTS.md",
+        "sha": "5071a3e64b2a6f4d83a6a0cda52181ab7eee01d3",
+        "status": "modified"
+      },
+      {
+        "additions": 100,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/85995f709d3a2e92a8c994e6a488470e054a54d0/PLANS.md",
+        "changes": 100,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/PLANS.md?ref=85995f709d3a2e92a8c994e6a488470e054a54d0",
+        "deletions": 0,
+        "filename": "PLANS.md",
+        "patch": "@@ -0,0 +1,100 @@\n+# Codex Execution Plans (ExecPlans)\n+\n+This file defines how to write and maintain an ExecPlan: a self-contained, living specification that a novice can follow to deliver observable, working behavior in this repository.\n+\n+## When to Use an ExecPlan\n+- Required for multi-step or multi-file work, new features, refactors, or tasks expected to take more than about an hour.\n+- Optional for trivial fixes (typos, small docs), but if you skip it for a substantial task, state the reason in your response.\n+\n+## How to Use This File\n+- Authoring: read this file end to end before drafting; start from the skeleton; embed all context (paths, commands, definitions) so no external docs are needed.\n+- Implementing: move directly to the next milestone without asking for next steps; keep the living sections current at every stopping point.\n+- Discussing: record decisions and rationale inside the plan so work can be resumed later using only the ExecPlan.\n+\n+## Non-Negotiable Requirements\n+- Self-contained and beginner-friendly: define every term; include needed repo knowledge; avoid assuming prior plans or external links.\n+- Living document: revise Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective as work proceeds while keeping the plan self-contained.\n+- Outcome-focused: describe what the user can do after the change and how to see it working; the plan must lead to demonstrably working behavior, not just code edits.\n+- Explicit acceptance: state behaviors, commands, and observable outputs that prove success.\n+\n+## Formatting Rules\n+- Default envelope is a single fenced code block labeled `md`; do not nest other triple backticks inside—indent commands, transcripts, and diffs instead.\n+- If the file contains only the ExecPlan, omit the enclosing code fence.\n+- Use blank lines after headings; prefer prose over lists. Checklists are permitted only in the Progress section (and are mandatory there).\n+\n+## Guidelines\n+- Define jargon immediately and tie it to concrete files or commands in this repo.\n+- Anchor on outcomes: acceptance should be phrased as observable behavior; for internal changes, show tests or scenarios that demonstrate the effect.\n+- Specify repository context explicitly: full paths, functions, modules, working directory for commands, and environment assumptions.\n+- Be idempotent and safe: describe retries or rollbacks for risky steps; prefer additive, testable changes.\n+- Validation is required: state exact test commands and expected outputs; include concise evidence (logs, transcripts, diffs) as indented examples.\n+\n+## Milestones\n+- Tell a story (goal → work → result → proof) for each milestone; keep them narrative rather than bureaucratic.\n+- Each milestone must be independently verifiable and incrementally advance the overall goal.\n+- Milestones are distinct from Progress: milestones explain the plan; Progress tracks real-time execution.\n+\n+## Living Sections (must be present and maintained)\n+- Progress: checkbox list with timestamps; every pause should update what is done and what remains.\n+- Surprises & Discoveries: unexpected behaviors, performance notes, or bugs with brief evidence.\n+- Decision Log: each decision with rationale and date/author.\n+- Outcomes & Retrospective: what was achieved, remaining gaps, and lessons learned.\n+\n+## Prototyping and Parallel Paths\n+- Prototypes are encouraged to de-risk changes; keep them additive, clearly labeled, and validated.\n+- Parallel implementations are acceptable when reducing risk; describe how to validate each path and how to retire one safely.\n+\n+## ExecPlan Skeleton\n+\n+```md\n+# <Short, action-oriented description>\n+\n+This ExecPlan is a living document. The sections Progress, Surprises & Discoveries, Decision Log, and Outcomes & Retrospective must stay up to date as work proceeds.\n+\n+If PLANS.md is present in the repo, maintain this document in accordance with it and link back to it by path.\n+\n+## Purpose / Big Picture\n+Explain the user-visible behavior gained after this change and how to observe it.\n+\n+## Progress\n+- [x] (2025-10-01 13:00Z) Example completed step.\n+- [ ] Example incomplete step.\n+- [ ] Example partially completed step (completed: X; remaining: Y).\n+\n+## Surprises & Discoveries\n+- Observation: …\n+  Evidence: …\n+\n+## Decision Log\n+- Decision: …\n+  Rationale: …\n+  Date/Author: …\n+\n+## Outcomes & Retrospective\n+Summarize outcomes, gaps, and lessons learned; compare to the original purpose.\n+\n+## Context and Orientation\n+Describe the current state relevant to this task as if the reader knows nothing. Name key files and modules by full path; define any non-obvious terms.\n+\n+## Plan of Work\n+Prose description of the sequence of edits and additions. For each edit, name the file and location and what to change.\n+\n+## Concrete Steps\n+Exact commands to run (with working directory). Include short expected outputs for comparison.\n+\n+## Validation and Acceptance\n+Behavioral acceptance criteria plus test commands and expected results.\n+\n+## Idempotence and Recovery\n+How to retry or roll back safely; ensure steps can be rerun without harm.\n+\n+## Artifacts and Notes\n+Concise transcripts, diffs, or snippets as indented examples.\n+\n+## Interfaces and Dependencies\n+Prescribe libraries, modules, and function signatures that must exist at the end. Use stable names and paths.\n+```\n+\n+## Revising a Plan\n+- When the scope shifts, rewrite affected sections so the document remains coherent and self-contained.\n+- After significant edits, add a short note at the end explaining what changed and why.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/85995f709d3a2e92a8c994e6a488470e054a54d0/PLANS.md",
+        "sha": "21c840ac2fd278e26c37f6b850ac6eb7dec28f82",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:23.458136Z"
+}

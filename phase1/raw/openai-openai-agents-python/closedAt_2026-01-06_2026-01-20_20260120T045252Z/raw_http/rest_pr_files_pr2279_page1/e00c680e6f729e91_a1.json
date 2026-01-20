@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:55:26.629732Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "e00c680e6f729e91",
+    "tag": "rest_pr_files_pr2279_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2279/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "6022",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:55:26 GMT",
+      "etag": "\"53e42a951bf47d18b5259beab763b5caef35b2863d514fe5758d4e516274e815\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Thu, 08 Jan 2026 09:29:19 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DB97:29AB24:15F8789:1F033CE:696F0ABE",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4969",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "31",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 59,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/56b1f9c357a2895f15589da0b79c866980c56488/src%2Fagents%2Fusage.py",
+        "changes": 59,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Fusage.py?ref=56b1f9c357a2895f15589da0b79c866980c56488",
+        "deletions": 0,
+        "filename": "src/agents/usage.py",
+        "patch": "@@ -163,3 +163,62 @@ def add(self, other: Usage) -> None:\n         elif other.request_usage_entries:\n             # If the other Usage already has individual request breakdowns, merge them.\n             self.request_usage_entries.extend(other.request_usage_entries)\n+\n+    @property\n+    def is_empty(self) -> bool:\n+        \"\"\"Check if this Usage object has no recorded usage.\n+\n+        Returns:\n+            True if no tokens have been used, False otherwise.\n+        \"\"\"\n+        return self.total_tokens == 0 and self.requests == 0\n+\n+    def __bool__(self) -> bool:\n+        \"\"\"Allow Usage to be used in boolean context.\n+\n+        Returns:\n+            True if any usage has been recorded, False otherwise.\n+\n+        Example:\n+            >>> if result.usage:\n+            ...     print(f\"Used {result.usage.total_tokens} tokens\")\n+        \"\"\"\n+        return not self.is_empty\n+\n+    @property\n+    def cached_tokens(self) -> int:\n+        \"\"\"Convenience property to get cached input tokens.\n+\n+        Returns:\n+            Number of cached input tokens, or 0 if not available.\n+        \"\"\"\n+        if self.input_tokens_details and self.input_tokens_details.cached_tokens:\n+            return self.input_tokens_details.cached_tokens\n+        return 0\n+\n+    @property\n+    def reasoning_tokens(self) -> int:\n+        \"\"\"Convenience property to get reasoning output tokens.\n+\n+        Returns:\n+            Number of reasoning tokens, or 0 if not available.\n+        \"\"\"\n+        if self.output_tokens_details and self.output_tokens_details.reasoning_tokens:\n+            return self.output_tokens_details.reasoning_tokens\n+        return 0\n+\n+    def to_dict(self) -> dict:\n+        \"\"\"Convert Usage to a dictionary for serialization.\n+\n+        Returns:\n+            Dictionary representation of the usage data.\n+        \"\"\"\n+        return {\n+            \"requests\": self.requests,\n+            \"input_tokens\": self.input_tokens,\n+            \"output_tokens\": self.output_tokens,\n+            \"total_tokens\": self.total_tokens,\n+            \"cached_tokens\": self.cached_tokens,\n+            \"reasoning_tokens\": self.reasoning_tokens,\n+        }\n+",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/56b1f9c357a2895f15589da0b79c866980c56488/src%2Fagents%2Fusage.py",
+        "sha": "610e63cf507a1b6b37cc542038ba8c3d7586cb39",
+        "status": "modified"
+      },
+      {
+        "additions": 66,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/56b1f9c357a2895f15589da0b79c866980c56488/tests%2Ftest_usage_utility.py",
+        "changes": 66,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_usage_utility.py?ref=56b1f9c357a2895f15589da0b79c866980c56488",
+        "deletions": 0,
+        "filename": "tests/test_usage_utility.py",
+        "patch": "@@ -0,0 +1,66 @@\n+\"\"\"Tests for Usage class utility methods.\"\"\"\n+\n+from __future__ import annotations\n+\n+from agents.usage import Usage\n+\n+\n+class TestUsageUtilityMethods:\n+    \"\"\"Tests for Usage class utility methods.\"\"\"\n+\n+    def test_is_empty_true_for_new_usage(self) -> None:\n+        \"\"\"New Usage object should be empty.\"\"\"\n+        usage = Usage()\n+        assert usage.is_empty is True\n+\n+    def test_is_empty_false_with_tokens(self) -> None:\n+        \"\"\"Usage with tokens should not be empty.\"\"\"\n+        usage = Usage(input_tokens=10, output_tokens=5, total_tokens=15, requests=1)\n+        assert usage.is_empty is False\n+\n+    def test_bool_false_for_empty(self) -> None:\n+        \"\"\"Empty Usage should be falsy.\"\"\"\n+        usage = Usage()\n+        assert not usage\n+\n+    def test_bool_true_with_tokens(self) -> None:\n+        \"\"\"Usage with tokens should be truthy.\"\"\"\n+        usage = Usage(input_tokens=10, total_tokens=10, requests=1)\n+        assert usage\n+\n+    def test_cached_tokens_property(self) -> None:\n+        \"\"\"cached_tokens should return cached input tokens.\"\"\"\n+        usage = Usage(input_tokens=100, requests=1)\n+        assert usage.cached_tokens == 0\n+\n+    def test_reasoning_tokens_property(self) -> None:\n+        \"\"\"reasoning_tokens should return reasoning output tokens.\"\"\"\n+        usage = Usage(output_tokens=100, requests=1)\n+        assert usage.reasoning_tokens == 0\n+\n+    def test_to_dict_contains_all_fields(self) -> None:\n+        \"\"\"to_dict should contain all relevant fields.\"\"\"\n+        usage = Usage(\n+            requests=2,\n+            input_tokens=100,\n+            output_tokens=50,\n+            total_tokens=150,\n+        )\n+        result = usage.to_dict()\n+\n+        assert result[\"requests\"] == 2\n+        assert result[\"input_tokens\"] == 100\n+        assert result[\"output_tokens\"] == 50\n+        assert result[\"total_tokens\"] == 150\n+        assert \"cached_tokens\" in result\n+        assert \"reasoning_tokens\" in result\n+\n+    def test_to_dict_empty_usage(self) -> None:\n+        \"\"\"to_dict should work for empty Usage.\"\"\"\n+        usage = Usage()\n+        result = usage.to_dict()\n+\n+        assert result[\"requests\"] == 0\n+        assert result[\"input_tokens\"] == 0\n+        assert result[\"output_tokens\"] == 0\n+        assert result[\"total_tokens\"] == 0",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/56b1f9c357a2895f15589da0b79c866980c56488/tests%2Ftest_usage_utility.py",
+        "sha": "204ff67658547cbd40ff80ad4bcb3810308f75c5",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:55:26.015066Z"
+}

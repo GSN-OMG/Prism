@@ -1,0 +1,136 @@
+{
+  "finished_at": "2026-01-20T04:56:21.310947Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "64a77d300387b747",
+    "tag": "graphql_core_item2298"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2298,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2030",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:21 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DC0D:221B33:154104C:1E4B7FE:696F0AF4",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4716",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "284",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 114,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "authorAssociation": "MEMBER",
+            "baseRefName": "main",
+            "body": "This pull request updates the contributor docs to formalize ExecPlan usage and provides a reusable template. It adds PLANS.md with the ExecPlan rules, living sections, formatting requirements, and a ready-to-use skeleton, and updates AGENTS.md to point contributors to those rules and require keeping the living sections current when using ExecPlans. No runtime code is changed.",
+            "changedFiles": 2,
+            "closedAt": "2026-01-12T09:37:49Z",
+            "comments": {
+              "totalCount": 0
+            },
+            "createdAt": "2026-01-12T09:35:29Z",
+            "databaseId": 3165139155,
+            "deletions": 11,
+            "files": {
+              "totalCount": 2
+            },
+            "headRefName": "docs/execplan-guidance",
+            "headRefOid": "85995f709d3a2e92a8c994e6a488470e054a54d0",
+            "id": "PR_kwDOOGidp868qDDT",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "0075ca",
+                  "description": "Improvements or additions to documentation",
+                  "name": "documentation"
+                },
+                {
+                  "color": "e7cef1",
+                  "description": "",
+                  "name": "project"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "da4acc659ea1c885628061826bd09ecffbea8c59",
+              "url": "https://github.com/openai/openai-agents-python/commit/da4acc659ea1c885628061826bd09ecffbea8c59"
+            },
+            "mergedAt": "2026-01-12T09:37:49Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2298,
+            "reviews": {
+              "totalCount": 0
+            },
+            "state": "MERGED",
+            "title": "docs: add ExecPlan guidance and template",
+            "updatedAt": "2026-01-12T09:37:51Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2298"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:20.590013Z"
+}

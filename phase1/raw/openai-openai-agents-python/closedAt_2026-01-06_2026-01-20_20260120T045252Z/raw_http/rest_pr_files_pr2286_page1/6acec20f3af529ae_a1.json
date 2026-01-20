@@ -1,0 +1,138 @@
+{
+  "finished_at": "2026-01-20T04:55:50.666528Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "6acec20f3af529ae",
+    "tag": "rest_pr_files_pr2286_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2286/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "22044",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:55:50 GMT",
+      "etag": "\"2b686a6ccfbb653322ec6fb516b0f359d1b4b95c2655bb04f9fff4473f600097\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Sat, 10 Jan 2026 01:55:54 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DBC5:2B2B06:166C84A:1F7788C:696F0AD6",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4963",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "37",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 35,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/dc3a7be1acdb260918486efab402ae5d46f87d2e/.codex%2Fskills%2Fcode-change-verification%2FSKILL.md",
+        "changes": 35,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Fcode-change-verification%2FSKILL.md?ref=dc3a7be1acdb260918486efab402ae5d46f87d2e",
+        "deletions": 0,
+        "filename": ".codex/skills/code-change-verification/SKILL.md",
+        "patch": "@@ -0,0 +1,35 @@\n+---\n+name: code-change-verification\n+description: Run the mandatory verification stack when changes affect runtime code, tests, or build/test behavior in the OpenAI Agents Python repository.\n+---\n+\n+# Code Change Verification\n+\n+## Overview\n+\n+Ensure work is only marked complete after formatting, linting, type checking, and tests pass. Use this skill when changes affect runtime code, tests, or build/test configuration. You can skip it for docs-only or repository metadata unless a user asks for the full stack.\n+\n+## Quick start\n+\n+1. Keep this skill at `./.codex/skills/code-change-verification` so it loads automatically for the repository.\n+2. macOS/Linux: `bash .codex/skills/code-change-verification/scripts/run.sh`.\n+3. Windows: `powershell -ExecutionPolicy Bypass -File .codex/skills/code-change-verification/scripts/run.ps1`.\n+4. If any command fails, fix the issue, rerun the script, and report the failing output.\n+5. Confirm completion only when all commands succeed with no remaining issues.\n+\n+## Manual workflow\n+\n+- If dependencies are not installed or have changed, run `make sync` first to install dev requirements via `uv`.\n+- Run from the repository root in this order: `make format`, `make lint`, `make mypy`, `make tests`.\n+- Do not skip steps; stop and fix issues immediately when a command fails.\n+- Re-run the full stack after applying fixes so the commands execute in the required order.\n+\n+## Resources\n+\n+### scripts/run.sh\n+\n+- Executes the full verification sequence with fail-fast semantics from the repository root. Prefer this entry point to ensure the required commands run in the correct order.\n+\n+### scripts/run.ps1\n+\n+- Windows-friendly wrapper that runs the same verification sequence with fail-fast semantics. Use from PowerShell with execution policy bypass if required by your environment.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/dc3a7be1acdb260918486efab402ae5d46f87d2e/.codex%2Fskills%2Fcode-change-verification%2FSKILL.md",
+        "sha": "c94a057e06e4c35ccae618c949e8899d97049d3c",
+        "status": "added"
+      },
+      {
+        "additions": 2,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/dc3a7be1acdb260918486efab402ae5d46f87d2e/.codex%2Fskills%2Fcode-change-verification%2Fscripts%2Frun.ps1",
+        "changes": 4,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Fcode-change-verification%2Fscripts%2Frun.ps1?ref=dc3a7be1acdb260918486efab402ae5d46f87d2e",
+        "deletions": 2,
+        "filename": ".codex/skills/code-change-verification/scripts/run.ps1",
+        "patch": "@@ -25,7 +25,7 @@ function Invoke-MakeStep {\n     & make $Step\n \n     if ($LASTEXITCODE -ne 0) {\n-        Write-Error \"verify-changes: make $Step failed with exit code $LASTEXITCODE.\"\n+        Write-Error \"code-change-verification: make $Step failed with exit code $LASTEXITCODE.\"\n         exit $LASTEXITCODE\n     }\n }\n@@ -35,4 +35,4 @@ Invoke-MakeStep -Step \"lint\"\n Invoke-MakeStep -Step \"mypy\"\n Invoke-MakeStep -Step \"tests\"\n \n-Write-Host \"verify-changes: all commands passed.\"\n+Write-Host \"code-change-verification: all commands passed.\"",
+        "previous_filename": ".codex/skills/verify-changes/scripts/run.ps1",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/dc3a7be1acdb260918486efab402ae5d46f87d2e/.codex%2Fskills%2Fcode-change-verification%2Fscripts%2Frun.ps1",
+        "sha": "f65c42c42547aabf534012353ff540308cfa18b6",
+        "status": "renamed"
+      },
+      {
+        "additions": 1,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/dc3a7be1acdb260918486efab402ae5d46f87d2e/.codex%2Fskills%2Fcode-change-verification%2Fscripts%2Frun.sh",
+        "changes": 2,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Fcode-change-verification%2Fscripts%2Frun.sh?ref=dc3a7be1acdb260918486efab402ae5d46f87d2e",
+        "deletions": 1,
+        "filename": ".codex/skills/code-change-verification/scripts/run.sh",
+        "patch": "@@ -22,4 +22,4 @@ make mypy\n echo \"Running make tests...\"\n make tests\n \n-echo \"verify-changes: all commands passed.\"\n+echo \"code-change-verification: all commands passed.\"",
+        "previous_filename": ".codex/skills/verify-changes/scripts/run.sh",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/dc3a7be1acdb260918486efab402ae5d46f87d2e/.codex%2Fskills%2Fcode-change-verification%2Fscripts%2Frun.sh",
+        "sha": "53eb7273d30e0f95a4e0f4f25f32dd34c28c9713",
+        "status": "renamed"
+      },
+      {
+        "additions": 44,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/dc3a7be1acdb260918486efab402ae5d46f87d2e/.codex%2Fskills%2Fopenai-knowledge%2FSKILL.md",
+        "changes": 44,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Fopenai-knowledge%2FSKILL.md?ref=dc3a7be1acdb260918486efab402ae5d46f87d2e",
+        "deletions": 0,
+        "filename": ".codex/skills/openai-knowledge/SKILL.md",
+        "patch": "@@ -0,0 +1,44 @@\n+---\n+name: openai-knowledge\n+description: Use when working with the OpenAI API (Responses API) or OpenAI platform features (tools, streaming, Realtime API, auth, models, rate limits, MCP) and you need authoritative, up-to-date documentation (schemas, examples, limits, edge cases). Prefer the OpenAI Developer Documentation MCP server tools when available; otherwise guide the user to enable `openaiDeveloperDocs`.\n+---\n+\n+# OpenAI Knowledge\n+\n+## Overview\n+\n+Use the OpenAI Developer Documentation MCP server to search and fetch exact docs (markdown), then base your answer on that text instead of guessing.\n+\n+## Workflow\n+\n+### 1) Check whether the Docs MCP server is available\n+\n+If the `mcp__openaiDeveloperDocs__*` tools are available, use them.\n+\n+If you are unsure, run `codex mcp list` and check for `openaiDeveloperDocs`.\n+\n+### 2) Use MCP tools to pull exact docs\n+\n+- Search first, then fetch the specific page or pages.\n+  - `mcp__openaiDeveloperDocs__search_openai_docs` → pick the best URL.\n+  - `mcp__openaiDeveloperDocs__fetch_openai_doc` → retrieve the exact markdown (optionally with an `anchor`).\n+- When you need endpoint schemas or parameters, use:\n+  - `mcp__openaiDeveloperDocs__get_openapi_spec`\n+  - `mcp__openaiDeveloperDocs__list_api_endpoints`\n+\n+Base your answer on the fetched text and quote or paraphrase it precisely. Do not invent flags, field names, defaults, or limits.\n+\n+### 3) If MCP is not configured, guide setup (do not change config unless asked)\n+\n+Provide one of these setup options, then ask the user to restart the Codex session so the tools load:\n+\n+- CLI:\n+  - `codex mcp add openaiDeveloperDocs --url https://developers.openai.com/mcp`\n+- Config file (`~/.codex/config.toml`):\n+  - Add:\n+    ```toml\n+    [mcp_servers.openaiDeveloperDocs]\n+    url = \"https://developers.openai.com/mcp\"\n+    ```\n+\n+Also point to: https://developers.openai.com/resources/docs-mcp#quickstart",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/dc3a7be1acdb260918486efab402ae5d46f87d2e/.codex%2Fskills%2Fopenai-knowledge%2FSKILL.md",
+        "sha": "f223568bfaf02252578bcfc61425a6bf14d2784f",
+        "status": "added"
+      },
+      {
+        "additions": 0,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a17fc3f752ea427527feb4c313fb53b339134a91/.codex%2Fskills%2Fverify-changes%2FSKILL.md",
+        "changes": 30,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Fverify-changes%2FSKILL.md?ref=a17fc3f752ea427527feb4c313fb53b339134a91",
+        "deletions": 30,
+        "filename": ".codex/skills/verify-changes/SKILL.md",
+        "patch": "@@ -1,30 +0,0 @@\n----\n-name: verify-changes\n-description: Run all the mandatory verification steps for code changes\n----\n-\n-# Verify Changes\n-\n-## Overview\n-Ensure work is only marked complete after formatting, linting, type checking, and tests pass. Use this skill whenever finishing a task, before opening a PR, or when asked to confirm that changes are ready to hand off.\n-\n-## Quick start\n-1. Keep this skill at `./.codex/skills/verify-changes` so it loads automatically for the repository.\n-2. macOS/Linux: `bash .codex/skills/verify-changes/scripts/run.sh`.\n-3. Windows: `powershell -ExecutionPolicy Bypass -File .codex/skills/verify-changes/scripts/run.ps1`.\n-4. If any command fails, fix the issue, rerun the script, and report the failing output.\n-5. Confirm completion only when all four commands succeed with no remaining changes to address.\n-\n-## Manual workflow\n-- Run from the repository root in this order: `make format`, `make lint`, `make mypy`, `make tests`.\n-- Do not skip steps; stop and fix issues immediately when a command fails.\n-- `make format` may modify files; rerun `make lint`, `make mypy`, and `make tests` after applying the formatting changes.\n-\n-## Resources\n-### scripts/run.sh\n-- Executes the full verification sequence with fail-fast semantics.\n-- Prefer this entry point to ensure the required commands always run in the correct order.\n-\n-### scripts/run.ps1\n-- Windows-friendly wrapper that runs the same verification sequence with fail-fast semantics.\n-- Use from PowerShell with execution policy bypass if required by your environment.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a17fc3f752ea427527feb4c313fb53b339134a91/.codex%2Fskills%2Fverify-changes%2FSKILL.md",
+        "sha": "f4176a85c1aa01a26c9ef63f1944204a5aa23ccd",
+        "status": "removed"
+      },
+      {
+        "additions": 164,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/dc3a7be1acdb260918486efab402ae5d46f87d2e/AGENTS.md",
+        "changes": 203,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/AGENTS.md?ref=dc3a7be1acdb260918486efab402ae5d46f87d2e",
+        "deletions": 39,
+        "filename": "AGENTS.md",
+        "patch": "@@ -1,61 +1,186 @@\n-Welcome to the OpenAI Agents SDK repository. This file contains the main points for new contributors.\n+# Contributor Guide\n \n-## Repository overview\n+This guide helps new contributors get started with the OpenAI Agents Python repository. It covers repo structure, how to test your work, available utilities, and guidelines for commits and PRs.\n \n-- **Source code**: `src/agents/` contains the implementation.\n-- **Tests**: `tests/` with a short guide in `tests/README.md`.\n-- **Examples**: under `examples/`.\n-- **Documentation**: markdown pages live in `docs/` with `mkdocs.yml` controlling the site. Translated docs under `docs/ja`, `docs/ko`, and `docs/zh` are managed by an automated job; do not edit them manually.\n-- **Utilities**: developer commands are defined in the `Makefile`.\n-- **PR template**: `.github/PULL_REQUEST_TEMPLATE/pull_request_template.md` describes the information every PR must include.\n+**Location:** `AGENTS.md` at the repository root.\n \n-## Agent requirements\n+## Table of Contents\n \n-- Always invoke `$verify-changes` before completing any work. The skill encapsulates the required formatting, linting, type-checking, and tests; follow `.codex/skills/verify-changes/SKILL.md` for how to run it.\n+1. [Mandatory Skill Usage](#mandatory-skill-usage)\n+2. [Overview](#overview)\n+3. [Repo Structure & Important Files](#repo-structure--important-files)\n+4. [Testing & Automated Checks](#testing--automated-checks)\n+5. [Repo-Specific Utilities](#repo-specific-utilities)\n+6. [Style, Linting & Type Checking](#style-linting--type-checking)\n+7. [Development Workflow](#development-workflow)\n+8. [Pull Request & Commit Guidelines](#pull-request--commit-guidelines)\n+9. [Review Process & What Reviewers Look For](#review-process--what-reviewers-look-for)\n+10. [Tips for Navigating the Repo](#tips-for-navigating-the-repo)\n+11. [Prerequisites](#prerequisites)\n \n-## Planning guidance\n+## Mandatory Skill Usage\n \n-- Before starting work, surface any potential backward compatibility risks in your implementation plan and confirm the approach when breaking changes could affect existing users.\n+### `$code-change-verification`\n \n-## Local workflow\n+Run `$code-change-verification` before marking work complete when changes affect runtime code, tests, or build/test behavior.\n \n-1. Run `$verify-changes` before handing off work; it formats, lints, type-checks, and runs the test suite (see `.codex/skills/verify-changes/SKILL.md` for the workflow).\n-2. To run a single test, use `uv run pytest -s -k <test_name>`.\n-3. Build the documentation when you touch docs: `make build-docs`.\n+Run it when you change:\n+- `src/agents/` (library code) or shared utilities.\n+- `tests/` or add or modify snapshot tests.\n+- `examples/`.\n+- Build or test configuration such as `pyproject.toml`, `Makefile`, `mkdocs.yml`, `docs/scripts/`, or CI workflows.\n \n-Coverage can be generated with `make coverage`.\n+You can skip `$code-change-verification` for docs-only or repo-meta changes (for example, `docs/`, `.codex/`, `README.md`, `AGENTS.md`, `.github/`), unless a user explicitly asks to run the full verification stack.\n \n-All python commands should be run via `uv run python ...`\n+### `$openai-knowledge`\n \n-## Snapshot tests\n+When working on OpenAI API or OpenAI platform integrations in this repo (Responses API, tools, streaming, Realtime API, auth, models, rate limits, MCP, Agents SDK or ChatGPT Apps SDK), use `$openai-knowledge` to pull authoritative docs via the OpenAI Developer Docs MCP server (and guide setup if it is not configured).\n \n-Some tests rely on inline snapshots. See `tests/README.md` for details on updating them:\n+### Planning expectations\n \n-```bash\n-make snapshots-fix      # update existing snapshots\n-make snapshots-create   # create new snapshots\n-```\n+Call out potential backward compatibility or public API risks early in your plan and confirm the approach before implementing changes that could impact users.\n+\n+## Overview\n+\n+The OpenAI Agents Python repository provides the Python Agents SDK, examples, and documentation built with MkDocs. Use `uv run python ...` for Python commands to ensure a consistent environment.\n+\n+## Repo Structure & Important Files\n+\n+- `src/agents/`: Core library implementation.\n+- `tests/`: Test suite; see `tests/README.md` for snapshot guidance.\n+- `examples/`: Sample projects showing SDK usage.\n+- `docs/`: MkDocs documentation source; do not edit translated docs under `docs/ja`, `docs/ko`, or `docs/zh` (they are generated).\n+- `docs/scripts/`: Documentation utilities, including translation and reference generation.\n+- `mkdocs.yml`: Documentation site configuration.\n+- `Makefile`: Common developer commands.\n+- `pyproject.toml`, `uv.lock`: Python dependencies and tool configuration.\n+- `.github/PULL_REQUEST_TEMPLATE/pull_request_template.md`: Pull request template to use when opening PRs.\n+- `site/`: Built documentation output.\n+\n+## Testing & Automated Checks\n \n-Run `make tests` again after updating snapshots to ensure they pass.\n+Before submitting changes, ensure relevant checks pass and extend tests when you touch code.\n \n-## Style notes\n+When `$code-change-verification` applies, run it to execute the required verification stack from the repository root. Rerun the full stack after applying fixes.\n \n-- Write comments as full sentences and end them with a period.\n+### Unit tests and type checking\n \n-## Pull request expectations\n+- Run the full test suite:\n+  ```bash\n+  make tests\n+  ```\n+- Run a focused test:\n+  ```bash\n+  uv run pytest -s -k <pattern>\n+  ```\n+- Type checking:\n+  ```bash\n+  make mypy\n+  ```\n \n-PRs should use the template located at `.github/PULL_REQUEST_TEMPLATE/pull_request_template.md`. Provide a summary, test plan and issue number if applicable, then check that:\n+### Snapshot tests\n \n-- New tests are added when needed.\n-- Documentation is updated.\n-- `make lint` and `make format` have been run.\n-- The full test suite passes.\n+Some tests rely on inline snapshots; see `tests/README.md` for details. Re-run `make tests` after updating snapshots.\n \n-Commit messages should be concise and written in the imperative mood. Small, focused commits are preferred.\n+- Fix snapshots:\n+  ```bash\n+  make snapshots-fix\n+  ```\n+- Create new snapshots:\n+  ```bash\n+  make snapshots-create\n+  ```\n \n-## What reviewers look for\n+### Coverage\n+\n+- Generate coverage (fails if coverage drops below threshold):\n+  ```bash\n+  make coverage\n+  ```\n+\n+### Mandatory local run order\n+\n+When `$code-change-verification` applies, run the full sequence in order (or use the skill scripts):\n+\n+```bash\n+make format\n+make lint\n+make mypy\n+make tests\n+```\n \n-- Tests covering new behaviour.\n-- Consistent style: code formatted with `uv run ruff format`, imports sorted, and type hints passing `uv run mypy .`.\n-- Clear documentation for any public API changes.\n-- Clean history and a helpful PR description.\n+## Repo-Specific Utilities\n+\n+- Install or refresh development dependencies:\n+  ```bash\n+  make sync\n+  ```\n+- Run tests against Python 3.9 in an isolated environment:\n+  ```bash\n+  make old_version_tests\n+  ```\n+- Documentation workflows:\n+  ```bash\n+  make build-docs      # build docs after editing docs\n+  make serve-docs      # preview docs locally\n+  make build-full-docs # run translations and build\n+  ```\n+- Snapshot helpers:\n+  ```bash\n+  make snapshots-fix\n+  make snapshots-create\n+  ```\n+\n+## Style, Linting & Type Checking\n+\n+- Formatting and linting use `ruff`; run `make format` (applies fixes) and `make lint` (checks only).\n+- Type hints must pass `make mypy`.\n+- Write comments as full sentences ending with a period.\n+- Imports are managed by Ruff and should stay sorted.\n+\n+## Development Workflow\n+\n+1. Sync with `main` and create a feature branch:\n+   ```bash\n+   git checkout -b feat/<short-description>\n+   ```\n+2. If dependencies changed or you are setting up the repo, run `make sync`.\n+3. Implement changes and add or update tests alongside code updates.\n+4. Highlight backward compatibility or API risks in your plan before implementing breaking or user-facing changes.\n+5. Build docs when you touch documentation:\n+   ```bash\n+   make build-docs\n+   ```\n+6. When `$code-change-verification` applies, run it to execute the full verification stack before handoff.\n+7. Commit with concise, imperative messages; keep commits small and focused, then open a pull request.\n+8. When reporting code changes as complete, include what you changed plus a draft pull request title and description for your local changes; start the description with prose such as “This pull request resolves/updates/adds …” using a verb that matches the change (you can use bullets later), explain the change background (for bugs, clearly describe the bug, symptoms, or repro; for features, what is needed and why), any behavior changes or considerations to be aware of, and you do not need to mention tests you ran.\n+\n+## Pull Request & Commit Guidelines\n+\n+- Use the template at `.github/PULL_REQUEST_TEMPLATE/pull_request_template.md`; include a summary, test plan, and issue number if applicable.\n+- Add tests for new behavior when feasible and update documentation for user-facing changes.\n+- Run `make format`, `make lint`, `make mypy`, and `make tests` before marking work ready.\n+- Commit messages should be concise and written in the imperative mood. Small, focused commits are preferred.\n+\n+## Review Process & What Reviewers Look For\n+\n+- ✅ Checks pass (`make format`, `make lint`, `make mypy`, `make tests`).\n+- ✅ Tests cover new behavior and edge cases.\n+- ✅ Code is readable, maintainable, and consistent with existing style.\n+- ✅ Public APIs and user-facing behavior changes are documented.\n+- ✅ Examples are updated if behavior changes.\n+- ✅ History is clean with a clear PR description.\n+\n+## Tips for Navigating the Repo\n+\n+- Use `examples/` to see common SDK usage patterns.\n+- Review `Makefile` for common commands and use `uv run` for Python invocations.\n+- Explore `docs/` and `docs/scripts/` to understand the documentation pipeline.\n+- Consult `tests/README.md` for test and snapshot workflows.\n+- Check `mkdocs.yml` to understand how docs are organized.\n+\n+## Prerequisites\n+\n+- Python 3.9+.\n+- `uv` installed for dependency management (`uv sync`) and `uv run` for Python commands.\n+- `make` available to run repository tasks.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/dc3a7be1acdb260918486efab402ae5d46f87d2e/AGENTS.md",
+        "sha": "9ef0ddd13b3a8bded50d5368ac2817f60b808fbb",
+        "status": "modified"
+      },
+      {
+        "additions": 1,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/dc3a7be1acdb260918486efab402ae5d46f87d2e/tests%2FREADME.md",
+        "changes": 2,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2FREADME.md?ref=dc3a7be1acdb260918486efab402ae5d46f87d2e",
+        "deletions": 1,
+        "filename": "tests/README.md",
+        "patch": "@@ -21,5 +21,5 @@ make snapshots-fix\n ### Creating snapshots\n \n ```\n-make snapshots-update\n+make snapshots-create\n ```",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/dc3a7be1acdb260918486efab402ae5d46f87d2e/tests%2FREADME.md",
+        "sha": "4e5fc7784d46e888a403136678cddffb254c66c7",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:55:50.222029Z"
+}

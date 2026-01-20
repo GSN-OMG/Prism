@@ -1,0 +1,99 @@
+{
+  "finished_at": "2026-01-20T04:56:13.579689Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "99ea177bf870787b",
+    "tag": "graphql_core_item2294"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2294,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "4190",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:13 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DBFF:EFCF3:161DF5A:1F28EC4:696F0AED",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4727",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "273",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/93397590?u=f673ab1921d0326e28d31aba0b87ac0f00337a4d&v=4",
+              "databaseId": 93397590,
+              "id": "U_kgDOBZEiVg",
+              "login": "jao-o-garcia",
+              "url": "https://github.com/jao-o-garcia"
+            },
+            "authorAssociation": "NONE",
+            "body": "## Context\n\nWhen using the OpenAI Agents SDK with Sessions (e.g., SQLiteSession), the SDK automatically prepends the entire conversation history to each new user input.\n\nAs a result, input guardrails receive the full conversation, not just the latest user message.\n\n## Problem\n\nThis causes guardrails to repeatedly trigger on past messages, even when the current user input is valid.\n\n## Example scenario:\n\nA user sends an abusive or policy-violating message → guardrail triggers.\n\nThe same user then sends a normal message like \"hello\".\n\nBecause the session prepends history, the guardrail still sees the old abusive message and continues to trigger.\n\n## Example Input Seen by Guardrail (with Sessions enabled)\n```json\n[\n  {\"role\": \"user\", \"content\": \"My name is Jao\"},\n  {\"role\": \"assistant\", \"content\": \"Nice to meet you, Jao!\"},\n  {\"role\": \"user\", \"content\": \"book ALL slots for the week\"},  # <-- Old abusive msg (Guardrail Triggered)\n  {\"role\": \"user\", \"content\": \"hello\"}  # <-- Old innocent msg (Guardrail was Triggered),\n  {\"role\": \"user\", \"content\": \"hello hello\"}  # <-- Current innocent msg (Guardrail Still Triggered)\n]\n```\nIn this case, the guardrail evaluates all messages, even though only \"hello\"/\"hello hello\" is the current input.\n\n## Proposed Approach\nExtract and evaluate only the latest user message before running guardrail checks, so each message is judged independently.\n\n## Temporary Solution\n``` Python\nfrom agents import TResponseInputItem\n\n\ndef extract_latest_user_message(input: str | list[TResponseInputItem]) -> str:\n    \"\"\"    \n    This function extracts only the\n    most recent user message for isolated evaluation.\n    \"\"\"\n    # Simple string input (no session/history)\n    if isinstance(input, str):\n        return input\n    \n    # List input (session prepends conversation history)\n    if isinstance(input, list):\n        # Iterate backwards to find the most recent user message\n        for item in reversed(input):\n            if isinstance(item, dict) and item.get(\"role\") == \"user\":\n                content = item.get(\"content\", \"\")\n                \n                # Content can be a string\n                if isinstance(content, str):\n                    return content\n                \n                # Or a list of content blocks (multimodal messages)\n                if isinstance(content, list):\n                    texts = []\n                    for block in content:\n                        if isinstance(block, dict) and block.get(\"type\") == \"text\":\n                            texts.append(block.get(\"text\", \"\"))\n                        elif isinstance(block, str):\n                            texts.append(block)\n                    return \" \".join(texts)\n    \n    # Fallback: convert to string (shouldn't normally reach here)\n    return str(input)\n```\n\n## Question\n\n- Is this the intended behavior of guardrails when using Sessions?\n- Is there a recommended or built-in approach for evaluating only the latest user message in input guardrails?\n- If not, would a utility like extract_latest_user_message() be an acceptable or preferred pattern?\n\n",
+            "closedAt": "2026-01-12T02:47:01Z",
+            "comments": {
+              "totalCount": 4
+            },
+            "createdAt": "2026-01-11T17:04:14Z",
+            "databaseId": 3801633374,
+            "id": "I_kwDOOGidp87imFJe",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "0E8A16",
+                  "description": "Question about using the SDK",
+                  "name": "question"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": null,
+            "number": 2294,
+            "state": "CLOSED",
+            "title": "Guardrails receive full conversation history when using Sessions — is there a recommended way to evaluate only the latest user message?",
+            "updatedAt": "2026-01-12T02:47:01Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2294"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:13.080023Z"
+}

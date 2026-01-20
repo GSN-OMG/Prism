@@ -1,0 +1,100 @@
+{
+  "finished_at": "2026-01-20T04:55:01.310469Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "6dc2b0bef8315fa4",
+    "tag": "rest_pr_files_pr2271_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2271/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "8120",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:55:01 GMT",
+      "etag": "\"01515b8ee3dc0654f23886cc9013107992a9c0d5773f16b0e1078d4ff8478e79\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Thu, 08 Jan 2026 06:39:26 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DB5D:3E6F74:15FD0D9:1F075B9:696F0AA5",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4976",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "24",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 30,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a6e34a4674b3f2375395871fcd7427119fb85865/.codex%2Fskills%2Fverify-changes%2FSKILL.md",
+        "changes": 30,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Fverify-changes%2FSKILL.md?ref=a6e34a4674b3f2375395871fcd7427119fb85865",
+        "deletions": 0,
+        "filename": ".codex/skills/verify-changes/SKILL.md",
+        "patch": "@@ -0,0 +1,30 @@\n+---\n+name: verify-changes\n+description: Run all the mandatory verification steps for code changes\n+---\n+\n+# Verify Changes\n+\n+## Overview\n+Ensure work is only marked complete after formatting, linting, type checking, and tests pass. Use this skill whenever finishing a task, before opening a PR, or when asked to confirm that changes are ready to hand off.\n+\n+## Quick start\n+1. Keep this skill at `./.codex/skills/verify-changes` so it loads automatically for the repository.\n+2. macOS/Linux: `bash .codex/skills/verify-changes/scripts/run.sh`.\n+3. Windows: `powershell -ExecutionPolicy Bypass -File .codex/skills/verify-changes/scripts/run.ps1`.\n+4. If any command fails, fix the issue, rerun the script, and report the failing output.\n+5. Confirm completion only when all four commands succeed with no remaining changes to address.\n+\n+## Manual workflow\n+- Run from the repository root in this order: `make format`, `make lint`, `make mypy`, `make tests`.\n+- Do not skip steps; stop and fix issues immediately when a command fails.\n+- `make format` may modify files; rerun `make lint`, `make mypy`, and `make tests` after applying the formatting changes.\n+\n+## Resources\n+### scripts/run.sh\n+- Executes the full verification sequence with fail-fast semantics.\n+- Prefer this entry point to ensure the required commands always run in the correct order.\n+\n+### scripts/run.ps1\n+- Windows-friendly wrapper that runs the same verification sequence with fail-fast semantics.\n+- Use from PowerShell with execution policy bypass if required by your environment.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a6e34a4674b3f2375395871fcd7427119fb85865/.codex%2Fskills%2Fverify-changes%2FSKILL.md",
+        "sha": "f4176a85c1aa01a26c9ef63f1944204a5aa23ccd",
+        "status": "added"
+      },
+      {
+        "additions": 38,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a6e34a4674b3f2375395871fcd7427119fb85865/.codex%2Fskills%2Fverify-changes%2Fscripts%2Frun.ps1",
+        "changes": 38,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Fverify-changes%2Fscripts%2Frun.ps1?ref=a6e34a4674b3f2375395871fcd7427119fb85865",
+        "deletions": 0,
+        "filename": ".codex/skills/verify-changes/scripts/run.ps1",
+        "patch": "@@ -0,0 +1,38 @@\n+Set-StrictMode -Version Latest\n+$ErrorActionPreference = \"Stop\"\n+\n+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition\n+$repoRoot = $null\n+\n+try {\n+    $repoRoot = (& git -C $scriptDir rev-parse --show-toplevel 2>$null)\n+} catch {\n+    $repoRoot = $null\n+}\n+\n+if (-not $repoRoot) {\n+    $repoRoot = Resolve-Path (Join-Path $scriptDir \"..\\\\..\\\\..\\\\..\")\n+}\n+\n+Set-Location $repoRoot\n+\n+function Invoke-MakeStep {\n+    param(\n+        [Parameter(Mandatory = $true)][string]$Step\n+    )\n+\n+    Write-Host \"Running make $Step...\"\n+    & make $Step\n+\n+    if ($LASTEXITCODE -ne 0) {\n+        Write-Error \"verify-changes: make $Step failed with exit code $LASTEXITCODE.\"\n+        exit $LASTEXITCODE\n+    }\n+}\n+\n+Invoke-MakeStep -Step \"format\"\n+Invoke-MakeStep -Step \"lint\"\n+Invoke-MakeStep -Step \"mypy\"\n+Invoke-MakeStep -Step \"tests\"\n+\n+Write-Host \"verify-changes: all commands passed.\"",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a6e34a4674b3f2375395871fcd7427119fb85865/.codex%2Fskills%2Fverify-changes%2Fscripts%2Frun.ps1",
+        "sha": "7304a4867e1e53a2b20c152bf06353b0eb9f8131",
+        "status": "added"
+      },
+      {
+        "additions": 25,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a6e34a4674b3f2375395871fcd7427119fb85865/.codex%2Fskills%2Fverify-changes%2Fscripts%2Frun.sh",
+        "changes": 25,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Fverify-changes%2Fscripts%2Frun.sh?ref=a6e34a4674b3f2375395871fcd7427119fb85865",
+        "deletions": 0,
+        "filename": ".codex/skills/verify-changes/scripts/run.sh",
+        "patch": "@@ -0,0 +1,25 @@\n+#!/usr/bin/env bash\n+# Fail fast on any error or undefined variable.\n+set -euo pipefail\n+\n+SCRIPT_DIR=\"$(cd \"$(dirname \"${BASH_SOURCE[0]}\")\" && pwd)\"\n+if command -v git >/dev/null 2>&1; then\n+  REPO_ROOT=\"$(git -C \"${SCRIPT_DIR}\" rev-parse --show-toplevel 2>/dev/null || true)\"\n+fi\n+REPO_ROOT=\"${REPO_ROOT:-$(cd \"${SCRIPT_DIR}/../../../..\" && pwd)}\"\n+\n+cd \"${REPO_ROOT}\"\n+\n+echo \"Running make format...\"\n+make format\n+\n+echo \"Running make lint...\"\n+make lint\n+\n+echo \"Running make mypy...\"\n+make mypy\n+\n+echo \"Running make tests...\"\n+make tests\n+\n+echo \"verify-changes: all commands passed.\"",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a6e34a4674b3f2375395871fcd7427119fb85865/.codex%2Fskills%2Fverify-changes%2Fscripts%2Frun.sh",
+        "sha": "fb596b69f3c4c3558479f6a500e671610b0b24e7",
+        "status": "added"
+      },
+      {
+        "additions": 10,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a6e34a4674b3f2375395871fcd7427119fb85865/AGENTS.md",
+        "changes": 30,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/AGENTS.md?ref=a6e34a4674b3f2375395871fcd7427119fb85865",
+        "deletions": 20,
+        "filename": "AGENTS.md",
+        "patch": "@@ -5,35 +5,25 @@ Welcome to the OpenAI Agents SDK repository. This file contains the main points\n - **Source code**: `src/agents/` contains the implementation.\n - **Tests**: `tests/` with a short guide in `tests/README.md`.\n - **Examples**: under `examples/`.\n-- **Documentation**: markdown pages live in `docs/` with `mkdocs.yml` controlling the site.\n+- **Documentation**: markdown pages live in `docs/` with `mkdocs.yml` controlling the site. Translated docs under `docs/ja`, `docs/ko`, and `docs/zh` are managed by an automated job; do not edit them manually.\n - **Utilities**: developer commands are defined in the `Makefile`.\n - **PR template**: `.github/PULL_REQUEST_TEMPLATE/pull_request_template.md` describes the information every PR must include.\n \n-## Local workflow\n-\n-1. Format, lint and type‑check your changes:\n+## Agent requirements\n \n-   ```bash\n-   make format\n-   make lint\n-   make mypy\n-   ```\n+- Always invoke `$verify-changes` before completing any work. The skill encapsulates the required formatting, linting, type-checking, and tests; follow `.codex/skills/verify-changes/SKILL.md` for how to run it.\n \n-2. Run the tests:\n+## Planning guidance\n \n-   ```bash\n-   make tests\n-   ```\n+- Before starting work, surface any potential backward compatibility risks in your implementation plan and confirm the approach when breaking changes could affect existing users.\n \n-   To run a single test, use `uv run pytest -s -k <test_name>`.\n-\n-3. Build the documentation (optional but recommended for docs changes):\n+## Local workflow\n \n-   ```bash\n-   make build-docs\n-   ```\n+1. Run `$verify-changes` before handing off work; it formats, lints, type-checks, and runs the test suite (see `.codex/skills/verify-changes/SKILL.md` for the workflow).\n+2. To run a single test, use `uv run pytest -s -k <test_name>`.\n+3. Build the documentation when you touch docs: `make build-docs`.\n \n-   Coverage can be generated with `make coverage`.\n+Coverage can be generated with `make coverage`.\n \n All python commands should be run via `uv run python ...`\n ",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a6e34a4674b3f2375395871fcd7427119fb85865/AGENTS.md",
+        "sha": "afb052ea9e43be71bdab819c0d949abb3ef54fd2",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:55:00.878200Z"
+}

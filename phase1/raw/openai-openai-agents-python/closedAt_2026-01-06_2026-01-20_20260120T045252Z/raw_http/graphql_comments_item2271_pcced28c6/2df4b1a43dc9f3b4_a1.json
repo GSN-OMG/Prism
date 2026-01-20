@@ -1,0 +1,106 @@
+{
+  "finished_at": "2026-01-20T04:54:58.728146Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "2df4b1a43dc9f3b4",
+    "tag": "graphql_comments_item2271_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2271,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "1727",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:58 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DB57:3782ED:1629476:1F34139:696F0AA2",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4830",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "170",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "authorAssociation": "MEMBER",
+                  "body": "@codex review again",
+                  "createdAt": "2026-01-08T06:35:26Z",
+                  "databaseId": 3722280353,
+                  "id": "IC_kwDOOGidp87d3X2h",
+                  "updatedAt": "2026-01-08T06:35:26Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2271#issuecomment-3722280353"
+                },
+                {
+                  "author": {
+                    "__typename": "Bot",
+                    "avatarUrl": "https://avatars.githubusercontent.com/in/1144995?v=4",
+                    "databaseId": 199175422,
+                    "id": "BOT_kgDOC98s_g",
+                    "login": "chatgpt-codex-connector",
+                    "url": "https://github.com/apps/chatgpt-codex-connector"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "Codex Review: Didn't find any major issues. Delightful!\n\n<details> <summary>ℹ️ About Codex in GitHub</summary>\n<br/>\n\n[Your team has set up Codex to review pull requests in this repo](http://chatgpt.com/codex/settings/general). Reviews are triggered when you\n- Open a pull request for review\n- Mark a draft as ready\n- Comment \"@codex review\".\n\nIf Codex has suggestions, it will comment; otherwise it will react with 👍.\n\n\n\n\nCodex can also answer questions or update the PR. Try commenting \"@codex address that feedback\".\n            \n</details>",
+                  "createdAt": "2026-01-08T06:36:50Z",
+                  "databaseId": 3722285246,
+                  "id": "IC_kwDOOGidp87d3ZC-",
+                  "updatedAt": "2026-01-08T06:36:50Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2271#issuecomment-3722285246"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO3d2Qvg==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:58.226557Z"
+}

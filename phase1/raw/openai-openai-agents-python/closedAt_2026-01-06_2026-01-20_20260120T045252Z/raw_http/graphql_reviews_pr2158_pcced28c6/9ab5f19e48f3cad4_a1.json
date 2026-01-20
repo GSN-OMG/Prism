@@ -1,0 +1,221 @@
+{
+  "finished_at": "2026-01-20T04:53:27.460766Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "9ab5f19e48f3cad4",
+    "tag": "graphql_reviews_pr2158_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetPRReviewsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      reviews(first: 100, after: $after) {\n        pageInfo { hasNextPage endCursor }\n        nodes {\n          id\n          databaseId\n          author {\n            __typename\n            login\n            url\n            avatarUrl\n            ... on User { id databaseId }\n            ... on Organization { id databaseId }\n            ... on Bot { id databaseId }\n            ... on Mannequin { id databaseId }\n          }\n          state\n          body\n          submittedAt\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2158,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "3975",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:27 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DAA0:3782ED:1626A4C:1F30D14:696F0A47",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4957",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "43",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "pullRequest": {
+            "reviews": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/109308?v=4",
+                    "databaseId": 109308,
+                    "id": "MDQ6VXNlcjEwOTMwOA==",
+                    "login": "markmcd",
+                    "url": "https://github.com/markmcd"
+                  },
+                  "body": "Hi 👋 - I'm from the Gemini team, just took a quick pass over the code to see how it works with our implementation of thought re-circulation and everything here LGTM. One FYI comment on parallel tool calls but no action is required.",
+                  "databaseId": 3595906745,
+                  "id": "PRR_kwDOOGidp87WVS65",
+                  "state": "COMMENTED",
+                  "submittedAt": "2025-12-19T00:46:50Z"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "body": "",
+                  "databaseId": 3606252702,
+                  "id": "PRR_kwDOOGidp87W8wye",
+                  "state": "COMMENTED",
+                  "submittedAt": "2025-12-23T01:47:12Z"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/4557?v=4",
+                    "databaseId": 4557,
+                    "id": "MDQ6VXNlcjQ1NTc=",
+                    "login": "ihower",
+                    "url": "https://github.com/ihower"
+                  },
+                  "body": "",
+                  "databaseId": 3606817595,
+                  "id": "PRR_kwDOOGidp87W-6s7",
+                  "state": "COMMENTED",
+                  "submittedAt": "2025-12-23T06:44:05Z"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/4557?v=4",
+                    "databaseId": 4557,
+                    "id": "MDQ6VXNlcjQ1NTc=",
+                    "login": "ihower",
+                    "url": "https://github.com/ihower"
+                  },
+                  "body": "",
+                  "databaseId": 3606818475,
+                  "id": "PRR_kwDOOGidp87W-66r",
+                  "state": "COMMENTED",
+                  "submittedAt": "2025-12-23T06:44:25Z"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "body": "",
+                  "databaseId": 3607100872,
+                  "id": "PRR_kwDOOGidp87W__3I",
+                  "state": "COMMENTED",
+                  "submittedAt": "2025-12-23T08:34:43Z"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "body": "",
+                  "databaseId": 3607109711,
+                  "id": "PRR_kwDOOGidp87XACBP",
+                  "state": "COMMENTED",
+                  "submittedAt": "2025-12-23T08:37:17Z"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "body": "",
+                  "databaseId": 3608332744,
+                  "id": "PRR_kwDOOGidp87XEsnI",
+                  "state": "COMMENTED",
+                  "submittedAt": "2025-12-23T14:51:35Z"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "body": "Can you consider updating the code comment as suggested, plus resolve the conflict? Then, we're happy to merge this as the first one after my winter holidays.",
+                  "databaseId": 3625352331,
+                  "id": "PRR_kwDOOGidp87YFnyL",
+                  "state": "CHANGES_REQUESTED",
+                  "submittedAt": "2026-01-05T02:39:18Z"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/4557?v=4",
+                    "databaseId": 4557,
+                    "id": "MDQ6VXNlcjQ1NTc=",
+                    "login": "ihower",
+                    "url": "https://github.com/ihower"
+                  },
+                  "body": "",
+                  "databaseId": 3625807970,
+                  "id": "PRR_kwDOOGidp87YHXBi",
+                  "state": "COMMENTED",
+                  "submittedAt": "2026-01-05T07:52:52Z"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "body": "",
+                  "databaseId": 3629014073,
+                  "id": "PRR_kwDOOGidp87YTlw5",
+                  "state": "APPROVED",
+                  "submittedAt": "2026-01-06T01:37:38Z"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpO5MjAyNi0wMS0wNlQxMDozNzozOCswOTowMLkyMDI2LTAxLTA2VDEwOjM3OjM4KzA5OjAwzthOXDk=",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:26.957671Z"
+}

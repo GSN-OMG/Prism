@@ -1,0 +1,104 @@
+{
+  "finished_at": "2026-01-20T04:54:44.375422Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "001c90a0ff266e34",
+    "tag": "graphql_core_item2265"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2265,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2824",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:44 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DB34:3CEC4D:15BBE64:1EC5ACA:696F0A94",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4852",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "148",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/236100884?v=4",
+              "databaseId": 236100884,
+              "id": "U_kgDODhKdFA",
+              "login": "HailTheLotusJewel",
+              "url": "https://github.com/HailTheLotusJewel"
+            },
+            "authorAssociation": "NONE",
+            "body": "### Please read this first\n\n- **Have you read the docs?**[Agents SDK docs](https://openai.github.io/openai-agents-python/) - yes\n- **Have you searched for related issues?** Others may have faced similar issues. - yes\n\n### Describe the bug\nGetting an error when using gpt-5.1 with the latest version (0.6.5) of agents-sdk.\n`openai.NotFoundError: Error code: 404 - {'error': {'message': \"Item with id 'rs_0c248120afa4205101695e04db35c481909a9dd12c3f4d8a89' not found. Items are not persisted when `store` is set to false. Try again with `store` set to true, or remove this item from your input.\", 'type': 'invalid_request_error', 'param': 'input', 'code': None}}`\n\n### Debug information\n- Agents SDK version: 0.6.5\n- Python version - 3.12.11\n\n### Repro steps\nThis is the agent configuration:\n```\nsome_agent = Agent(\n            name=\"some agent\",\n            handoff_description=\"instructions\",\n            instructions=dynamic_agent_prompt,\n            model=\"gpt-5.1\",\n            model_settings=ModelSettings(\n                reasoning=Reasoning(effort=\"low\", summary=\"auto\"), \n                verbosity=\"low\", \n                parallel_tool_calls=True,\n                max_tokens=10000,\n                store=False\n            ),\n            tools=[tools]\n        )\n```\n\n### Expected behavior\nThe reasoning should work as this issue has already been resolved as of [#919](https://github.com/openai/openai-agents-python/issues/919#event-18297734928)\n\nI am using `state=False` due to another issue referenced [here](https://community.openai.com/t/how-to-solve-badrequesterror-400-item-rs-of-type-reasoning-was-provided-without-its-required-following-item-error-in-responses-api/1151686) and [here](https://community.openai.com/t/one-potential-cause-of-item-rs-xx-of-type-reasoning-was-provided-without-its-required-following-item-error-stateless-using-agents-sdk/1370540)",
+            "closedAt": "2026-01-07T07:51:09Z",
+            "comments": {
+              "totalCount": 2
+            },
+            "createdAt": "2026-01-07T07:16:31Z",
+            "databaseId": 3787640793,
+            "id": "I_kwDOOGidp87hws_Z",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "0E8A16",
+                  "description": "Question about using the SDK",
+                  "name": "question"
+                },
+                {
+                  "color": "b2fdef",
+                  "description": "",
+                  "name": "feature:core"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": null,
+            "number": 2265,
+            "state": "CLOSED",
+            "title": "Facing issues with reasoning items when using gpt-5.1 with `store=False`.",
+            "updatedAt": "2026-01-07T07:51:09Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2265"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:43.844026Z"
+}

@@ -1,0 +1,130 @@
+{
+  "finished_at": "2026-01-20T04:54:58.225299Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "c2bbcb951ed9e8c8",
+    "tag": "graphql_core_item2271"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2271,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "1679",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:58 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DB56:221B33:153E9EE:1E488AA:696F0AA1",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4831",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "169",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 103,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "authorAssociation": "MEMBER",
+            "baseRefName": "main",
+            "body": "This pull request adds a new agent skill for the project maintainers. See also: https://developers.openai.com/codex/skills",
+            "changedFiles": 4,
+            "closedAt": "2026-01-08T06:39:24Z",
+            "comments": {
+              "totalCount": 2
+            },
+            "createdAt": "2026-01-08T06:29:34Z",
+            "databaseId": 3154965996,
+            "deletions": 20,
+            "files": {
+              "totalCount": 4
+            },
+            "headRefName": "verify-changes-skill",
+            "headRefOid": "a6e34a4674b3f2375395871fcd7427119fb85865",
+            "id": "PR_kwDOOGidp868DPXs",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a2eeef",
+                  "description": "New feature or request",
+                  "name": "enhancement"
+                },
+                {
+                  "color": "e7cef1",
+                  "description": "",
+                  "name": "project"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "b4c80b8870304b7f019bd67c23cb37b742b73e70",
+              "url": "https://github.com/openai/openai-agents-python/commit/b4c80b8870304b7f019bd67c23cb37b742b73e70"
+            },
+            "mergedAt": "2026-01-08T06:39:24Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": null,
+            "number": 2271,
+            "reviews": {
+              "totalCount": 2
+            },
+            "state": "MERGED",
+            "title": "Add verify-changes skill to this project",
+            "updatedAt": "2026-01-08T06:39:26Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2271"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:57.534753Z"
+}

@@ -1,0 +1,109 @@
+{
+  "finished_at": "2026-01-20T04:55:05.620862Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "853723da091db8e0",
+    "tag": "graphql_core_item2274"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2274,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "1426",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:55:05 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DB67:365621:16BFDFD:1FCA2BC:696F0AA9",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4821",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "179",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 1001,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/110102458?v=4",
+              "databaseId": 110102458,
+              "id": "U_kgDOBpAHug",
+              "login": "HemanthIITJ",
+              "url": "https://github.com/HemanthIITJ"
+            },
+            "authorAssociation": "NONE",
+            "baseRefName": "main",
+            "body": "…fications\r\n\r\n- Document root cause of unparsable data in to_input_list() with handoffs\r\n- Propose deduplication algorithm for nested handoff history\r\n- Cover all backend domains: error handling, async patterns, caching, security\r\n- Include testing methodology and performance optimization strategies\r\n- Align with contribution guidelines\r\n\r\nCloses #2258",
+            "changedFiles": 1,
+            "closedAt": "2026-01-08T07:12:35Z",
+            "comments": {
+              "totalCount": 2
+            },
+            "createdAt": "2026-01-08T07:08:56Z",
+            "databaseId": 3155095510,
+            "deletions": 0,
+            "files": {
+              "totalCount": 1
+            },
+            "headRefName": "fix/issue-2258-handoff-history-dedup",
+            "headRefOid": "6ebc217b6889d2d75d65fdd1720054096a228685",
+            "id": "PR_kwDOOGidp868Du_W",
+            "isDraft": false,
+            "labels": {
+              "nodes": []
+            },
+            "locked": false,
+            "mergeCommit": null,
+            "mergedAt": null,
+            "mergedBy": null,
+            "milestone": null,
+            "number": 2274,
+            "reviews": {
+              "totalCount": 0
+            },
+            "state": "CLOSED",
+            "title": "docs: add issue #2258 resolution analysis with pseudo algorithm speci…",
+            "updatedAt": "2026-01-08T07:12:35Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2274"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:55:05.151460Z"
+}

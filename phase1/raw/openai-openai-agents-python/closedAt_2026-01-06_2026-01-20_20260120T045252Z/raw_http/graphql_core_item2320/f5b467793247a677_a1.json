@@ -1,0 +1,136 @@
+{
+  "finished_at": "2026-01-20T04:57:33.431662Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "f5b467793247a677",
+    "tag": "graphql_core_item2320"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2320,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "4839",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:57:33 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DCC3:365621:16C472B:1FCFC14:696F0B3D",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4619",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "381",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 4345,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "authorAssociation": "MEMBER",
+            "baseRefName": "main",
+            "body": "This pull request adds an experimental Codex extension with tool/exec/thread APIs, payload/event/item schemas, and options wiring under src/agents/ extensions/experimental/codex, plus a usage example and tests for Codex exec thread and tool behavior. It introduces new runtime surface area under src/agents/ (experimental), so please review compatibility expectations and ensure opt‑in behavior remains clear. It also adds examples/tools/codex.py and tests in tests/extensions/experiemental/codex/ to cover the new functionality.\r\n\r\n```python\r\nimport asyncio\r\nfrom agents import Agent, Runner\r\nfrom agents.extensions.experimental.codex import (\r\n    ThreadOptions,\r\n    TurnOptions,\r\n    codex_tool,\r\n)\r\n\r\nasync def main() -> None:\r\n    agent = Agent(\r\n        name=\"Codex Agent\",\r\n        instructions=(\r\n            \"Use the codex tool to inspect the workspace and answer the question. \"\r\n            \"When skill names, which usually starts with `$`, are mentioned, \"\r\n            \"you must rely on the codex tool to use the skill and answer the question.\\n\\n\"\r\n            \"When you send the final answer, you must include the following info at the end:\\n\\n\"\r\n            \"Run `codex resume <thread_id>` to continue the codex session.\"\r\n        ),\r\n        tools=[\r\n            # Run local Codex CLI as a sub process\r\n            codex_tool(\r\n                sandbox_mode=\"workspace-write\",\r\n                default_thread_options=ThreadOptions(\r\n                    # You can pass a Codex instance to customize CLI details\r\n                    # codex=Codex(executable_path=\"/path/to/codex\", base_url=\"...\"),\r\n                    model=\"gpt-5.2-codex\",\r\n                    model_reasoning_effort=\"low\",\r\n                    network_access_enabled=True,\r\n                    web_search_enabled=False,\r\n                    approval_policy=\"never\",  # We'll update this example once the HITL is implemented\r\n                ),\r\n                default_turn_options=TurnOptions(\r\n                    # Abort Codex CLI if no events arrive within this many seconds.\r\n                    idle_timeout_seconds=60,\r\n                ),\r\n                # Subscribe the events from codex CLI\r\n                on_stream=lambda payload: print(payload),\r\n            )\r\n        ],\r\n    )\r\n    result = await Runner.run(\r\n        agent, \"You must use `$openai-knowledge` skill to fetch the latest realtime model name.\"\r\n    )\r\n    print(result.final_output)\r\n\r\nif __name__ == \"__main__\":\r\n    asyncio.run(main())\r\n```\r\n\r\nOutput:\r\n```\r\n➜  openai-agents-python git:(feat/experimental-codex-extension) ✗ uv run -m test\r\nThe latest realtime model name, as fetched using the $openai-knowledge skill, is gpt-realtime. This model name is specified in the documentation as model: \"gpt-realtime\" for realtime API usage.\r\n\r\nRun codex resume 019bc5ac-3af5-76b3-a1aa-fe8488c19ec0 to continue the codex session.\r\n```\r\n\r\nTrace:\r\n<img width=\"800\" src=\"https://github.com/user-attachments/assets/5a8cd29d-1fc3-4018-89a4-481b59372adb\" />\r\n\r\n",
+            "changedFiles": 16,
+            "closedAt": "2026-01-16T22:27:56Z",
+            "comments": {
+              "totalCount": 0
+            },
+            "createdAt": "2026-01-16T07:22:17Z",
+            "databaseId": 3180161825,
+            "deletions": 0,
+            "files": {
+              "totalCount": 16
+            },
+            "headRefName": "feat/experimental-codex-extension",
+            "headRefOid": "117af2bf982842b122d1f109be18f764b6c81b37",
+            "id": "PR_kwDOOGidp869jWsh",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a2eeef",
+                  "description": "New feature or request",
+                  "name": "enhancement"
+                },
+                {
+                  "color": "b2fdef",
+                  "description": "",
+                  "name": "feature:core"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "c3ccecd3c4b40623bb1a16e897b31defbb5d26e1",
+              "url": "https://github.com/openai/openai-agents-python/commit/c3ccecd3c4b40623bb1a16e897b31defbb5d26e1"
+            },
+            "mergedAt": "2026-01-16T22:27:56Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2320,
+            "reviews": {
+              "totalCount": 7
+            },
+            "state": "MERGED",
+            "title": "feat: add experimental Codex extension and tool",
+            "updatedAt": "2026-01-16T22:27:58Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2320"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:57:32.847697Z"
+}

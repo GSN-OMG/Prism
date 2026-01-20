@@ -1,0 +1,115 @@
+{
+  "finished_at": "2026-01-20T04:58:17.946195Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "5123ff01be3c41eb",
+    "tag": "graphql_core_item2333"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2333,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "7439",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:58:17 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DD24:2B2B06:1671AA0:1F7DAC7:696F0B69",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4559",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "441",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/38551872?v=4",
+              "databaseId": 38551872,
+              "id": "MDQ6VXNlcjM4NTUxODcy",
+              "login": "lijianguo1211",
+              "url": "https://github.com/lijianguo1211"
+            },
+            "authorAssociation": "NONE",
+            "body": "### Please read this first\n\n- **Have you read the docs?**[Agents SDK docs](https://openai.github.io/openai-agents-python/) yes\n- **Have you searched for related issues?** Others may have faced similar issues. yes\n\n### Describe the bug\nAfter upgrading the version, when using OpenAIResponsesCompactionSession to compress session information, if store = False is set when creating the agent, an error will be reported during the compression process, indicating that the Response ID does not exist\n\n### Debug information\n- Agents SDK version: (e.g. `v0.6.7`)\n- Python version (e.g. Python 3.12)\n\n### Repro steps\n\n```\nasync def customer_agent():\n    redis_client = redis.get_async_client()\n    \n    try:\n        redis_session = RedisSession(\n            session_id=\"demo-session-1\",\n            redis_client=redis_client,\n            ttl=60*60*24,\n        )\n\n        session = OpenAIResponsesCompactionSession(\n            session_id=\"demo-session-1\",\n            underlying_session=redis_session,\n            model=\"gpt-4.1\",\n            # Custom compaction trigger (default is 10 candidates)\n            should_trigger_compaction=lambda ctx: len(ctx[\"compaction_candidate_items\"]) >= 4,\n        )\n        agent = Agent(name=\"Assistant\",\n                      model=\"gpt-5.2\",\n                      tools=[],\n                      model_settings=ModelSettings(store=False),\n                      instructions=\"\"\"\n                                     Reply concisely. Keep answers to 1-2 sentences.\n                                     \"\"\")\n\n        prompts = [\n            \"What is the tallest mountain in the world?\",\n            \"How tall is it in feet?\",\n            \"When was it first climbed?\",\n            \"Who was on that expedition?\",\n            \"What country is the mountain in?\",\n        ]\n\n        print(\"=== Compaction Session Example ===\\n\")\n\n        for i, prompt in enumerate(prompts, 1):\n            print(f\"Turn {i}:\")\n            print(f\"User: {prompt}\")\n            result = await Runner.run(agent, session=session, input=prompt)\n            print(f\"Assistant: {result.final_output}\\n\")\n\n        # Show final session state\n        items = await session.get_items()\n        print(\"=== Final Session State ===\")\n        print(f\"Total items: {len(items)}\")\n        for item in items:\n            # Some inputs are stored as easy messages (only `role` and `content`).\n            item_type = item.get(\"type\") or (\"message\" if \"role\" in item else \"unknown\")\n            if item_type == \"compaction\":\n                print(\"  - compaction (encrypted content)\")\n            elif item_type == \"message\":\n                role = item.get(\"role\", \"unknown\")\n                print(f\"  - message ({role})\")\n            else:\n                print(f\"  - {item_type}\")\n    \n    finally:\n        # 确保 Redis 连接正确关闭\n        await redis_client.aclose()\n\n```\n\n**output**\n\n```\n=== Compaction Session Example ===\n\nTurn 1:\nUser: What is the tallest mountain in the world?\nAssistant: Mount Everest is the tallest mountain in the world, rising about 8,849 meters (29,032 feet) above sea level.\n\nTurn 2:\nUser: How tall is it in feet?\nAssistant: Mount Everest is about **29,032 feet** tall above sea level.\n\nTurn 3:\nUser: When was it first climbed?\nAssistant: Mount Everest was first successfully climbed on **May 29, 1953**, by **Edmund Hillary** and **Tenzing Norgay**.\n\nTurn 4:\nUser: Who was on that expedition?\nTraceback (most recent call last):\n  File \"/Users/abc/www/new-test-gpt/index.py\", line 135, in <module>\n    asyncio.run(customer_agent())\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/runners.py\", line 194, in run\n    return runner.run(main)\n           ^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/runners.py\", line 118, in run\n    return self._loop.run_until_complete(task)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/asyncio/base_events.py\", line 664, in run_until_complete\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/Users/abc/www/new-test-gpt/index.py\", line 57, in customer_agent\n    result = await Runner.run(agent, session=session, input=prompt)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/abc/www/new-test-gpt/.venv/lib/python3.12/site-packages/agents/run.py\", line 372, in run\n    return await runner.run(\n           ^^^^^^^^^^^^^^^^^\n  File \"/Users/abc/www/new-testgpt/.venv/lib/python3.12/site-packages/agents/run.py\", line 753, in run\n    await self._save_result_to_session(\n  File \"/Users/abc/www/new-test-gpt/.venv/lib/python3.12/site-packages/agents/run.py\", line 2124, in _save_result_to_session\n    await session.run_compaction({\"response_id\": response_id, \"force\": force_compaction})\n  File \"/Users/abc/www/new-test-gpt/.venv/lib/python3.12/site-packages/agents/memory/openai_responses_compaction_session.py\", line 160, in run_compaction\n    compacted = await self.client.responses.compact(\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/abc/www/new-test-gpt/.venv/lib/python3.12/site-packages/openai/resources/responses/responses.py\", line 3279, in compact\n    return await self._post(\n           ^^^^^^^^^^^^^^^^^\n  File \"/Users/abc/www/new-test-gpt/.venv/lib/python3.12/site-packages/openai/_base_client.py\", line 1797, in post\n    return await self.request(cast_to, opts, stream=stream, stream_cls=stream_cls)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/abc/www/new-test-gpt/.venv/lib/python3.12/site-packages/openai/_base_client.py\", line 1597, in request\n    raise self._make_status_error_from_response(err.response) from None\nopenai.BadRequestError: Error code: 400 - {'error': {'message': \"Previous response with id 'resp_*****c38ac3' not found.\", 'type': 'invalid_request_error', 'param': 'previous_response_id', 'code': 'previous_response_not_found'}}\n```\n\n\n### Expected behavior\nWhen using compressed session messages, setting ModelSettings(store=False) will not prompt for a non-existent Response ID, and the session can be compressed,\n",
+            "closedAt": "2026-01-20T00:35:01Z",
+            "comments": {
+              "totalCount": 2
+            },
+            "createdAt": "2026-01-19T09:18:00Z",
+            "databaseId": 3828760195,
+            "id": "I_kwDOOGidp87kNj6D",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a2eeef",
+                  "description": "New feature or request",
+                  "name": "enhancement"
+                },
+                {
+                  "color": "b2fdef",
+                  "description": "",
+                  "name": "feature:core"
+                },
+                {
+                  "color": "90669a",
+                  "description": "",
+                  "name": "feature:sessions"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2333,
+            "state": "CLOSED",
+            "title": "Enable OpenAIResponsesCompactionSession to run in stateless mode",
+            "updatedAt": "2026-01-20T00:35:01Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2333"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:58:17.319662Z"
+}

@@ -1,0 +1,110 @@
+{
+  "finished_at": "2026-01-20T04:53:01.028282Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "410694a579eab3b7",
+    "tag": "graphql_core_item2009"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2009,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "1897",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:01 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DA64:3782ED:1625D93:1F2FD95:696F0A2C",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4993",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "7",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/3329961?u=c0e70258badc400048cb5bdea7ce2f0460c3d01b&v=4",
+              "databaseId": 3329961,
+              "id": "MDQ6VXNlcjMzMjk5NjE=",
+              "login": "nbondoux",
+              "url": "https://github.com/nbondoux"
+            },
+            "authorAssociation": "NONE",
+            "body": "It is specified in the openai documentation that when the model is so that it uses the VAD to interrupt a response, the SDK will automatically truncate the response item. ([](https://openai.github.io/openai-agents-js/guides/voice-agents/build/#interruptions)).\nHowever, this is currently not done; when there is a speech_start event, the SDK will cancel the response, emit an RealtimeModelAudioInterruptedEvent, reset the latest_item from known by the playback track; however, no truncate event is sent to the server. The  realtime server thus never is never made aware of the interruption.\nNo truncated event is ever received, and the server is completely unaware some information was not given to the human.\n\n### Debug information\n- Agents SDK version: v0.4.2\n- Python version: 3.13\n\n\n### Expected behavior\nThe same process should be done than what is done in session.interrupt()",
+            "closedAt": "2026-01-08T06:57:34Z",
+            "comments": {
+              "totalCount": 1
+            },
+            "createdAt": "2025-10-29T23:12:58Z",
+            "databaseId": 3568306643,
+            "id": "I_kwDOOGidp87UsAnT",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "d73a4a",
+                  "description": "Something isn't working",
+                  "name": "bug"
+                },
+                {
+                  "color": "d3cbd8",
+                  "description": "",
+                  "name": "feature:realtime"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2009,
+            "state": "CLOSED",
+            "title": "Realtime agents: truncations not handled by the SDK when interrupt on VAD is set.",
+            "updatedAt": "2026-01-08T06:58:04Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2009"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:00.515510Z"
+}

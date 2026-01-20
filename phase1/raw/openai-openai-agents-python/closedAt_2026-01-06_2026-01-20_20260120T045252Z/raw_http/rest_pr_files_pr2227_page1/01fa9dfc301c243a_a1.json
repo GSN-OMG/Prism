@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:53:59.930294Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "01fa9dfc301c243a",
+    "tag": "rest_pr_files_pr2227_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2227/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "6152",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:59 GMT",
+      "etag": "\"09ef34e341e36c1539197e62050163cfeeaa7b287e41c2a46b138e032117fbb3\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Tue, 06 Jan 2026 02:19:50 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DAD9:E9ECE:1613E79:1F1DF1B:696F0A67",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4990",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "10",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 10,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/ef725930378303e3602ce99c808bac74410f520f/src%2Fagents%2Ftool.py",
+        "changes": 10,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Ftool.py?ref=ef725930378303e3602ce99c808bac74410f520f",
+        "deletions": 0,
+        "filename": "src/agents/tool.py",
+        "patch": "@@ -687,6 +687,8 @@ def function_tool(\n     failure_error_function: ToolErrorFunction | None = None,\n     strict_mode: bool = True,\n     is_enabled: bool | Callable[[RunContextWrapper[Any], AgentBase], MaybeAwaitable[bool]] = True,\n+    tool_input_guardrails: list[ToolInputGuardrail[Any]] | None = None,\n+    tool_output_guardrails: list[ToolOutputGuardrail[Any]] | None = None,\n ) -> FunctionTool:\n     \"\"\"Overload for usage as @function_tool (no parentheses).\"\"\"\n     ...\n@@ -702,6 +704,8 @@ def function_tool(\n     failure_error_function: ToolErrorFunction | None = None,\n     strict_mode: bool = True,\n     is_enabled: bool | Callable[[RunContextWrapper[Any], AgentBase], MaybeAwaitable[bool]] = True,\n+    tool_input_guardrails: list[ToolInputGuardrail[Any]] | None = None,\n+    tool_output_guardrails: list[ToolOutputGuardrail[Any]] | None = None,\n ) -> Callable[[ToolFunction[...]], FunctionTool]:\n     \"\"\"Overload for usage as @function_tool(...).\"\"\"\n     ...\n@@ -717,6 +721,8 @@ def function_tool(\n     failure_error_function: ToolErrorFunction | None = default_tool_error_function,\n     strict_mode: bool = True,\n     is_enabled: bool | Callable[[RunContextWrapper[Any], AgentBase], MaybeAwaitable[bool]] = True,\n+    tool_input_guardrails: list[ToolInputGuardrail[Any]] | None = None,\n+    tool_output_guardrails: list[ToolOutputGuardrail[Any]] | None = None,\n ) -> FunctionTool | Callable[[ToolFunction[...]], FunctionTool]:\n     \"\"\"\n     Decorator to create a FunctionTool from a function. By default, we will:\n@@ -748,6 +754,8 @@ def function_tool(\n         is_enabled: Whether the tool is enabled. Can be a bool or a callable that takes the run\n             context and agent and returns whether the tool is enabled. Disabled tools are hidden\n             from the LLM at runtime.\n+        tool_input_guardrails: Optional list of guardrails to run before invoking the tool.\n+        tool_output_guardrails: Optional list of guardrails to run after the tool returns.\n     \"\"\"\n \n     def _create_function_tool(the_func: ToolFunction[...]) -> FunctionTool:\n@@ -845,6 +853,8 @@ async def _on_invoke_tool(ctx: ToolContext[Any], input: str) -> Any:\n             on_invoke_tool=_on_invoke_tool,\n             strict_json_schema=strict_mode,\n             is_enabled=is_enabled,\n+            tool_input_guardrails=tool_input_guardrails,\n+            tool_output_guardrails=tool_output_guardrails,\n         )\n \n     # If func is actually a callable, we were used as @function_tool with no parentheses",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/ef725930378303e3602ce99c808bac74410f520f/src%2Fagents%2Ftool.py",
+        "sha": "86c9a6bc9e5c0e7012db6757e0885a8d5faa7d49",
+        "status": "modified"
+      },
+      {
+        "additions": 43,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/ef725930378303e3602ce99c808bac74410f520f/tests%2Ftest_function_tool.py",
+        "changes": 43,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_function_tool.py?ref=ef725930378303e3602ce99c808bac74410f520f",
+        "deletions": 0,
+        "filename": "tests/test_function_tool.py",
+        "patch": "@@ -11,7 +11,12 @@\n     FunctionTool,\n     ModelBehaviorError,\n     RunContextWrapper,\n+    ToolGuardrailFunctionOutput,\n+    ToolInputGuardrailData,\n+    ToolOutputGuardrailData,\n     function_tool,\n+    tool_input_guardrail,\n+    tool_output_guardrail,\n )\n from agents.tool import default_tool_error_function\n from agents.tool_context import ToolContext\n@@ -96,6 +101,21 @@ def complex_args_function(foo: Foo, bar: Bar, baz: str = \"hello\"):\n     return f\"{foo.a + foo.b} {bar['x']}{bar['y']} {baz}\"\n \n \n+@tool_input_guardrail\n+def reject_args_guardrail(data: ToolInputGuardrailData) -> ToolGuardrailFunctionOutput:\n+    \"\"\"Reject tool calls for test purposes.\"\"\"\n+    return ToolGuardrailFunctionOutput.reject_content(\n+        message=\"blocked\",\n+        output_info={\"tool\": data.context.tool_name},\n+    )\n+\n+\n+@tool_output_guardrail\n+def allow_output_guardrail(data: ToolOutputGuardrailData) -> ToolGuardrailFunctionOutput:\n+    \"\"\"Allow tool outputs for test purposes.\"\"\"\n+    return ToolGuardrailFunctionOutput.allow(output_info={\"echo\": data.output})\n+\n+\n @pytest.mark.asyncio\n async def test_complex_args_function():\n     tool = function_tool(complex_args_function, failure_error_function=None)\n@@ -359,3 +379,26 @@ def boom() -> None:\n     ctx = ToolContext(None, tool_name=boom.name, tool_call_id=\"boom\", tool_arguments=\"{}\")\n     result = await boom.on_invoke_tool(ctx, \"{}\")\n     assert result.startswith(\"handled:\")\n+\n+\n+def test_function_tool_accepts_guardrail_arguments():\n+    tool = function_tool(\n+        simple_function,\n+        tool_input_guardrails=[reject_args_guardrail],\n+        tool_output_guardrails=[allow_output_guardrail],\n+    )\n+\n+    assert tool.tool_input_guardrails == [reject_args_guardrail]\n+    assert tool.tool_output_guardrails == [allow_output_guardrail]\n+\n+\n+def test_function_tool_decorator_accepts_guardrail_arguments():\n+    @function_tool(\n+        tool_input_guardrails=[reject_args_guardrail],\n+        tool_output_guardrails=[allow_output_guardrail],\n+    )\n+    def guarded(a: int) -> int:\n+        return a\n+\n+    assert guarded.tool_input_guardrails == [reject_args_guardrail]\n+    assert guarded.tool_output_guardrails == [allow_output_guardrail]",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/ef725930378303e3602ce99c808bac74410f520f/tests%2Ftest_function_tool.py",
+        "sha": "3597f48c38d66bd63af81c42122d9aa452bfad57",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:59.527822Z"
+}

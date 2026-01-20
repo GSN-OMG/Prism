@@ -1,0 +1,131 @@
+{
+  "finished_at": "2026-01-20T04:57:28.538328Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "39c49583edc72051",
+    "tag": "graphql_core_item2319"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2319,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "3591",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:57:28 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DCBC:37BFB7:1612432:1F1E0D0:696F0B38",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4624",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "376",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 2,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "Bot",
+              "avatarUrl": "https://avatars.githubusercontent.com/in/15368?v=4",
+              "databaseId": 41898282,
+              "id": "MDM6Qm90NDE4OTgyODI=",
+              "login": "github-actions",
+              "url": "https://github.com/apps/github-actions"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "baseRefName": "main",
+            "body": "### Release readiness review (v0.6.6 -> TARGET 112b242d31ff80d59cda1fe4e8430f96b39571b4)\n\nThis is a release readiness report done by `$final-release-review` skill.\n\n### Diff\n\nhttps://github.com/openai/openai-agents-python/compare/v0.6.6...112b242d31ff80d59cda1fe4e8430f96b39571b4\n\n### Release call:\n- GREEN LIGHT TO SHIP Incremental changes with tests and docs updates; risks are low and scoped.\n\n### Scope summary:\n- 136 files changed (+8200/-2275); key areas touched: experimental Codex extension, handoff history/run observability, shell tool output truncation, compaction session, docs (incl. translations), examples.\n\n### Risk assessment (ordered by impact):\n1) Handoff history filtering now omits summarized tool/function call items from forwarded input.\n   - Risk: MODERATE. Downstream agents relying on raw tool/function items in handoff input could see reduced context compared to previous behavior.\n   - Files: src/agents/handoffs/history.py, src/agents/_run_impl.py, src/agents/run.py\n2) Compaction deferral when local tool outputs exist.\n   - Risk: LOW. Compaction may be delayed, which could increase session size until a forced compaction occurs.\n   - Files: src/agents/run.py, src/agents/memory/openai_responses_compaction_session.py\n3) Shell tool now truncates output based on `max_output_length`.\n   - Risk: LOW. When callers set limits (or executors return them), outputs are shorter than before; could affect consumers that expect full stdout/stderr.\n   - Files: src/agents/_run_impl.py\n4) New experimental Codex extension and tool.\n   - Risk: LOW. Additive and under experimental namespace, but introduces a large new surface area; ensure experimental status is clear to users.\n   - Files: src/agents/extensions/experimental/codex/codex_tool.py, src/agents/extensions/experimental/codex/*.py, examples/tools/codex.py\n\n### Notes:\n- BASE_TAG `v0.6.6` and TARGET `112b242d31ff80d59cda1fe4e8430f96b39571b4` derived from local tags and HEAD.\n- No material risks identified beyond the low/moderate items above; no local verification was run here.",
+            "changedFiles": 2,
+            "closedAt": "2026-01-16T22:31:01Z",
+            "comments": {
+              "totalCount": 0
+            },
+            "createdAt": "2026-01-16T05:31:44Z",
+            "databaseId": 3179881969,
+            "deletions": 2,
+            "files": {
+              "totalCount": 2
+            },
+            "headRefName": "release/v0.6.7",
+            "headRefOid": "112b242d31ff80d59cda1fe4e8430f96b39571b4",
+            "id": "PR_kwDOOGidp869iSXx",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "e7cef1",
+                  "description": "",
+                  "name": "project"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "8660857f6b7fa03ad36cb5d8a250f2bac7ce5c85",
+              "url": "https://github.com/openai/openai-agents-python/commit/8660857f6b7fa03ad36cb5d8a250f2bac7ce5c85"
+            },
+            "mergedAt": "2026-01-16T22:31:00Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2319,
+            "reviews": {
+              "totalCount": 0
+            },
+            "state": "MERGED",
+            "title": "Release 0.6.7",
+            "updatedAt": "2026-01-16T22:31:03Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2319"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:57:27.838284Z"
+}

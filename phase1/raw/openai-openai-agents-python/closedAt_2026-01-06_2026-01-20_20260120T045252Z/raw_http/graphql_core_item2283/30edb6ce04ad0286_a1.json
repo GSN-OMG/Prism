@@ -1,0 +1,109 @@
+{
+  "finished_at": "2026-01-20T04:55:38.565546Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "30edb6ce04ad0286",
+    "tag": "graphql_core_item2283"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2283,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "1506",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:55:38 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DBAC:3CEC4D:15BDC01:1EC7E56:696F0ACA",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4776",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "224",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 68,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/110102458?v=4",
+              "databaseId": 110102458,
+              "id": "U_kgDOBpAHug",
+              "login": "HemanthIITJ",
+              "url": "https://github.com/HemanthIITJ"
+            },
+            "authorAssociation": "NONE",
+            "baseRefName": "main",
+            "body": "Invalid JSON in tool call arguments can cause session failures with Anthropic models because LiteLLM attempts to parse malformed JSON strings into dictionaries, leading to runtime errors. This update adds JSON validation before parsing, safely replaces invalid inputs with an empty object ({}), logs a warning when malformed JSON is detected, and includes test coverage for both valid and invalid cases, improving overall system robustness and stability.",
+            "changedFiles": 2,
+            "closedAt": "2026-01-09T00:48:23Z",
+            "comments": {
+              "totalCount": 2
+            },
+            "createdAt": "2026-01-08T10:05:21Z",
+            "databaseId": 3155574203,
+            "deletions": 1,
+            "files": {
+              "totalCount": 2
+            },
+            "headRefName": "fix/issue-2061-invalid-json-arguments",
+            "headRefOid": "1183d09704952d254c0e170628ee43fd4a0dcc38",
+            "id": "PR_kwDOOGidp868Fj27",
+            "isDraft": true,
+            "labels": {
+              "nodes": []
+            },
+            "locked": false,
+            "mergeCommit": null,
+            "mergedAt": null,
+            "mergedBy": null,
+            "milestone": null,
+            "number": 2283,
+            "reviews": {
+              "totalCount": 0
+            },
+            "state": "CLOSED",
+            "title": "fix(converter): validate JSON arguments to prevent Anthropic session …",
+            "updatedAt": "2026-01-09T00:48:23Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2283"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:55:37.996726Z"
+}

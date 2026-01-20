@@ -1,0 +1,89 @@
+{
+  "finished_at": "2026-01-20T04:53:01.511142Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "a488978ab15b1d45",
+    "tag": "graphql_comments_item2009_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2009,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "909",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:01 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DA65:365621:16BC446:1FC5B94:696F0A2D",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4992",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "8",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/154019945?u=2e2cd13dc870d4fc63830deb204279a1fd8d28b9&v=4",
+                    "databaseId": 154019945,
+                    "id": "U_kgDOCS4oaQ",
+                    "login": "ruskaruma",
+                    "url": "https://github.com/ruskaruma"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "Hi @seratch , I’d like to be assigned this issue if no one else is yet working on this. I’ve previously contributed to the realtime subsystem (PR #2028), so I’m already familiar with the SDK’s event pipeline and the realtime agent flow.",
+                  "createdAt": "2025-11-09T20:43:57Z",
+                  "databaseId": 3508818685,
+                  "id": "IC_kwDOOGidp87RJFL9",
+                  "updatedAt": "2025-11-09T20:43:57Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2009#issuecomment-3508818685"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO0SRS_Q==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:01.030427Z"
+}

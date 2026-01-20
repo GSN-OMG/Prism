@@ -1,0 +1,174 @@
+{
+  "finished_at": "2026-01-20T04:53:31.920707Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "1be2b37db18b16f6",
+    "tag": "graphql_comments_item2195_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2195,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "3781",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:31 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DAA7:357DBD:15F46C9:1EFEB7A:696F0A4B",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4951",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "49",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "authorAssociation": "MEMBER",
+                  "body": "Thanks for sharing this. Anyone can submit pull requests to this repo. If you have a fix for the issue, we're happy to review it!",
+                  "createdAt": "2025-12-17T03:42:01Z",
+                  "databaseId": 3663505325,
+                  "id": "IC_kwDOOGidp87aXKet",
+                  "updatedAt": "2025-12-17T03:42:01Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2195#issuecomment-3663505325"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/5634261?v=4",
+                    "databaseId": 5634261,
+                    "id": "MDQ6VXNlcjU2MzQyNjE=",
+                    "login": "willkoh",
+                    "url": "https://github.com/willkoh"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "Oh awesome. Must've been a laptop configuration issue that I couldn't push. Will do tonight. ",
+                  "createdAt": "2025-12-17T19:29:51Z",
+                  "databaseId": 3666840121,
+                  "id": "IC_kwDOOGidp87aj4o5",
+                  "updatedAt": "2025-12-17T19:29:51Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2195#issuecomment-3666840121"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/73382554?u=b69d53e2f6caff42e48d81f1cdbdb510995dfb71&v=4",
+                    "databaseId": 73382554,
+                    "id": "MDQ6VXNlcjczMzgyNTU0",
+                    "login": "AryanBagade",
+                    "url": "https://github.com/AryanBagade"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "yeah ran into this bug. traced it to items_to_messages - basically pending_thinking_blocks only gets attached when there's a tool call, the response_output_message branch just skips it entirely",
+                  "createdAt": "2026-01-10T08:32:46Z",
+                  "databaseId": 3732155779,
+                  "id": "IC_kwDOOGidp87edC2D",
+                  "updatedAt": "2026-01-10T08:32:46Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2195#issuecomment-3732155779"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/73382554?u=b69d53e2f6caff42e48d81f1cdbdb510995dfb71&v=4",
+                    "databaseId": 73382554,
+                    "id": "MDQ6VXNlcjczMzgyNTU0",
+                    "login": "AryanBagade",
+                    "url": "https://github.com/AryanBagade"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "got a fix + test ready, happy to open a PR. @willkoh lmk if you're still planning to submit one, totally cool if you want to handle it instead",
+                  "createdAt": "2026-01-10T08:35:32Z",
+                  "databaseId": 3732157986,
+                  "id": "IC_kwDOOGidp87edDYi",
+                  "updatedAt": "2026-01-10T08:35:32Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2195#issuecomment-3732157986"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/5634261?v=4",
+                    "databaseId": 5634261,
+                    "id": "MDQ6VXNlcjU2MzQyNjE=",
+                    "login": "willkoh",
+                    "url": "https://github.com/willkoh"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "@AryanBagade please go for it. Lost track of this issue with the holidays and such. Thank you! ",
+                  "createdAt": "2026-01-10T08:43:32Z",
+                  "databaseId": 3732164566,
+                  "id": "IC_kwDOOGidp87edE_W",
+                  "updatedAt": "2026-01-10T08:43:32Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2195#issuecomment-3732164566"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/73382554?u=b69d53e2f6caff42e48d81f1cdbdb510995dfb71&v=4",
+                    "databaseId": 73382554,
+                    "id": "MDQ6VXNlcjczMzgyNTU0",
+                    "login": "AryanBagade",
+                    "url": "https://github.com/AryanBagade"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "@willkoh @seratch review when you get a chance!",
+                  "createdAt": "2026-01-10T09:05:09Z",
+                  "databaseId": 3732204202,
+                  "id": "IC_kwDOOGidp87edOqq",
+                  "updatedAt": "2026-01-10T09:05:09Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2195#issuecomment-3732204202"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO3nTqqg==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:31.242187Z"
+}

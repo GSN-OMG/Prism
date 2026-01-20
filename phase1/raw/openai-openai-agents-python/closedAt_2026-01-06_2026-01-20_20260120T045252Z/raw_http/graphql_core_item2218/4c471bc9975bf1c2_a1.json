@@ -1,0 +1,115 @@
+{
+  "finished_at": "2026-01-20T04:53:39.514398Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "4c471bc9975bf1c2",
+    "tag": "graphql_core_item2218"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2218,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2229",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:39 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DAB3:29AB24:15F4673:1EFE6E6:696F0A52",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4940",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "60",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 139,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/163600279?u=36413b6b1c6d09ed13abbad0e2e3b4fe2b1156c9&v=4",
+              "databaseId": 163600279,
+              "id": "U_kgDOCcBXlw",
+              "login": "TasmeerJamali",
+              "url": "https://github.com/TasmeerJamali"
+            },
+            "authorAssociation": "NONE",
+            "baseRefName": "main",
+            "body": "### Summary\r\nAdd comprehensive documentation for tool input and output guardrails to `docs/guardrails.md`. This addresses the gap identified in #1830 where tool guardrails (implemented in PR #1792) were not documented in the main guides.\r\n\r\nThe new documentation explains:\r\n- The difference between agent-level and tool-level guardrails\r\n- How to use `@tool_input_guardrail` and `@tool_output_guardrail` decorators\r\n- The three behavior types: `allow`, `reject_content`, and `raise_exception`\r\n- How to attach guardrails to tools and handle exceptions\r\n\r\n### Test plan\r\n- Verified documentation builds successfully with `uv run mkdocs build`\r\n- All code examples use valid Python syntax with correct imports\r\n- Formatting is consistent with existing documentation style\r\n\r\n### Issue number\r\nCloses #1830\r\n\r\n### Checks\r\n- [x] I've added new tests (if relevant) - N/A (documentation only)\r\n- [x] I've added/updated the relevant documentation\r\n- [x] I've run `make lint` and `make format`\r\n- [x] I've made sure tests pass",
+            "changedFiles": 1,
+            "closedAt": "2026-01-16T01:22:12Z",
+            "comments": {
+              "totalCount": 2
+            },
+            "createdAt": "2025-12-20T14:00:24Z",
+            "databaseId": 3119831070,
+            "deletions": 1,
+            "files": {
+              "totalCount": 1
+            },
+            "headRefName": "docs-add-tool-guardrails-documentation",
+            "headRefOid": "d535802a3199b9a011f764da8eb52707d5f7b1f5",
+            "id": "PR_kwDOOGidp8659Nge",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "0075ca",
+                  "description": "Improvements or additions to documentation",
+                  "name": "documentation"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": null,
+            "mergedAt": null,
+            "mergedBy": null,
+            "milestone": null,
+            "number": 2218,
+            "reviews": {
+              "totalCount": 2
+            },
+            "state": "CLOSED",
+            "title": "docs: add tool guardrails documentation",
+            "updatedAt": "2026-01-16T01:22:16Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2218"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:38.810530Z"
+}

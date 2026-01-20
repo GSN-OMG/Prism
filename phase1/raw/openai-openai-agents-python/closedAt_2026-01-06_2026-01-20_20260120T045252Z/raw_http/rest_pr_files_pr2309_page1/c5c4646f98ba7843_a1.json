@@ -1,0 +1,100 @@
+{
+  "finished_at": "2026-01-20T04:56:57.712765Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "c5c4646f98ba7843",
+    "tag": "rest_pr_files_pr2309_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2309/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "14628",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:57 GMT",
+      "etag": "\"d88fcd235f2bafef63fd115cec1bd9f61acd7ff2a7e6c7a88c32f7d3fd2b6184\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Thu, 15 Jan 2026 03:40:53 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DC74:E9ECE:1619496:1F248A6:696F0B19",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4947",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "53",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 23,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/9a6357ba5100713b31b0e4d0a86180055c34407c/.github%2Fcodex%2Fprompts%2Frelease-review.md",
+        "changes": 23,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.github%2Fcodex%2Fprompts%2Frelease-review.md?ref=9a6357ba5100713b31b0e4d0a86180055c34407c",
+        "deletions": 0,
+        "filename": ".github/codex/prompts/release-review.md",
+        "patch": "@@ -0,0 +1,23 @@\n+# Release readiness review\n+\n+You are Codex running in CI. Produce a release readiness report for this repository.\n+\n+Steps:\n+1. Determine the latest release tag (use local tags only):\n+   - `git tag -l 'v*' --sort=-v:refname | head -n1`\n+2. Set TARGET to the current commit SHA: `git rev-parse HEAD`.\n+3. Collect diff context for BASE_TAG...TARGET:\n+   - `git diff --stat BASE_TAG...TARGET`\n+   - `git diff --dirstat=files,0 BASE_TAG...TARGET`\n+   - `git diff --name-status BASE_TAG...TARGET`\n+   - `git log --oneline --reverse BASE_TAG..TARGET`\n+4. Review `.codex/skills/final-release-review/references/review-checklist.md` and analyze the diff.\n+\n+Output:\n+- Write the report in the exact format used by `$final-release-review` (see `.codex/skills/final-release-review/SKILL.md`).\n+- Use the compare URL: `https://github.com/${GITHUB_REPOSITORY}/compare/BASE_TAG...TARGET`.\n+- Include clear ship/block call and risk levels.\n+- If no risks are found, include \"No material risks identified\".\n+\n+Constraints:\n+- Output only the report (no code fences, no extra commentary).",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/9a6357ba5100713b31b0e4d0a86180055c34407c/.github%2Fcodex%2Fprompts%2Frelease-review.md",
+        "sha": "aae2697db23118af3b9f087a7e41554a43b2f3fb",
+        "status": "added"
+      },
+      {
+        "additions": 84,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/9a6357ba5100713b31b0e4d0a86180055c34407c/.github%2Fworkflows%2Frelease-pr-update.yml",
+        "changes": 84,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.github%2Fworkflows%2Frelease-pr-update.yml?ref=9a6357ba5100713b31b0e4d0a86180055c34407c",
+        "deletions": 0,
+        "filename": ".github/workflows/release-pr-update.yml",
+        "patch": "@@ -0,0 +1,84 @@\n+name: Update release PR on main updates\n+\n+on:\n+  push:\n+    branches:\n+      - main\n+\n+concurrency:\n+  group: release-pr-update\n+  cancel-in-progress: true\n+\n+permissions:\n+  contents: write\n+  pull-requests: write\n+\n+jobs:\n+  update-release-pr:\n+    runs-on: ubuntu-latest\n+    steps:\n+      - name: Checkout repository\n+        uses: actions/checkout@v6\n+        with:\n+          fetch-depth: 0\n+      - name: Fetch tags\n+        run: git fetch origin --tags --prune\n+      - name: Configure git\n+        run: |\n+          git config user.name \"github-actions[bot]\"\n+          git config user.email \"github-actions[bot]@users.noreply.github.com\"\n+      - name: Find release PR\n+        id: find\n+        env:\n+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n+        run: |\n+          set -euo pipefail\n+          base_branch=\"main\"\n+          prs_json=\"$(gh pr list \\\n+            --base \"$base_branch\" \\\n+            --state open \\\n+            --search \"head:release/v\" \\\n+            --limit 200 \\\n+            --json number,headRefName,isCrossRepository,headRepositoryOwner)\"\n+          count=\"$(echo \"$prs_json\" | jq '[.[] | select(.isCrossRepository == false) | select(.headRefName|startswith(\"release/v\"))] | length')\"\n+          if [ \"$count\" -eq 0 ]; then\n+            echo \"found=false\" >> \"$GITHUB_OUTPUT\"\n+            exit 0\n+          fi\n+          if [ \"$count\" -gt 1 ]; then\n+            echo \"Multiple release PRs found; expected a single release PR.\" >&2\n+            exit 1\n+          fi\n+          number=\"$(echo \"$prs_json\" | jq -r '.[] | select(.isCrossRepository == false) | select(.headRefName|startswith(\"release/v\")) | .number')\"\n+          branch=\"$(echo \"$prs_json\" | jq -r '.[] | select(.isCrossRepository == false) | select(.headRefName|startswith(\"release/v\")) | .headRefName')\"\n+          echo \"found=true\" >> \"$GITHUB_OUTPUT\"\n+          echo \"number=$number\" >> \"$GITHUB_OUTPUT\"\n+          echo \"branch=$branch\" >> \"$GITHUB_OUTPUT\"\n+      - name: Rebase release branch\n+        if: steps.find.outputs.found == 'true'\n+        env:\n+          RELEASE_BRANCH: ${{ steps.find.outputs.branch }}\n+        run: |\n+          set -euo pipefail\n+          git fetch origin main \"$RELEASE_BRANCH\"\n+          git checkout -B \"$RELEASE_BRANCH\" \"origin/$RELEASE_BRANCH\"\n+          git rebase origin/main\n+      - name: Run Codex release review\n+        if: steps.find.outputs.found == 'true'\n+        uses: openai/codex-action@v1\n+        with:\n+          openai-api-key: ${{ secrets.PROD_OPENAI_API_KEY }}\n+          prompt-file: .github/codex/prompts/release-review.md\n+          output-file: release-review.md\n+          safety-strategy: drop-sudo\n+          sandbox: read-only\n+      - name: Update PR body and push\n+        if: steps.find.outputs.found == 'true'\n+        env:\n+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n+          PR_NUMBER: ${{ steps.find.outputs.number }}\n+          RELEASE_BRANCH: ${{ steps.find.outputs.branch }}\n+        run: |\n+          set -euo pipefail\n+          git push --force-with-lease origin \"$RELEASE_BRANCH\"\n+          gh pr edit \"$PR_NUMBER\" --body-file release-review.md",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/9a6357ba5100713b31b0e4d0a86180055c34407c/.github%2Fworkflows%2Frelease-pr-update.yml",
+        "sha": "f0e979c5468e764e2bdada06599d2cdfd2165867",
+        "status": "added"
+      },
+      {
+        "additions": 126,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/9a6357ba5100713b31b0e4d0a86180055c34407c/.github%2Fworkflows%2Frelease-pr.yml",
+        "changes": 126,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.github%2Fworkflows%2Frelease-pr.yml?ref=9a6357ba5100713b31b0e4d0a86180055c34407c",
+        "deletions": 0,
+        "filename": ".github/workflows/release-pr.yml",
+        "patch": "@@ -0,0 +1,126 @@\n+name: Create release PR\n+\n+on:\n+  workflow_dispatch:\n+    inputs:\n+      version:\n+        description: \"Version to release (e.g., 0.6.6)\"\n+        required: true\n+\n+permissions:\n+  contents: write\n+  pull-requests: write\n+\n+jobs:\n+  release-pr:\n+    runs-on: ubuntu-latest\n+    steps:\n+      - name: Checkout repository\n+        uses: actions/checkout@v6\n+        with:\n+          fetch-depth: 0\n+          ref: main\n+      - name: Setup uv\n+        uses: astral-sh/setup-uv@v5\n+        with:\n+          enable-cache: true\n+      - name: Fetch tags\n+        run: git fetch origin --tags --prune\n+      - name: Ensure release branch does not exist\n+        env:\n+          RELEASE_VERSION: ${{ inputs.version }}\n+        run: |\n+          branch=\"release/v${RELEASE_VERSION}\"\n+          if git ls-remote --exit-code --heads origin \"$branch\" >/dev/null 2>&1; then\n+            echo \"Branch $branch already exists on origin.\" >&2\n+            exit 1\n+          fi\n+      - name: Update version\n+        env:\n+          RELEASE_VERSION: ${{ inputs.version }}\n+        run: |\n+          python - <<'PY'\n+          import os\n+          import pathlib\n+          import re\n+          import sys\n+\n+          version = os.environ[\"RELEASE_VERSION\"]\n+          if version.startswith(\"v\"):\n+              print(\"Version must not start with 'v' (use x.y.z...).\", file=sys.stderr)\n+              sys.exit(1)\n+          if \"..\" in version:\n+              print(\"Version contains consecutive dots (use x.y.z...).\", file=sys.stderr)\n+              sys.exit(1)\n+          if not re.match(r\"^\\d+\\.\\d+(\\.\\d+)*([a-zA-Z0-9\\.-]+)?$\", version):\n+              print(\n+                  \"Version must be semver-like (e.g., 0.6.6, 0.6.6-rc1, 0.6.6.dev1).\",\n+                  file=sys.stderr,\n+              )\n+              sys.exit(1)\n+          path = pathlib.Path(\"pyproject.toml\")\n+          text = path.read_text()\n+          updated, count = re.subn(\n+              r'(?m)^version\\s*=\\s*\"[^\\\"]+\"',\n+              f'version = \"{version}\"',\n+              text,\n+          )\n+          if count != 1:\n+              print(\"Expected to update exactly one version line.\", file=sys.stderr)\n+              sys.exit(1)\n+          if updated == text:\n+              print(\"Version already set; no changes made.\", file=sys.stderr)\n+              sys.exit(1)\n+          path.write_text(updated)\n+          PY\n+      - name: Sync dependencies\n+        run: make sync\n+      - name: Configure git\n+        run: |\n+          git config user.name \"github-actions[bot]\"\n+          git config user.email \"github-actions[bot]@users.noreply.github.com\"\n+      - name: Create release branch and commit\n+        env:\n+          RELEASE_VERSION: ${{ inputs.version }}\n+        run: |\n+          branch=\"release/v${RELEASE_VERSION}\"\n+          git checkout -b \"$branch\"\n+          git add pyproject.toml uv.lock\n+          if git diff --cached --quiet; then\n+            echo \"No changes to commit.\" >&2\n+            exit 1\n+          fi\n+          git commit -m \"Bump version to ${RELEASE_VERSION}\"\n+          git push --set-upstream origin \"$branch\"\n+      - name: Run Codex release review\n+        uses: openai/codex-action@v1\n+        with:\n+          openai-api-key: ${{ secrets.PROD_OPENAI_API_KEY }}\n+          prompt-file: .github/codex/prompts/release-review.md\n+          output-file: release-review.md\n+          safety-strategy: drop-sudo\n+          sandbox: read-only\n+      - name: Build PR body\n+        run: |\n+          python - <<'PY'\n+          import pathlib\n+\n+          report = pathlib.Path(\"release-review.md\").read_text()\n+          pathlib.Path(\"pr-body.md\").write_text(report)\n+          PY\n+      - name: Create or update PR\n+        env:\n+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n+          RELEASE_VERSION: ${{ inputs.version }}\n+        run: |\n+          head_branch=\"release/v${RELEASE_VERSION}\"\n+          pr_number=\"$(gh pr list --head \"$head_branch\" --base \"main\" --json number --jq '.[0].number // empty')\"\n+          if [ -z \"$pr_number\" ]; then\n+            gh pr create \\\n+              --title \"Release ${RELEASE_VERSION}\" \\\n+              --body-file pr-body.md \\\n+              --base \"main\" \\\n+              --head \"$head_branch\"\n+          else\n+            gh pr edit \"$pr_number\" --title \"Release ${RELEASE_VERSION}\" --body-file pr-body.md\n+          fi",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/9a6357ba5100713b31b0e4d0a86180055c34407c/.github%2Fworkflows%2Frelease-pr.yml",
+        "sha": "1677e46713141c93249c25c6e9dc9a3bff4e7ade",
+        "status": "added"
+      },
+      {
+        "additions": 83,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/9a6357ba5100713b31b0e4d0a86180055c34407c/.github%2Fworkflows%2Frelease-tag.yml",
+        "changes": 83,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.github%2Fworkflows%2Frelease-tag.yml?ref=9a6357ba5100713b31b0e4d0a86180055c34407c",
+        "deletions": 0,
+        "filename": ".github/workflows/release-tag.yml",
+        "patch": "@@ -0,0 +1,83 @@\n+name: Tag release on merge\n+\n+on:\n+  pull_request:\n+    types:\n+      - closed\n+    branches:\n+      - main\n+\n+permissions:\n+  contents: write\n+\n+jobs:\n+  tag-release:\n+    if: >-\n+      github.event.pull_request.merged == true &&\n+      startsWith(github.event.pull_request.head.ref, 'release/v')\n+    runs-on: ubuntu-latest\n+    steps:\n+      - name: Validate merge commit\n+        env:\n+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}\n+        run: |\n+          if [ -z \"$MERGE_SHA\" ]; then\n+            echo \"merge_commit_sha is empty; refusing to tag to avoid tagging the wrong commit.\" >&2\n+            exit 1\n+          fi\n+      - name: Checkout merge commit\n+        uses: actions/checkout@v6\n+        with:\n+          fetch-depth: 0\n+          ref: ${{ github.event.pull_request.merge_commit_sha }}\n+      - name: Setup Python\n+        uses: actions/setup-python@v5\n+        with:\n+          python-version: \"3.11\"\n+      - name: Configure git\n+        run: |\n+          git config user.name \"github-actions[bot]\"\n+          git config user.email \"github-actions[bot]@users.noreply.github.com\"\n+      - name: Fetch tags\n+        run: git fetch origin --tags --prune\n+      - name: Resolve version\n+        id: version\n+        env:\n+          HEAD_REF: ${{ github.event.pull_request.head.ref }}\n+        run: |\n+          python - <<'PY'\n+          import os\n+          import pathlib\n+          import sys\n+          import tomllib\n+\n+          path = pathlib.Path(\"pyproject.toml\")\n+          data = tomllib.loads(path.read_text())\n+          version = data.get(\"project\", {}).get(\"version\")\n+          if not version:\n+            print(\"Missing project.version in pyproject.toml.\", file=sys.stderr)\n+            sys.exit(1)\n+\n+          head_ref = os.environ.get(\"HEAD_REF\", \"\")\n+          if head_ref.startswith(\"release/v\"):\n+            expected = head_ref[len(\"release/v\") :]\n+            if expected != version:\n+              print(\n+                  f\"Version mismatch: branch {expected} vs pyproject {version}.\",\n+                  file=sys.stderr,\n+              )\n+              sys.exit(1)\n+\n+          output_path = pathlib.Path(os.environ[\"GITHUB_OUTPUT\"])\n+          output_path.write_text(f\"version={version}\\n\")\n+          PY\n+      - name: Create tag\n+        env:\n+          VERSION: ${{ steps.version.outputs.version }}\n+        run: |\n+          if git tag -l \"v${VERSION}\" | grep -q \"v${VERSION}\"; then\n+            echo \"Tag v${VERSION} already exists; skipping.\"\n+            exit 0\n+          fi\n+          git tag -a \"v${VERSION}\" -m \"Release v${VERSION}\"\n+          git push origin \"v${VERSION}\"",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/9a6357ba5100713b31b0e4d0a86180055c34407c/.github%2Fworkflows%2Frelease-tag.yml",
+        "sha": "3d431989f3519643d88cbab2e3061321bdbeb9e2",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:57.252595Z"
+}

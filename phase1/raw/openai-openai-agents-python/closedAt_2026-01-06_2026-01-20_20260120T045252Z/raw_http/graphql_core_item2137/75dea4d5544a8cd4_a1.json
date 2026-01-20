@@ -1,0 +1,110 @@
+{
+  "finished_at": "2026-01-20T04:53:16.683344Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "75dea4d5544a8cd4",
+    "tag": "graphql_core_item2137"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2137,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "8276",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:16 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DA86:29AB24:15F3A2F:1EFD830:696F0A3C",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4971",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "29",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/193485845?v=4",
+              "databaseId": 193485845,
+              "id": "U_kgDOC4hcFQ",
+              "login": "silvasw",
+              "url": "https://github.com/silvasw"
+            },
+            "authorAssociation": "NONE",
+            "body": "### Please read this first\n\n- **Have you read the docs?**[Agents SDK docs](https://openai.github.io/openai-agents-python/)\n- **Have you searched for related issues?** Others may have faced similar issues.\n\n### Describe the bug\nGemini 3 Pro Preview (`google/gemini-3-pro-preview`) model requires` thought_signature` similar to response_id for subsequent calls. Using the Agent and Runner the `thought_signature` is not inject for next loop during call. I have tried to use RunHooks to receive full response from the model but unsuccessfully.\n\n```\nFile \"C:\\Users\\dom\\anaconda3\\envs\\genai\\Lib\\site-packages\\openai\\_base_client.py\", line 1594, in request\n    raise self._make_status_error_from_response(err.response) from None\nopenai.BadRequestError: Error code: 400 - [{'error': {'code': 400, 'message': 'Unable to submit request because function call `default_api:get_current_temperature` in the 2. content block is missing a `thought_signature`. Learn more: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/thought-signatures', 'status': 'INVALID_ARGUMENT'}}]\n```\n\n### Debug information\n- Agents SDK version: 0.6.1\n- Python version: 3.11.13\n- OpenAI version: 2.8.1\n\n\n### Repro steps\nThis snippet using plain OpenAI client returns the thouch_signarute but fails when use Agent and Runner\n\n- OpenAI library:\n```python\n# Create an async-compatible OpenAI client pointing to GOOGLE's endpoint\n# Set up the OpenAI client pointing to GOOGLE endpoint\nclient = OpenAI(\n    api_key=creds,\n    base_url=f\"https://aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/global/endpoints/openapi\",\n)\n\nprompt = \"\"\"\nIf it's too hot or too cold in London, set the temperature to a comfortable level.\nMake your own reasonable assumption for what 'comfortable' means and do not ask for clarification.\n\"\"\"\n\nmessages = [\n    {\"role\": \"user\", \"content\": prompt},\n]\n\nresponse1 = client.chat.completions.create(\n    model=MODEL_NAME,\n    messages=messages,\n    tools=tools,\n)\n\nprint(response1)\n```\n\nOUTPUT:\n```\nChatCompletion(id='3Kstacq6MerChcIPi9qngAE', choices=[Choice(finish_reason='tool_calls', index=0, logprobs=None, message=ChatCompletionMessage(content=None, refusal=None, role='assistant', annotations=None, audio=None, function_call=None, tool_calls=[ChatCompletionMessageFunctionToolCall(id='function-call-e37e486d-d21e-4203-a7d5-220fa5c27dac', function=Function(arguments='{\"location\":\"London\"}', name='get_current_temperature'), type='function', extra_content={'google': {'thought_signature': 'CsEJAePx/15yMy16yNn53ZP0RE9phQWHhzE3j+1x8uferf9Dy+JX2tyZBmZdKhWtPyWf+dsgYLFo3Q8Lt2jv+pmjePJCmsWkKicN4HH5YWF3BFRWzdvxHlQX8Gv+sRqG5dipCBC4+6MswHRuNmrkF9SZ7rNmHBIRhcsp0UvU9v78Fd3lag8VmB5bQSvTfQMZ4g1HEfBvCwW0BqWL6TJyBH/tPwEX4bQ29kOKxi6xvUfuj4wMcY81inYJ0xoDxTAeMrnAJitE8WQdrg3h+4QDuN7ZGp8u0L3lN1LLpX14VR7MDMBAmyvC39DIhVbTFLRWGb/O9O1kROE15jv5VQwBqUaBTbbmriynv8dpr9mBx3eqodvtBRUYKnG0LsrTXnurKP/gGT34wxuPOJGncyBN6puGBWgMDcpBWs5juvl4tlpca23x3IJjF2Ou2klgP38VxufwC3Vbqpd+dH8J5FZ/OmPNaL9nsUowgXxap8+QkNoU02rnKhIeykB7zZp/Vl4Ap/rJ1LVErz3aV/xec6v7NVBZyavwGsMM6Um9kg1YNWOLF2Fpock+oVJUnGNoEiLUqgIHHd5Ps3c90gFIL0ppKaoFQyTmS3fWX0wggQERqNkoL25tVC4Fa9lmYxMwNHtWZ7GmhfuWqp//m28NCPldN44dzwPATdW0BJDghj1uisFpKtuUXok437LT4ovzuTQ8iuegLM1pGVH+vwd/1KBHURnNe8US8m9E4dIQw9hFgA8ItG5COgXqlVkvPR2sLp0llQbUNDrKM5JwmyK8UKbrU3Un/tmvxSn0KrtBt3cLDVOKIUHRxQtoaI4T5eowJhbAxMGzXLjhScvNos9qM5OFmG1EgGo6ItCK9cvhgMVdk0ePLguzyFBsDTstFns/B8Q02dmeti27DqZWCxI3HJ41tDN4aJguu/4EPLlS55loW4dJVBh2g6IdT88N2uz6FQIrQULU10RbOGmGwNsIOnPBnb+lhD48U42HtgfEoFOuIU0GdHmxsIFzAb7b93/Gfyvy1MrZauZiFMZaiYxu43/Pg+VsGVsPze+zhtaxGBtr5gcLF6XDHENIKwSLW4/Cs4iBhxMtLPjR1tRbaFwLKo+tRqzv32xa1f/vowbahdLv42uFdY/NJuzqsCThoo9Z2E6S5wn6KbP/bGEgjL/KmF1S79qj9U1JCKVV8QKJlQacFdNBWSAHSqiTpIpJqVxiThf0DiW9jKQ5RuKUL8jDN9Ht07S4iAmES2Rg6VylasPibBanB99k71VBmlQR1SBmtGFxEqziPMZ5DWV4lrlgnYTCEM7rZcuaUgDwqDJioUTg2WW/l0M7CkPhM+cETcVEtJz/pY/QzmHQBMnxHRd9CQf1Sa3eZryJt+RygQe7OITwjvVB6izTdKRhBHAYZx3hjqCvrvwK9mso0jF5yXdnbGsGkQF9G79Ab144F+fpGJimcMnvaHI+PPfdndthVAgdLyYK8pTqum9JMco311eLJZBDPKEuMoHPutzVBRkNuU1mrST3iJ+x/O1p/DsApBbVKwFrYkkPWy0Y1hRTVmmRhqAfLqjBWA8eGrnnO9CZJWt+C1bKdUIBEmLJ4G+MKnqA2YI9/VxcYSP+axKDIH/BPiU7NGYpA2E='}})]))], created=1764600796, model='google/gemini-3-pro-preview', object='chat.completion', service_tier=None, system_fingerprint='', usage=CompletionUsage(completion_tokens=11, prompt_tokens=70, total_tokens=400, completion_tokens_details=CompletionTokensDetails(accepted_prediction_tokens=None, audio_tokens=None, reasoning_tokens=319, rejected_prediction_tokens=None), prompt_tokens_details=None, extra_properties={'google': {'traffic_type': 'ON_DEMAND'}}))\n```\n\n- Using OpenAI Agents SDK:\n\n```python\n# Create an async-compatible OpenAI client pointing to GOOGLE's endpoint\n# Set up the OpenAI client pointing to GOOGLE endpoint\nclient = AsyncOpenAI(\n    api_key=creds,\n    base_url=f\"https://aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/global/endpoints/openapi\",\n)\n\n# Define the orchestrator agent that routes tasks\nclimatizer_agent = Agent[SharedContext](\n    name=\"climatizer_agent\",\n    instructions=(\n        \"You are a smart home climatization agent. \"\n        \"Your task is to monitor the temperature in a given city and adjust the thermostat to maintain comfort. \"\n        \"Use the provided tools to read the current temperature and set a new thermostat value. \"\n        \"If the temperature is too high or too low, adjust it to a reasonable 'comfortable' value, \"\n        \"which you must assume without asking for clarification. \"\n        \"Consider comfortable indoor temperature to be around 20–22°C (68–72°F) unless otherwise specified. \"\n        \"Always perform actions using the tools and provide concise confirmation of the action taken.\"\n    ),\n    model=OpenAIChatCompletionsModel(model=MODEL_NAME, openai_client=client),\n    model_settings=ModelSettings(parallel_tool_calls=False, tool_choice='required', temperature=0, top_p=1.0),\n    tools=[function_tool(get_current_temperature), function_tool(set_thermostat_temperature),]\n)\n\nprompt = \"\"\"\nIf it's too hot or too cold in London, set the temperature to a comfortable level.\nMake your own reasonable assumption for what 'comfortable' means and do not ask for clarification.\n\"\"\"\n\ninvoke_inputs = [{\"role\": \"user\", \"content\": prompt}]\n\n\nasync def main():\n    while True:\n        try:\n            with trace(\"Climatization\"):\n                run_result = await Runner.run(climatizer_agent, input=invoke_inputs)\n                print(run_result)\n        except KeyboardInterrupt:\n            break\n```\n\nOUTPUT:\n```\nFile \"C:\\Users\\dom\\anaconda3\\envs\\genai\\Lib\\site-packages\\openai\\_base_client.py\", line 1594, in request\n    raise self._make_status_error_from_response(err.response) from None\nopenai.BadRequestError: Error code: 400 - [{'error': {'code': 400, 'message': 'Unable to submit request because function call `default_api:get_current_temperature` in the 2. content block is missing a `thought_signature`. Learn more: https://docs.cloud.google.com/vertex-ai/generative-ai/docs/thought-signatures', 'status': 'INVALID_ARGUMENT'}}]\n```\n\n### Expected behavior\nA clear and concise description of what you expected to happen.\n",
+            "closedAt": "2026-01-07T01:35:53Z",
+            "comments": {
+              "totalCount": 6
+            },
+            "createdAt": "2025-12-01T15:14:40Z",
+            "databaseId": 3681485253,
+            "id": "I_kwDOOGidp87bbwHF",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a2eeef",
+                  "description": "New feature or request",
+                  "name": "enhancement"
+                },
+                {
+                  "color": "77cf69",
+                  "description": "",
+                  "name": "feature:chat-completions"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2137,
+            "state": "CLOSED",
+            "title": "Missing thought_signature when using Gemini 3 pro preview",
+            "updatedAt": "2026-01-07T01:35:59Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2137"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:16.116525Z"
+}

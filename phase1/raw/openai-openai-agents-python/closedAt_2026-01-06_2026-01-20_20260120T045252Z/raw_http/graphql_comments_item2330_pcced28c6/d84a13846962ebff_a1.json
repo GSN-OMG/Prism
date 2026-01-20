@@ -1,0 +1,157 @@
+{
+  "finished_at": "2026-01-20T04:58:07.607035Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "d84a13846962ebff",
+    "tag": "graphql_comments_item2330_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2330,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "5380",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:58:07 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DD0C:F2819:16A4D1C:1FB03E2:696F0B5F",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4573",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "427",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/4557?v=4",
+                    "databaseId": 4557,
+                    "id": "MDQ6VXNlcjQ1NTc=",
+                    "login": "ihower",
+                    "url": "https://github.com/ihower"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "A related reference is this LangChain post, which also lists skills as a pattern: https://www.blog.langchain.com/choosing-the-right-multi-agent-architecture/",
+                  "createdAt": "2026-01-18T12:22:21Z",
+                  "databaseId": 3765235075,
+                  "id": "IC_kwDOOGidp87gbO2D",
+                  "updatedAt": "2026-01-18T12:22:21Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2330#issuecomment-3765235075"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "authorAssociation": "MEMBER",
+                  "body": "Thanks for sharing this implementation idea! Indeed, your code looks functional and it loads only name and description in instructions, and then load the whole skill data including scripts when it can be used. However, I hesitate to add these examples because they don't demonstrate this SDK's built-in functionalities to load skills. \r\n\r\nAlso, most of the non-coding models are not optimized for utilizing skills unlike codex models. That's why I added support via codex tool for loading skills.\r\n\r\nThus, your code examples are really helpful for others, but they are not the best suitable ones for this repo's examples.",
+                  "createdAt": "2026-01-18T12:47:34Z",
+                  "databaseId": 3765255721,
+                  "id": "IC_kwDOOGidp87gbT4p",
+                  "updatedAt": "2026-01-18T12:48:27Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2330#issuecomment-3765255721"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/4557?v=4",
+                    "databaseId": 4557,
+                    "id": "MDQ6VXNlcjQ1NTc=",
+                    "login": "ihower",
+                    "url": "https://github.com/ihower"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "@seratch Thanks for the feedback.\r\n\r\nIf a skill only involves loading instructions with progressive disclosure and does not execute scripts, it can work without a coding model. In such cases, I think a non-coding model can still handle this pattern reasonably well.\r\n\r\nWould it make sense to you to remove `agent_skills_shell.py` and keep only the minimal example `agent_skills.py`, with a note that advanced script execution should rely on the codex tool instead? My intent is to keep the example focused on illustrating the design pattern, rather than advanced capabilities or built-in features, similar to other agentic pattern examples(which do not always rely on special built-in features) and how the LangChain docs present their [skills examples](https://docs.langchain.com/oss/python/langchain/multi-agent/skills).\r\n\r\nAs a side note from this exploration, I noticed a related limitation in the current SDK. With function tools today, loaded skill content is always returned as tool output, not injected into the user prompt. In systems like Claude Code, function calls are also used to load skills, but the skill content is injected into user message, which may lead to better instruction-following behavior.\r\n\r\nAt the moment, the OpenAI Agents SDK does not provide a way for tools to dynamically inject user messages. This may be something that could be considered in the future.",
+                  "createdAt": "2026-01-18T16:00:06Z",
+                  "databaseId": 3765438004,
+                  "id": "IC_kwDOOGidp87gcAY0",
+                  "updatedAt": "2026-01-18T16:16:54Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2330#issuecomment-3765438004"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "authorAssociation": "MEMBER",
+                  "body": "I may revisit my understanding later, but at the moment, I do not think loading skills via a function tool is an optimal solution, because it is not an instruction to the agent's model but rather tool output. \r\n\r\nIf the skill metadata is embedded directly in the instructions, the model is more likely to behave predictably, with clear boundaries between enabled skills and user or tool inputs. That said, if we were to encourage this approach, the SDK should provide a built-in way to load skills when initializing an agent. \r\n\r\nThe agent skills concept is still in its early stages, so for now, I would like to see how the ecosystem and usage patterns evolve.",
+                  "createdAt": "2026-01-18T23:02:10Z",
+                  "databaseId": 3765845647,
+                  "id": "IC_kwDOOGidp87gdj6P",
+                  "updatedAt": "2026-01-18T23:02:10Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2330#issuecomment-3765845647"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/4557?v=4",
+                    "databaseId": 4557,
+                    "id": "MDQ6VXNlcjQ1NTc=",
+                    "login": "ihower",
+                    "url": "https://github.com/ihower"
+                  },
+                  "authorAssociation": "CONTRIBUTOR",
+                  "body": "Understood, thanks for explaining your perspective.",
+                  "createdAt": "2026-01-19T02:47:56Z",
+                  "databaseId": 3766158183,
+                  "id": "IC_kwDOOGidp87gewNn",
+                  "updatedAt": "2026-01-19T02:47:56Z",
+                  "url": "https://github.com/openai/openai-agents-python/pull/2330#issuecomment-3766158183"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO4HsDZw==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:58:07.104195Z"
+}

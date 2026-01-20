@@ -1,0 +1,125 @@
+{
+  "finished_at": "2026-01-20T04:53:04.894466Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "828ab06a28fc9f60",
+    "tag": "graphql_core_item2041"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2041,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "1853",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:04 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DA6F:F2819:169BA1D:1FA4FD7:696F0A30",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4987",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "13",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 2063,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/58258368?u=35432c964709f5b15db0210d60a06a1fb3707c2e&v=4",
+              "databaseId": 58258368,
+              "id": "MDQ6VXNlcjU4MjU4MzY4",
+              "login": "DanieleMorotti",
+              "url": "https://github.com/DanieleMorotti"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "baseRefName": "main",
+            "body": "### Feature\r\nThis PR introduces the `AdvancedSQLAlchemySession`, adapted from the existing `AdvancedSQLLiteSession` implementation to work with `SQLAlchemy`. Related to #2035 .\r\n\r\nThe new class aims to provide feature parity with `AdvancedSQLLiteSession`, including support for usage tracking, branching, and other existing functionalities.\r\n\r\n### Testing\r\nFor testing, I’ve replicated and adjusted the test cases from `AdvancedSQLLiteSession` to ensure similar coverage and behavior.\r\n\r\nLet me know if this seems like a solid starting point or if there are some problems!",
+            "changedFiles": 3,
+            "closedAt": "2026-01-10T02:12:27Z",
+            "comments": {
+              "totalCount": 7
+            },
+            "createdAt": "2025-11-04T14:11:51Z",
+            "databaseId": 2976798873,
+            "deletions": 0,
+            "files": {
+              "totalCount": 3
+            },
+            "headRefName": "add_advanced_sqlalchemy",
+            "headRefOid": "f8608f767ff995b0e9fd824e6ef7d565a7e1a70b",
+            "id": "PR_kwDOOGidp86xbliZ",
+            "isDraft": true,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a2eeef",
+                  "description": "New feature or request",
+                  "name": "enhancement"
+                },
+                {
+                  "color": "ededed",
+                  "description": null,
+                  "name": "stale"
+                },
+                {
+                  "color": "90669a",
+                  "description": "",
+                  "name": "feature:sessions"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": null,
+            "mergedAt": null,
+            "mergedBy": null,
+            "milestone": null,
+            "number": 2041,
+            "reviews": {
+              "totalCount": 0
+            },
+            "state": "CLOSED",
+            "title": "Add implementation of AdvancedSQLAlchemy",
+            "updatedAt": "2026-01-10T02:12:27Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2041"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:04.365403Z"
+}

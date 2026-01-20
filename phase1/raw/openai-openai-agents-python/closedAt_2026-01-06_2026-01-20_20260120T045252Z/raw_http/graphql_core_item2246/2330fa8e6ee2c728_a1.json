@@ -1,0 +1,105 @@
+{
+  "finished_at": "2026-01-20T04:54:12.830794Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "2330fa8e6ee2c728",
+    "tag": "graphql_core_item2246"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2246,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "5032",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:12 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DAF8:3FF1FA:3A27B3:51A630:696F0A74",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4894",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "106",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/56637531?u=8940bb777f30c4addc920146ec3d31844c9f0a2b&v=4",
+              "databaseId": 56637531,
+              "id": "MDQ6VXNlcjU2NjM3NTMx",
+              "login": "atpug22",
+              "url": "https://github.com/atpug22"
+            },
+            "authorAssociation": "NONE",
+            "body": "### Summary\n\nWhen running multiple `Runner.run()` calls concurrently using `asyncio.gather()` (common in batch processing scenarios), Python raises a `ValueError` related to ContextVar token management. This is similar to the issue fixed in #538 for `run_streamed()`, but affects the regular synchronous `Runner.run()` pattern.\n\n### Environment\n\n- **openai-agents version:** 0.6.x (also affects forked version with Gemini support)\n- **Python version:** 3.11+\n- **OS:** Linux (production), macOS (development)\n\n### Error Message\n\n```\nValueError: <Token var=<ContextVar name='current_trace' default=None at 0x7f7a7f7279c0> at 0x7f7a73ea0200> was created in a different Context\n```\n\n### Stack Trace Location\n\n```\nFile \"agents/tracing/scope.py\", line 49, in reset_current_trace\n    _current_trace.reset(token)\n```\n\n### Reproduction\n\n```python\nimport asyncio\nfrom agents import Agent, Runner\n\nasync def process_batch(inputs: list[str]):\n    \"\"\"Process multiple inputs concurrently - triggers ContextVar error\"\"\"\n\n    async def process_single(input_text: str):\n        agent = Agent(\n            name=\"processor\",\n            instructions=\"Process the input\",\n            model=\"gpt-4.1-mini\",\n        )\n        result = await Runner.run(agent, input_text)\n        return result.final_output\n\n    # Concurrent execution triggers the error\n    tasks = [process_single(inp) for inp in inputs]\n    results = await asyncio.gather(*tasks)\n    return results\n\n# This will fail with ContextVar error when inputs > 1\nasyncio.run(process_batch([\"input1\", \"input2\", \"input3\"]))\n```\n\n### Root Cause Analysis\n\nThe issue is in `agents/tracing/traces.py` and `agents/tracing/scope.py`:\n\n1. When `Runner.run()` starts, it calls `trace.start(mark_as_current=True)` which does:\n   ```python\n   self._prev_context_token = Scope.set_current_trace(self)\n   ```\n\n2. When `Runner.run()` finishes, it calls `trace.finish(reset_current=True)` which does:\n   ```python\n   Scope.reset_current_trace(self._prev_context_token)\n   ```\n\n3. With concurrent `asyncio.gather()` tasks:\n   - Task 1: `set_current_trace()` → gets token A\n   - Task 2: `set_current_trace()` → gets token B\n   - Task 3: `set_current_trace()` → gets token C\n   - Task 1 finishes: `reset_current_trace(token A)` → changes ContextVar\n   - Task 3 finishes: `reset_current_trace(token C)` → **ERROR**: token C was created when ContextVar had different state\n\n### Relationship to #538\n\nIssue #538 and PR #540 fixed this for `run_streamed()` by ensuring trace start/finish happen in the same async context. However, the same pattern occurs with concurrent `Runner.run()` calls, which wasn't addressed.\n\n### Current Workaround\n\nWe're using `RunConfig(tracing_disabled=True)` for batch operations:\n\n```python\nfrom agents import RunConfig\n\nbatch_config = RunConfig(tracing_disabled=True)\n\nasync def process_single(input_text: str):\n    agent = Agent(...)\n    result = await Runner.run(agent, input_text, run_config=batch_config)\n    return result.final_output\n```\n\nThis works but loses all tracing data for batch operations.\n\n### Proposed Solutions\n\n1. **Apply same fix as #540** - Ensure trace lifecycle is managed within each task's context\n2. **Use `contextvars.copy_context()`** - Give each concurrent task its own context copy\n3. **Catch and handle the ValueError** - Gracefully handle the reset failure without crashing\n\n### Impact\n\n- **Frequency:** 19 errors in production from a single batch operation\n- **Affected use case:** Any batch processing that uses concurrent `Runner.run()` calls\n- **Workaround available:** Yes, but loses tracing capability\n\n### Additional Context\n\nProduction error pattern (all 19 errors within 1 second, same batch):\n```\n2025-12-29 17:48:19.219 | generate_content | ContextVar error\n2025-12-29 17:48:19.223 | generate_content | ContextVar error\n2025-12-29 17:48:19.227 | generate_content | ContextVar error\n... (16 more within same second)\n```",
+            "closedAt": "2026-01-06T02:27:49Z",
+            "comments": {
+              "totalCount": 2
+            },
+            "createdAt": "2025-12-30T12:25:13Z",
+            "databaseId": 3770024158,
+            "id": "I_kwDOOGidp87gtgDe",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "c7c425",
+                  "description": "",
+                  "name": "feature:tracing"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2246,
+            "state": "CLOSED",
+            "title": "ValueError: ContextVar token \"was created in a different Context\" when using concurrent Runner.run() calls with asyncio.gather",
+            "updatedAt": "2026-01-06T02:27:49Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2246"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:12.290006Z"
+}

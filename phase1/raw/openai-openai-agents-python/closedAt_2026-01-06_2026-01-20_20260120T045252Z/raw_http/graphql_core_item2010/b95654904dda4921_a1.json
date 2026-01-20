@@ -1,0 +1,110 @@
+{
+  "finished_at": "2026-01-20T04:53:03.090151Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "b95654904dda4921",
+    "tag": "graphql_core_item2010"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2010,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "1586",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:03 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DA68:29AB24:15F3321:1EFCFB0:696F0A2E",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4990",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "10",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/3329961?u=c0e70258badc400048cb5bdea7ce2f0460c3d01b&v=4",
+              "databaseId": 3329961,
+              "id": "MDQ6VXNlcjMzMjk5NjE=",
+              "login": "nbondoux",
+              "url": "https://github.com/nbondoux"
+            },
+            "authorAssociation": "NONE",
+            "body": "### Describe the bug\nThe function calculate_audio_length_ms defined in realtime/_util.py has an issue:\n```\ndef calculate_audio_length_ms(format: RealtimeAudioFormat | None, audio_bytes: bytes) -> float:\n    if format and isinstance(format, str) and format.startswith(\"g711\"):\n        return (len(audio_bytes) / 8000) * 1000\n    return (len(audio_bytes) / 24 / 2) * 1000\n```\n\nif the audio is g711, it will answer a number of milllisecond; however, if the audio is 16bits 24kHz PCM, it will answer a number of microseconds.\n\n### Debug information\n- Agents SDK version: (e.g. `v0.4.2`)\n\n\n",
+            "closedAt": "2026-01-08T06:57:34Z",
+            "comments": {
+              "totalCount": 0
+            },
+            "createdAt": "2025-10-29T23:23:20Z",
+            "databaseId": 3568330026,
+            "id": "I_kwDOOGidp87UsGUq",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "d73a4a",
+                  "description": "Something isn't working",
+                  "name": "bug"
+                },
+                {
+                  "color": "d3cbd8",
+                  "description": "",
+                  "name": "feature:realtime"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2010,
+            "state": "CLOSED",
+            "title": "Typo in realtime code in calculate_audio_length_ms function",
+            "updatedAt": "2026-01-08T06:58:07Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2010"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:02.482364Z"
+}

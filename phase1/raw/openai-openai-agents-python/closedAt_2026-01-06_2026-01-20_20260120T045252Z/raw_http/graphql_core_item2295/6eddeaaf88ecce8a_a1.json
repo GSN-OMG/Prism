@@ -1,0 +1,141 @@
+{
+  "finished_at": "2026-01-20T04:56:15.543165Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "6eddeaaf88ecce8a",
+    "tag": "graphql_core_item2295"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2295,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "5010",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:15 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DC02:EFCF3:161E04B:1F28FD4:696F0AEF",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4724",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "276",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 90,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "authorAssociation": "MEMBER",
+            "baseRefName": "main",
+            "body": "This pull request fixes LiteLLM Pydantic serializer warnings during streaming by adding an opt-in patch in src/agents/extensions/models/litellm_model.py that wraps LiteLLM’s private logging helper to serialize BaseModel instances with warnings disabled, and by adding a unit test in tests/models/test_litellm_logging_patch.py to assert the env var controls whether the patch is applied. It documents the LiteLLM issue context and the private-helper dependency risk, with guidance to remove the patch once LiteLLM resolves the underlying issue. This pull request resolves #2291.\r\n\r\nTest script:\r\n```python\r\nimport asyncio\r\n\r\nfrom agents import Agent, ModelSettings, RunConfig, Runner\r\n\r\n\r\nasync def main() -> int:\r\n    \"\"\"Stream events from a Claude model via LiteLLM to validate warning suppression.\"\"\"\r\n    agent = Agent(\r\n        name=\"claude-streaming-repro\",\r\n        model=\"litellm/anthropic/claude-sonnet-4-5-20250929\",\r\n        instructions=\"You are a helpful assistant. Keep responses brief.\",\r\n        model_settings=ModelSettings(temperature=0.7),\r\n    )\r\n\r\n    run_config = RunConfig(tracing_disabled=True)\r\n\r\n    result = Runner.run_streamed(\r\n        agent,\r\n        input=[{\"role\": \"user\", \"content\": \"Say hello in one sentence.\"}],\r\n        run_config=run_config,\r\n    )\r\n\r\n    event_count = 0\r\n    async for event in result.stream_events():\r\n        event_count += 1\r\n        print(f\"Event {event_count}: {event.__class__.__name__}\")\r\n\r\n    print(f\"Total events: {event_count}\")\r\n    return event_count\r\n\r\n\r\nif __name__ == \"__main__\":\r\n    asyncio.run(main())\r\n```\r\n\r\nbefore:\r\n```\r\n$ uv run python test.py\r\nEvent 1: AgentUpdatedStreamEvent\r\nEvent 2: RawResponsesStreamEvent\r\nEvent 3: RawResponsesStreamEvent\r\nEvent 4: RawResponsesStreamEvent\r\nEvent 5: RawResponsesStreamEvent\r\nEvent 6: RawResponsesStreamEvent\r\nEvent 7: RawResponsesStreamEvent\r\nEvent 8: RawResponsesStreamEvent\r\nEvent 9: RawResponsesStreamEvent\r\nEvent 10: RunItemStreamEvent\r\nTotal events: 10\r\n/Users/seratch/code/openai-agents-python/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:\r\n  PydanticSerializationUnexpectedValue(Expected 10 fields but got 5: Expected `Message` - serialized value may not be as expected [field_name='message', input_value=Message(content='Hello! H...er_specific_fields=None), input_type=Message])\r\n  PydanticSerializationUnexpectedValue(Expected `StreamingChoices` - serialized value may not be as expected [field_name='choices', input_value=Choices(finish_reason='st...r_specific_fields=None)), input_type=Choices])\r\n  return self.__pydantic_serializer__.to_python(\r\n```\r\n\r\nafter with the opt-in env variable:\r\n```\r\n$ OPENAI_AGENTS_ENABLE_LITELLM_SERIALIZER_PATCH=1 uv run python test.py\r\nEvent 1: AgentUpdatedStreamEvent\r\nEvent 2: RawResponsesStreamEvent\r\nEvent 3: RawResponsesStreamEvent\r\nEvent 4: RawResponsesStreamEvent\r\nEvent 5: RawResponsesStreamEvent\r\nEvent 6: RawResponsesStreamEvent\r\nEvent 7: RawResponsesStreamEvent\r\nEvent 8: RawResponsesStreamEvent\r\nEvent 9: RawResponsesStreamEvent\r\nEvent 10: RunItemStreamEvent\r\nTotal events: 10\r\n```",
+            "changedFiles": 2,
+            "closedAt": "2026-01-12T01:26:12Z",
+            "comments": {
+              "totalCount": 0
+            },
+            "createdAt": "2026-01-12T01:16:37Z",
+            "databaseId": 3164224236,
+            "deletions": 0,
+            "files": {
+              "totalCount": 2
+            },
+            "headRefName": "issue-2291-litellm-warning",
+            "headRefOid": "3be0da9b22c0bcf4b71179ef0781c6007630aa33",
+            "id": "PR_kwDOOGidp868mjrs",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a2eeef",
+                  "description": "New feature or request",
+                  "name": "enhancement"
+                },
+                {
+                  "color": "a95c3a",
+                  "description": "",
+                  "name": "feature:lite-llm"
+                },
+                {
+                  "color": "d0ceac",
+                  "description": "",
+                  "name": "dependencies"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "9cc895818d44f842480f71593bdf3a11cb5686e7",
+              "url": "https://github.com/openai/openai-agents-python/commit/9cc895818d44f842480f71593bdf3a11cb5686e7"
+            },
+            "mergedAt": "2026-01-12T01:26:12Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2295,
+            "reviews": {
+              "totalCount": 0
+            },
+            "state": "MERGED",
+            "title": "fix: #2291 silence LiteLLM serializer warnings in streaming (opt-in)",
+            "updatedAt": "2026-01-12T01:26:14Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2295"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:14.859756Z"
+}

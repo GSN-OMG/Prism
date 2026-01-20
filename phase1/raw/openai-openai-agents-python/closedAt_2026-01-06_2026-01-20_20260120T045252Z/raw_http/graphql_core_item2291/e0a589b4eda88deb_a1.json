@@ -1,0 +1,115 @@
+{
+  "finished_at": "2026-01-20T04:56:06.168957Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "e0a589b4eda88deb",
+    "tag": "graphql_core_item2291"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2291,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "6414",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:06 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DBEB:3FF1FA:3A5E5D:51E93F:696F0AE4",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4738",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "262",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/224527505?u=22647dcde997a87624caf478afe66e08d7528e8d&v=4",
+              "databaseId": 224527505,
+              "id": "U_kgDODWIEkQ",
+              "login": "dast-draftwise",
+              "url": "https://github.com/dast-draftwise"
+            },
+            "authorAssociation": "NONE",
+            "body": "## Description\n\nWhen using `openai-agents>=0.6.5` with `pydantic>=2.12.3` and **Claude models**, Pydantic serializer warnings are generated during event streaming. The warnings occur **internally within the library** during `result.stream_events()` iteration. This has direct effect on the performance of doing some tasks when using Claude models as it leaks to the user prompt and internal instructions.\n\n```\n/path/to/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:\n  PydanticSerializationUnexpectedValue(Expected 10 fields but got 5: Expected `Message` - serialized value may not be as expected [field_name='message', input_value=Message(content=\"Hello! H...er_specific_fields=None), input_type=Message])\n  PydanticSerializationUnexpectedValue(Expected `StreamingChoices` - serialized value may not be as expected [field_name='choices', input_value=Choices(finish_reason='st...r_specific_fields=None)), input_type=Choices])\n  return self.__pydantic_serializer__.to_python(\n```\n\n## Environment\n\n- **openai-agents version:** 0.6.5\n- **pydantic version:** 2.12.5\n- **pydantic-core version:** 2.41.5\n- **Python version:** 3.12\n\n\n**This issue ONLY occurs with Claude/Anthropic models, NOT with GPT models.**\n\n\n## Steps to Reproduce\n\n1. Install `openai-agents>=0.6.5` with `pydantic>=2.12.3`\n2. Create an agent using a Claude model (e.g., `anthropic/claude-sonnet-4-5-20250929`)\n3. Run the agent with `Runner.run_streamed()`\n4. Iterate through events with `result.stream_events()`\n5. Observe Pydantic serialization warnings during iteration\n\n## Minimal Reproducible Example\n\n**Complete working script:**\n\n```python\nimport os\nimport asyncio\nfrom pathlib import Path\nfrom agents import Agent, Runner, RunConfig, ModelSettings\n\n# Load environment variables from .env file (optional)\ntry:\n    from dotenv import load_dotenv\n    env_path = Path(__file__).parent / \".env\"\n    if env_path.exists():\n        load_dotenv(env_path)\nexcept ImportError:\n    pass\n\nasync def main():\n    \"\"\"Main async function to run the agent and process events\"\"\"\n    \n    # Create a Claude agent - REQUIRED to reproduce (GPT models don't trigger this)\n    print(\"Creating Claude Sonnet 4.5 agent...\")\n    agent = Agent(\n        name=\"test-claude-agent\",\n        model=\"litellm/anthropic/claude-sonnet-4-5-20250929\",  # LiteLLM proxy format\n        instructions=\"You are a helpful assistant. Keep responses brief.\",\n        model_settings=ModelSettings(temperature=0.7),\n    )\n\n    print(\"Running agent with simple message...\")\n    \n    # Run agent using Runner.run_streamed()\n    run_config = RunConfig(tracing_disabled=True)\n    \n    result = Runner.run_streamed(\n        agent,\n        input=[{\"role\": \"user\", \"content\": \"Say hello in one sentence.\"}],\n        run_config=run_config,\n    )\n\n    print(f\"Trace ID: {result.trace.trace_id if result.trace else 'None'}\")\n    print(\"-\" * 80)\n    print(\"Processing events (warnings will appear during iteration)...\")\n    print(\"-\" * 80)\n\n    # Warnings occur HERE during iteration, BEFORE any explicit serialization\n    event_count = 0\n    async for event in result.stream_events():\n        event_count += 1\n        event_type = event.__class__.__name__\n        print(f\"Event {event_count}: {event_type}\", end=\"\")\n        \n        # Check if event has model_dump (many don't)\n        if hasattr(event, 'model_dump'):\n            print(\" (has model_dump)\")\n        else:\n            print(\" (no model_dump)\")\n    \n    return event_count\n\n# Run the async main function\nevent_count = asyncio.run(main())\nprint(f\"\\nTotal events: {event_count}\")\n```\n\n\n**Expected Output:**\n```\nEvent 1: AgentUpdatedStreamEvent (no model_dump)\nEvent 2: RawResponsesStreamEvent (no model_dump)\nEvent 3: RawResponsesStreamEvent (no model_dump)\nEvent 4: RawResponsesStreamEvent (no model_dump)\nEvent 5: RawResponsesStreamEvent (no model_dump)\nEvent 6: RawResponsesStreamEvent (no model_dump)\nEvent 7: RawResponsesStreamEvent (no model_dump)\nEvent 8: RawResponsesStreamEvent (no model_dump)\nEvent 9: RawResponsesStreamEvent (no model_dump)\nEvent 10: RunItemStreamEvent (no model_dump)\n/Users/stankod/local-llm-service/draftwise/llm/llm-service/.venv/lib/python3.12/site-packages/pydantic/main.py:464: UserWarning: Pydantic serializer warnings:\n  PydanticSerializationUnexpectedValue(Expected 10 fields but got 5: Expected `Message` - serialized value may not be as expected [field_name='message', input_value=Message(content='Hello! H...er_specific_fields=None), input_type=Message])\n  PydanticSerializationUnexpectedValue(Expected `StreamingChoices` - serialized value may not be as expected [field_name='choices', input_value=Choices(finish_reason='st...r_specific_fields=None)), input_type=Choices])\n  return self.__pydantic_serializer__.to_python(\n```\n\n## Additional Context\n\nThis issue was discovered when upgrading from `openai-agents==0.4.2` (which required `pydantic<2.12.0`) to `openai-agents==0.6.5`. \n\nThe warnings occur specifically during internal event processing for Claude models. The fact that GPT models work without warnings suggests the issue is in Claude-specific response handling code within `openai-agents`.",
+            "closedAt": "2026-01-12T01:26:13Z",
+            "comments": {
+              "totalCount": 4
+            },
+            "createdAt": "2026-01-10T17:04:56Z",
+            "databaseId": 3800075715,
+            "id": "I_kwDOOGidp87igI3D",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "a2eeef",
+                  "description": "New feature or request",
+                  "name": "enhancement"
+                },
+                {
+                  "color": "a95c3a",
+                  "description": "",
+                  "name": "feature:lite-llm"
+                },
+                {
+                  "color": "d0ceac",
+                  "description": "",
+                  "name": "dependencies"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2291,
+            "state": "CLOSED",
+            "title": "Pydantic 2.12+ Serialization Warnings with Claude Models in openai-agents 0.6.5",
+            "updatedAt": "2026-01-12T08:43:13Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2291"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:04.829628Z"
+}

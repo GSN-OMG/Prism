@@ -1,0 +1,232 @@
+{
+  "finished_at": "2026-01-20T04:56:54.274076Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "f481ded205b9ab56",
+    "tag": "rest_pr_files_pr2307_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2307/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "26542",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:54 GMT",
+      "etag": "\"0fdbae73292ad204e6a8eb8c06e3ec7e5b107e9467766ab75f8df9f67800c831\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Thu, 15 Jan 2026 05:45:09 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DC66:3FF1FA:3A7646:52065D:696F0B15",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4948",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "52",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 52,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fguardrails.md",
+        "changes": 53,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Fguardrails.md?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 1,
+        "filename": "docs/guardrails.md",
+        "patch": "@@ -41,6 +41,57 @@ Output guardrails run in 3 steps:\n \n     Output guardrails always run after the agent completes, so they don't support the `run_in_parallel` parameter.\n \n+## Tool guardrails\n+\n+Tool guardrails wrap **function tools** and let you validate or block tool calls before and after execution. They are configured on the tool itself and run every time that tool is invoked.\n+\n+- Input tool guardrails run before the tool executes and can skip the call, replace the output with a message, or raise a tripwire.\n+- Output tool guardrails run after the tool executes and can replace the output or raise a tripwire.\n+- Tool guardrails apply only to function tools created with [`function_tool`][agents.function_tool]; hosted tools (`WebSearchTool`, `FileSearchTool`, `HostedMCPTool`, `CodeInterpreterTool`, `ImageGenerationTool`) and local runtime tools (`ComputerTool`, `ShellTool`, `ApplyPatchTool`, `LocalShellTool`) do not use this guardrail pipeline.\n+\n+```python\n+import json\n+from agents import (\n+    Agent,\n+    Runner,\n+    ToolGuardrailFunctionOutput,\n+    function_tool,\n+    tool_input_guardrail,\n+    tool_output_guardrail,\n+)\n+\n+@tool_input_guardrail\n+def block_secrets(data):\n+    args = json.loads(data.context.tool_arguments or \"{}\")\n+    if \"sk-\" in json.dumps(args):\n+        return ToolGuardrailFunctionOutput.reject_content(\n+            \"Remove secrets before calling this tool.\"\n+        )\n+    return ToolGuardrailFunctionOutput.allow()\n+\n+\n+@tool_output_guardrail\n+def redact_output(data):\n+    text = str(data.output or \"\")\n+    if \"sk-\" in text:\n+        return ToolGuardrailFunctionOutput.reject_content(\"Output contained sensitive data.\")\n+    return ToolGuardrailFunctionOutput.allow()\n+\n+\n+@function_tool(\n+    tool_input_guardrails=[block_secrets],\n+    tool_output_guardrails=[redact_output],\n+)\n+def classify_text(text: str) -> str:\n+    \"\"\"Classify text for internal routing.\"\"\"\n+    return f\"length:{len(text)}\"\n+\n+\n+agent = Agent(name=\"Classifier\", tools=[classify_text])\n+result = Runner.run_sync(agent, \"hello world\")\n+print(result.final_output)\n+```\n+\n ## Tripwires\n \n If the input or output fails the guardrail, the Guardrail can signal this with a tripwire. As soon as we see a guardrail that has triggered the tripwires, we immediately raise a `{Input,Output}GuardrailTripwireTriggered` exception and halt the Agent execution.\n@@ -161,4 +212,4 @@ async def main():\n 1. This is the actual agent's output type.\n 2. This is the guardrail's output type.\n 3. This is the guardrail function that receives the agent's output, and returns the result.\n-4. This is the actual agent that defines the workflow.\n\\ No newline at end of file\n+4. This is the actual agent that defines the workflow.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fguardrails.md",
+        "sha": "e00752e94d80834238e0bf09eea55b4902eb9273",
+        "status": "modified"
+      },
+      {
+        "additions": 2,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fhandoffs.md",
+        "changes": 2,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Fhandoffs.md?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 0,
+        "filename": "docs/handoffs.md",
+        "patch": "@@ -8,6 +8,8 @@ Handoffs are represented as tools to the LLM. So if there's a handoff to an agen\n \n All agents have a [`handoffs`][agents.agent.Agent.handoffs] param, which can either take an `Agent` directly, or a `Handoff` object that customizes the Handoff.\n \n+If you pass plain `Agent` instances, their [`handoff_description`][agents.agent.Agent.handoff_description] (when set) is appended to the default tool description. Use it to hint when the model should pick that handoff without writing a full `handoff()` object.\n+\n You can create a handoff using the [`handoff()`][agents.handoffs.handoff] function provided by the Agents SDK. This function allows you to specify the agent to hand off to, along with optional overrides and input filters.\n \n ### Basic Usage",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fhandoffs.md",
+        "sha": "28b160df9e06f92abab848226b6bbccc66272299",
+        "status": "modified"
+      },
+      {
+        "additions": 4,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fmcp.md",
+        "changes": 4,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Fmcp.md?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 0,
+        "filename": "docs/mcp.md",
+        "patch": "@@ -181,6 +181,10 @@ The constructor accepts additional options:\n \n ## 3. HTTP with SSE MCP servers\n \n+!!! warning\n+\n+    The MCP project has deprecated the Server-Sent Events transport. Prefer Streamable HTTP or stdio for new integrations and keep SSE only for legacy servers.\n+\n If the MCP server implements the HTTP with SSE transport, instantiate\n [`MCPServerSse`][agents.mcp.server.MCPServerSse]. Apart from the transport, the API is identical to the Streamable HTTP server.\n ",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fmcp.md",
+        "sha": "0bc7c1b8e6aa3ea642cbf48646e2d51c96ddac90",
+        "status": "modified"
+      },
+      {
+        "additions": 10,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fmodels%2Flitellm.md",
+        "changes": 10,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Fmodels%2Flitellm.md?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 0,
+        "filename": "docs/models/litellm.md",
+        "patch": "@@ -88,3 +88,13 @@ agent = Agent(\n ```\n \n With `include_usage=True`, LiteLLM requests report token and request counts through `result.context_wrapper.usage` just like the built-in OpenAI models.\n+\n+## Troubleshooting\n+\n+If you see Pydantic serializer warnings from LiteLLM responses, enable a small compatibility patch by setting:\n+\n+```bash\n+export OPENAI_AGENTS_ENABLE_LITELLM_SERIALIZER_PATCH=true\n+```\n+\n+This opt-in flag suppresses known LiteLLM serializer warnings while preserving normal behavior. Turn it off (unset or `false`) if you do not need it.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fmodels%2Flitellm.md",
+        "sha": "d61d24cf24bd7861b398c451412cdff5961d3eb1",
+        "status": "modified"
+      },
+      {
+        "additions": 3,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fref%2Fapply_diff.md",
+        "changes": 3,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Fref%2Fapply_diff.md?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 0,
+        "filename": "docs/ref/apply_diff.md",
+        "patch": "@@ -0,0 +1,3 @@\n+# `Apply Diff`\n+\n+::: agents.apply_diff",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fref%2Fapply_diff.md",
+        "sha": "922ea40598efd1afb503eaa4108cfd01b1161b3f",
+        "status": "added"
+      },
+      {
+        "additions": 3,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fref%2Feditor.md",
+        "changes": 3,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Fref%2Feditor.md?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 0,
+        "filename": "docs/ref/editor.md",
+        "patch": "@@ -0,0 +1,3 @@\n+# `Editor`\n+\n+::: agents.editor",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fref%2Feditor.md",
+        "sha": "340cc4af90d2cd8ec35455fdcbf5c71becdda132",
+        "status": "added"
+      },
+      {
+        "additions": 3,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fref%2Fextensions%2Fmemory%2Fasync_sqlite_session.md",
+        "changes": 3,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Fref%2Fextensions%2Fmemory%2Fasync_sqlite_session.md?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 0,
+        "filename": "docs/ref/extensions/memory/async_sqlite_session.md",
+        "patch": "@@ -0,0 +1,3 @@\n+# `Async Sqlite Session`\n+\n+::: agents.extensions.memory.async_sqlite_session",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fref%2Fextensions%2Fmemory%2Fasync_sqlite_session.md",
+        "sha": "215d58d86234c2b2bcd507854164c6e0e20eff28",
+        "status": "added"
+      },
+      {
+        "additions": 3,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fref%2Fhandoffs%2Fhistory.md",
+        "changes": 3,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Fref%2Fhandoffs%2Fhistory.md?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 0,
+        "filename": "docs/ref/handoffs/history.md",
+        "patch": "@@ -0,0 +1,3 @@\n+# `History`\n+\n+::: agents.handoffs.history",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fref%2Fhandoffs%2Fhistory.md",
+        "sha": "d25530050bf93aba655474f7b43f0048843d9e8e",
+        "status": "added"
+      },
+      {
+        "additions": 3,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fref%2Fmemory%2Fopenai_responses_compaction_session.md",
+        "changes": 3,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Fref%2Fmemory%2Fopenai_responses_compaction_session.md?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 0,
+        "filename": "docs/ref/memory/openai_responses_compaction_session.md",
+        "patch": "@@ -0,0 +1,3 @@\n+# `Openai Responses Compaction Session`\n+\n+::: agents.memory.openai_responses_compaction_session",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fref%2Fmemory%2Fopenai_responses_compaction_session.md",
+        "sha": "e1182397c5fb9d0982f0ec52a93c3dfd2bc2ed71",
+        "status": "added"
+      },
+      {
+        "additions": 3,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fref%2Ftracing%2Fconfig.md",
+        "changes": 3,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Fref%2Ftracing%2Fconfig.md?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 0,
+        "filename": "docs/ref/tracing/config.md",
+        "patch": "@@ -0,0 +1,3 @@\n+# `Config`\n+\n+::: agents.tracing.config",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fref%2Ftracing%2Fconfig.md",
+        "sha": "b53f569e04f048a9c695a34be04b971f413a2b92",
+        "status": "added"
+      },
+      {
+        "additions": 2,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fresults.md",
+        "changes": 2,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Fresults.md?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 0,
+        "filename": "docs/results.md",
+        "patch": "@@ -43,6 +43,8 @@ The [`new_items`][agents.result.RunResultBase.new_items] property contains the n\n \n The [`input_guardrail_results`][agents.result.RunResultBase.input_guardrail_results] and [`output_guardrail_results`][agents.result.RunResultBase.output_guardrail_results] properties contain the results of the guardrails, if any. Guardrail results can sometimes contain useful information you want to log or store, so we make these available to you.\n \n+Tool guardrail results are available separately as [`tool_input_guardrail_results`][agents.result.RunResultBase.tool_input_guardrail_results] and [`tool_output_guardrail_results`][agents.result.RunResultBase.tool_output_guardrail_results]. These guardrails can be attached to tools, and those tool calls execute the guardrails during the agent workflow.\n+\n ### Raw responses\n \n The [`raw_responses`][agents.result.RunResultBase.raw_responses] property contains the [`ModelResponse`][agents.items.ModelResponse]s generated by the LLM.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/docs%2Fresults.md",
+        "sha": "f200ef6b4593abcebe97eb01a713d786108408b4",
+        "status": "modified"
+      },
+      {
+        "additions": 26,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/docs%2Frunning_agents.md",
+        "changes": 26,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Frunning_agents.md?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 0,
+        "filename": "docs/running_agents.md",
+        "patch": "@@ -54,9 +54,12 @@ The `run_config` parameter lets you configure some global settings for the agent\n -   [`nest_handoff_history`][agents.run.RunConfig.nest_handoff_history]: When `True` (the default) the runner collapses the prior transcript into a single assistant message before invoking the next agent. The helper places the content inside a `<CONVERSATION HISTORY>` block that keeps appending new turns as subsequent handoffs occur. Set this to `False` or provide a custom handoff filter if you prefer to pass through the raw transcript. All [`Runner` methods](agents.run.Runner) automatically create a `RunConfig` when you do not pass one, so the quickstarts and examples pick up this default automatically, and any explicit [`Handoff.input_filter`][agents.handoffs.Handoff.input_filter] callbacks continue to override it. Individual handoffs can override this setting via [`Handoff.nest_handoff_history`][agents.handoffs.Handoff.nest_handoff_history].\n -   [`handoff_history_mapper`][agents.run.RunConfig.handoff_history_mapper]: Optional callable that receives the normalized transcript (history + handoff items) whenever `nest_handoff_history` is `True`. It must return the exact list of input items to forward to the next agent, allowing you to replace the built-in summary without writing a full handoff filter.\n -   [`tracing_disabled`][agents.run.RunConfig.tracing_disabled]: Allows you to disable [tracing](tracing.md) for the entire run.\n+-   [`tracing`][agents.run.RunConfig.tracing]: Pass a [`TracingConfig`][agents.tracing.TracingConfig] to override exporters, processors, or tracing metadata for this run.\n -   [`trace_include_sensitive_data`][agents.run.RunConfig.trace_include_sensitive_data]: Configures whether traces will include potentially sensitive data, such as LLM and tool call inputs/outputs.\n -   [`workflow_name`][agents.run.RunConfig.workflow_name], [`trace_id`][agents.run.RunConfig.trace_id], [`group_id`][agents.run.RunConfig.group_id]: Sets the tracing workflow name, trace ID and trace group ID for the run. We recommend at least setting `workflow_name`. The group ID is an optional field that lets you link traces across multiple runs.\n -   [`trace_metadata`][agents.run.RunConfig.trace_metadata]: Metadata to include on all traces.\n+-   [`session_input_callback`][agents.run.RunConfig.session_input_callback]: Customize how new user input is merged with session history before each turn when using Sessions.\n+-   [`call_model_input_filter`][agents.run.RunConfig.call_model_input_filter]: Hook to edit the fully prepared model input (instructions and input items) immediately before the model call, e.g., to trim history or inject a system prompt.\n \n By default, the SDK now nests prior turns inside a single assistant summary message whenever an agent hands off to another agent. This reduces repeated assistant messages and keeps the full transcript inside a single block that new agents can scan quickly. If you'd like to return to the legacy behavior, pass `RunConfig(nest_handoff_history=False)` or supply a `handoff_input_filter` (or `handoff_history_mapper`) that forwards the conversation exactly as you need. You can also opt out (or in) for a specific handoff by setting `handoff(..., nest_handoff_history=False)` or `True`. To change the wrapper text used in the generated summary without writing a custom mapper, call [`set_conversation_history_wrappers`][agents.handoffs.set_conversation_history_wrappers] (and [`reset_conversation_history_wrappers`][agents.handoffs.reset_conversation_history_wrappers] to restore the defaults).\n \n@@ -182,6 +185,29 @@ async def main():\n         print(f\"Assistant: {result.final_output}\")\n ```\n \n+## Call model input filter\n+\n+Use `call_model_input_filter` to edit the model input right before the model call. The hook receives the current agent, context, and the combined input items (including session history when present) and returns a new `ModelInputData`.\n+\n+```python\n+from agents import Agent, Runner, RunConfig\n+from agents.run import CallModelData, ModelInputData\n+\n+def drop_old_messages(data: CallModelData[None]) -> ModelInputData:\n+    # Keep only the last 5 items and preserve existing instructions.\n+    trimmed = data.model_data.input[-5:]\n+    return ModelInputData(input=trimmed, instructions=data.model_data.instructions)\n+\n+agent = Agent(name=\"Assistant\", instructions=\"Answer concisely.\")\n+result = Runner.run_sync(\n+    agent,\n+    \"Explain quines\",\n+    run_config=RunConfig(call_model_input_filter=drop_old_messages),\n+)\n+```\n+\n+Set the hook per run via `run_config` or as a default on your `Runner` to redact sensitive data, trim long histories, or inject additional system guidance.\n+\n ## Long running agents & human-in-the-loop\n \n You can use the Agents SDK [Temporal](https://temporal.io/) integration to run durable, long-running workflows, including human-in-the-loop tasks. View a demo of Temporal and the Agents SDK working in action to complete long-running tasks [in this video](https://www.youtube.com/watch?v=fFBZqzT4DD8), and [view docs here](https://github.com/temporalio/sdk-python/tree/main/temporalio/contrib/openai_agents).",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/docs%2Frunning_agents.md",
+        "sha": "64325e7c48d2979dd6010ed4a114a5ed8fd9ba06",
+        "status": "modified"
+      },
+      {
+        "additions": 53,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/docs%2Ftools.md",
+        "changes": 59,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Ftools.md?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 6,
+        "filename": "docs/tools.md",
+        "patch": "@@ -1,22 +1,21 @@\n # Tools\n \n-Tools let agents take actions: things like fetching data, running code, calling external APIs, and even using a computer. There are three classes of tools in the Agent SDK:\n+Tools let agents take actions: things like fetching data, running code, calling external APIs, and even using a computer. The SDK supports four categories:\n \n--   Hosted tools: these run on LLM servers alongside the AI models. OpenAI offers retrieval, web search and computer use as hosted tools.\n--   Function calling: these allow you to use any Python function as a tool.\n--   Agents as tools: this allows you to use an agent as a tool, allowing Agents to call other agents without handing off to them.\n+-   Hosted OpenAI tools: run alongside the model on OpenAI servers.\n+-   Local runtime tools: run in your environment (computer use, shell, apply patch).\n+-   Function calling: wrap any Python function as a tool.\n+-   Agents as tools: expose an agent as a callable tool without a full handoff.\n \n ## Hosted tools\n \n OpenAI offers a few built-in tools when using the [`OpenAIResponsesModel`][agents.models.openai_responses.OpenAIResponsesModel]:\n \n -   The [`WebSearchTool`][agents.tool.WebSearchTool] lets an agent search the web.\n -   The [`FileSearchTool`][agents.tool.FileSearchTool] allows retrieving information from your OpenAI Vector Stores.\n--   The [`ComputerTool`][agents.tool.ComputerTool] allows automating computer use tasks.\n -   The [`CodeInterpreterTool`][agents.tool.CodeInterpreterTool] lets the LLM execute code in a sandboxed environment.\n -   The [`HostedMCPTool`][agents.tool.HostedMCPTool] exposes a remote MCP server's tools to the model.\n -   The [`ImageGenerationTool`][agents.tool.ImageGenerationTool] generates images from a prompt.\n--   The [`LocalShellTool`][agents.tool.LocalShellTool] runs shell commands on your machine.\n \n ```python\n from agents import Agent, FileSearchTool, Runner, WebSearchTool\n@@ -37,6 +36,54 @@ async def main():\n     print(result.final_output)\n ```\n \n+## Local runtime tools\n+\n+Local runtime tools execute in your environment and require you to supply implementations:\n+\n+-   [`ComputerTool`][agents.tool.ComputerTool]: implement the [`Computer`][agents.computer.Computer] or [`AsyncComputer`][agents.computer.AsyncComputer] interface to enable GUI/browser automation.\n+-   [`ShellTool`][agents.tool.ShellTool] or [`LocalShellTool`][agents.tool.LocalShellTool]: provide a shell executor to run commands.\n+-   [`ApplyPatchTool`][agents.tool.ApplyPatchTool]: implement [`ApplyPatchEditor`][agents.editor.ApplyPatchEditor] to apply diffs locally.\n+\n+```python\n+from agents import Agent, ApplyPatchTool, ShellTool\n+from agents.computer import AsyncComputer\n+from agents.editor import ApplyPatchResult, ApplyPatchOperation, ApplyPatchEditor\n+\n+\n+class NoopComputer(AsyncComputer):\n+    environment = \"browser\"\n+    dimensions = (1024, 768)\n+    async def screenshot(self): return \"\"\n+    async def click(self, x, y, button): ...\n+    async def double_click(self, x, y): ...\n+    async def scroll(self, x, y, scroll_x, scroll_y): ...\n+    async def type(self, text): ...\n+    async def wait(self): ...\n+    async def move(self, x, y): ...\n+    async def keypress(self, keys): ...\n+    async def drag(self, path): ...\n+\n+\n+class NoopEditor(ApplyPatchEditor):\n+    async def create_file(self, op: ApplyPatchOperation): return ApplyPatchResult(status=\"completed\")\n+    async def update_file(self, op: ApplyPatchOperation): return ApplyPatchResult(status=\"completed\")\n+    async def delete_file(self, op: ApplyPatchOperation): return ApplyPatchResult(status=\"completed\")\n+\n+\n+async def run_shell(request):\n+    return \"shell output\"\n+\n+\n+agent = Agent(\n+    name=\"Local tools agent\",\n+    tools=[\n+        ShellTool(executor=run_shell),\n+        ApplyPatchTool(editor=NoopEditor()),\n+        # ComputerTool expects a Computer/AsyncComputer implementation; omitted here for brevity.\n+    ],\n+)\n+```\n+\n ## Function tools\n \n You can use any Python function as a tool. The Agents SDK will setup the tool automatically:",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/docs%2Ftools.md",
+        "sha": "9d36f300b007fc4279994d5487bc4df30720c478",
+        "status": "modified"
+      },
+      {
+        "additions": 2,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/docs%2Ftracing.md",
+        "changes": 2,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/docs%2Ftracing.md?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 0,
+        "filename": "docs/tracing.md",
+        "patch": "@@ -85,6 +85,8 @@ The `generation_span()` stores the inputs/outputs of the LLM generation, and `fu\n \n Similarly, Audio spans include base64-encoded PCM data for input and output audio by default. You can disable capturing this audio data by configuring [`VoicePipelineConfig.trace_include_sensitive_audio_data`][agents.voice.pipeline_config.VoicePipelineConfig.trace_include_sensitive_audio_data].\n \n+By default, `trace_include_sensitive_data` is `True`. You can set the default without code by exporting the `OPENAI_AGENTS_TRACE_INCLUDE_SENSITIVE_DATA` environment variable to `true/1` or `false/0` before running your app.\n+\n ## Custom tracing processors\n \n The high level architecture for tracing is:",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/docs%2Ftracing.md",
+        "sha": "1b0e4f2b43d36dbd8b1f3a35f257ab65ed9b330a",
+        "status": "modified"
+      },
+      {
+        "additions": 5,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/a310595a9241211ef006634334349bf2a0f060a5/mkdocs.yml",
+        "changes": 6,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/mkdocs.yml?ref=a310595a9241211ef006634334349bf2a0f060a5",
+        "deletions": 1,
+        "filename": "mkdocs.yml",
+        "patch": "@@ -101,11 +101,15 @@ plugins:\n                     - ref/lifecycle.md\n                     - ref/items.md\n                     - ref/run_context.md\n-                    - ref/tool_context.md\n                     - ref/usage.md\n+                    - ref/logger.md\n                     - ref/exceptions.md\n                     - ref/guardrail.md\n+                    - ref/prompts.md\n                     - ref/model_settings.md\n+                    - ref/strict_schema.md\n+                    - ref/tool_guardrails.md\n+                    - ref/computer.md\n                     - ref/agent_output.md\n                     - ref/function_schema.md\n                     - ref/models/interface.md",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/a310595a9241211ef006634334349bf2a0f060a5/mkdocs.yml",
+        "sha": "19c00ad68d27736086717d7c51f5d5321a2269c1",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:53.573924Z"
+}

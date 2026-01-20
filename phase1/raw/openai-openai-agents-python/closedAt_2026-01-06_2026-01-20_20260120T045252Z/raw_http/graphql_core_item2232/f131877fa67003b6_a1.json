@@ -1,0 +1,104 @@
+{
+  "finished_at": "2026-01-20T04:54:03.755296Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "f131877fa67003b6",
+    "tag": "graphql_core_item2232"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2232,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2191",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:03 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DAE2:3E6F74:15FB552:1F053FB:696F0A6B",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4907",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "93",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/136307221?v=4",
+              "databaseId": 136307221,
+              "id": "U_kgDOCB_iFQ",
+              "login": "NateMoneyLion",
+              "url": "https://github.com/NateMoneyLion"
+            },
+            "authorAssociation": "NONE",
+            "body": "### Question\n1. I'm using the `is_enabled` param within the @function_tool decorator to control the tools that are exposed to a user at runtime based on the callable function below to control the value for `is_enabled`\n```\ndef _is_cm_enrolled(ctx: RunContextWrapper[AgentContext], agent: AgentBase) -> bool:\n    return ctx.context.is_cm_enrolled  # by default is True\n```\n2. I always bump into this error **if the opening query for the session already calls a tool** e.g. \"what's my credit score?\".\n```\nagents.exceptions.ModelBehaviorError: Tool fetch_latest_credit_report\" /> not found in agent Agent\n```\nImplementation of tool as follows:\n```\n@function_tool(is_enabled=_is_cm_enrolled)\nasync def fetch_latest_credit_report(\n    wrapper: RunContextWrapper[AgentContext],\n) -> dict | None:\n    \"\"\"\n    High level data points e.g.\n    - credit score\n    - credit utilization rate\n    - credit age\n    - credit inquiries\n    - payment history\n    \"\"\"\n    data = await _credit_report_retriever_client._fetch(\n          request={\n              \"user_id\": \"\",\n              \"request_source\": \"\",\n          },\n      )\n\n    return data\n```\n3. However, if the opening query is something generic like \"hello\", this error doesn't bubble up.\n\nAm I doing something wrong here?",
+            "closedAt": "2026-01-18T02:13:20Z",
+            "comments": {
+              "totalCount": 10
+            },
+            "createdAt": "2025-12-24T06:29:27Z",
+            "databaseId": 3759372530,
+            "id": "I_kwDOOGidp87gE3jy",
+            "labels": {
+              "nodes": [
+                {
+                  "color": "0E8A16",
+                  "description": "Question about using the SDK",
+                  "name": "question"
+                },
+                {
+                  "color": "ededed",
+                  "description": null,
+                  "name": "stale"
+                }
+              ]
+            },
+            "locked": false,
+            "milestone": null,
+            "number": 2232,
+            "state": "CLOSED",
+            "title": "Agent has error calling tool even if is_enabled = True",
+            "updatedAt": "2026-01-18T02:13:20Z",
+            "url": "https://github.com/openai/openai-agents-python/issues/2232"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:03.273599Z"
+}

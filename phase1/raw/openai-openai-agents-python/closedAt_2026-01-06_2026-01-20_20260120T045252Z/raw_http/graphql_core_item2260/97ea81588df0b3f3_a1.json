@@ -1,0 +1,131 @@
+{
+  "finished_at": "2026-01-20T04:54:27.508860Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "97ea81588df0b3f3",
+    "tag": "graphql_core_item2260"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2260,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2141",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:27 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DB17:F2819:169E219:1FA80ED:696F0A83",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4872",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "128",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 220,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/192034341?u=354bf3446864cb9bc2cabd5ddbbf4cb7efad21ba&v=4",
+              "databaseId": 192034341,
+              "id": "U_kgDOC3I2JQ",
+              "login": "rm-openai",
+              "url": "https://github.com/rm-openai"
+            },
+            "authorAssociation": "COLLABORATOR",
+            "baseRefName": "main",
+            "body": "Currently tracing uses a fixed global API key for all tracing. This makes it so you can't have different ones with different tracing API keys, despite the fact that LLM calls can actually have different API keys.\r\n\r\nThis PR (codex written) fixes that. Approach: introduce a `TracingConfig` passed through RunConfig/voice configs into trace creation, storing a per-run `tracing_api_key` on traces/spans. The backend exporter now groups batches by each item’s key (falling back to the global key), so mixed runs use the right header. Docs and tests cover the new per-run key flow.",
+            "changedFiles": 16,
+            "closedAt": "2026-01-06T02:17:22Z",
+            "comments": {
+              "totalCount": 2
+            },
+            "createdAt": "2026-01-05T16:39:10Z",
+            "databaseId": 3146843304,
+            "deletions": 54,
+            "files": {
+              "totalCount": 16
+            },
+            "headRefName": "rm/pr2260",
+            "headRefOid": "b8a9a1e3375eeeef1284c085b9bfbe9443d4292a",
+            "id": "PR_kwDOOGidp867kQSo",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "c7c425",
+                  "description": "",
+                  "name": "feature:tracing"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "bc374a0c1d13a56e4fb9c79c15264b3a7425a5cc",
+              "url": "https://github.com/openai/openai-agents-python/commit/bc374a0c1d13a56e4fb9c79c15264b3a7425a5cc"
+            },
+            "mergedAt": "2026-01-06T02:17:22Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2260,
+            "reviews": {
+              "totalCount": 1
+            },
+            "state": "MERGED",
+            "title": "Add per-run tracing API key support",
+            "updatedAt": "2026-01-06T02:17:23Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2260"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:26.943975Z"
+}

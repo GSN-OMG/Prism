@@ -1,0 +1,100 @@
+{
+  "finished_at": "2026-01-20T04:56:43.772391Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "2c72bfbaa79514b1",
+    "tag": "rest_pr_files_pr2304_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2304/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "12536",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:43 GMT",
+      "etag": "\"8e06543b6c5087c27ebba02f3e461a29fb8096cd88aea35b54c7dacee25d90bb\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Wed, 14 Jan 2026 13:11:48 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DC3F:29AB24:15FB8B1:1F06D41:696F0B0B",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4951",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "49",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 53,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/0fc86aaace286201ddc6d3ce348992484b0b88fa/.codex%2Fskills%2Ffinal-release-review%2FSKILL.md",
+        "changes": 53,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Ffinal-release-review%2FSKILL.md?ref=0fc86aaace286201ddc6d3ce348992484b0b88fa",
+        "deletions": 0,
+        "filename": ".codex/skills/final-release-review/SKILL.md",
+        "patch": "@@ -0,0 +1,53 @@\n+---\n+name: final-release-review\n+description: Perform a release-readiness review by locating the previous release tag from remote tags and auditing the diff (e.g., v1.2.3...main) for breaking changes, regressions, improvement opportunities, and risks before releasing openai-agents-python.\n+---\n+\n+# Final Release Review\n+\n+## Purpose\n+\n+Use this skill when validating main for release. It guides you to fetch remote tags, pick the previous release tag, and thoroughly inspect the `BASE_TAG...TARGET` diff for breaking changes, introduced bugs/regressions, improvement opportunities, and release risks.\n+\n+## Quick start\n+\n+1. Ensure repository root: `pwd` → `path-to-workspace/openai-agents-python`.\n+2. Sync tags and pick base (default `v*`):\n+   ```bash\n+   BASE_TAG=\"$(.codex/skills/final-release-review/scripts/find_latest_release_tag.sh origin 'v*')\"\n+   ```\n+3. Choose target (default `main`, ensure fresh): `git fetch origin main --prune` then `TARGET=\"main\"`.\n+4. Snapshot scope:\n+   ```bash\n+   git diff --stat \"${BASE_TAG}\"...\"${TARGET}\"\n+   git diff --dirstat=files,0 \"${BASE_TAG}\"...\"${TARGET}\"\n+   git log --oneline --reverse \"${BASE_TAG}\"..\"${TARGET}\"\n+   git diff --name-status \"${BASE_TAG}\"...\"${TARGET}\"\n+   ```\n+5. Deep review using `references/review-checklist.md` to spot breaking changes, regressions, and improvement chances.\n+6. Capture findings and call the release gate: ship/block with conditions; propose focused tests for risky areas.\n+\n+## Workflow\n+\n+- **Prepare**\n+  - Run the quick-start tag command to ensure you use the latest remote tag. If the tag pattern differs, override the pattern argument (e.g., `'*.*.*'`).\n+  - If the user specifies a base tag, prefer it but still fetch remote tags first.\n+  - Keep the working tree clean to avoid diff noise.\n+- **Map the diff**\n+  - Use `--stat`, `--dirstat`, and `--name-status` outputs to spot hot directories and file types.\n+  - For suspicious files, prefer `git diff --word-diff BASE...TARGET -- <path>`.\n+  - Note any deleted or newly added tests, config (for example `pyproject.toml`, `uv.lock`, `mkdocs.yml`), migrations, or scripts.\n+- **Analyze risk**\n+  - Walk through the categories in `references/review-checklist.md` (breaking changes, regression clues, improvement opportunities).\n+  - When you suspect a risk, cite the specific file/commit and explain the behavioral impact.\n+  - Suggest minimal, high-signal validation commands (targeted tests or linters) instead of generic reruns when time is tight.\n+- **Form a recommendation**\n+  - State BASE_TAG and TARGET explicitly.\n+  - Provide a concise diff summary (key directories/files and counts).\n+  - List: breaking-change candidates, probable regressions/bugs, improvement opportunities, missing release notes/migrations.\n+  - Recommend ship/block and the exact checks needed to unblock if blocking.\n+\n+## Resources\n+\n+- `scripts/find_latest_release_tag.sh`: Fetches remote tags and returns the newest tag matching a pattern (default `v*`).\n+- `references/review-checklist.md`: Detailed signals and commands for spotting breaking changes, regressions, and release polish gaps.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/0fc86aaace286201ddc6d3ce348992484b0b88fa/.codex%2Fskills%2Ffinal-release-review%2FSKILL.md",
+        "sha": "1fb421eede60fd88d2408155450456678a0502fb",
+        "status": "added"
+      },
+      {
+        "additions": 40,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/0fc86aaace286201ddc6d3ce348992484b0b88fa/.codex%2Fskills%2Ffinal-release-review%2Freferences%2Freview-checklist.md",
+        "changes": 40,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Ffinal-release-review%2Freferences%2Freview-checklist.md?ref=0fc86aaace286201ddc6d3ce348992484b0b88fa",
+        "deletions": 0,
+        "filename": ".codex/skills/final-release-review/references/review-checklist.md",
+        "patch": "@@ -0,0 +1,40 @@\n+# Release Diff Review Checklist\n+\n+## Quick commands\n+\n+- Sync tags: `git fetch origin --tags --prune`.\n+- Identify latest release tag (default pattern `v*`): `git tag -l 'v*' --sort=-v:refname | head -n1` or use `.codex/skills/final-release-review/scripts/find_latest_release_tag.sh`.\n+- Generate overview: `git diff --stat BASE...TARGET`, `git diff --dirstat=files,0 BASE...TARGET`, `git log --oneline --reverse BASE..TARGET`.\n+- Inspect risky files quickly: `git diff --name-status BASE...TARGET`, `git diff --word-diff BASE...TARGET -- <path>`.\n+\n+## Breaking change signals\n+\n+- Public API surface: removed/renamed modules, classes, functions, or re-exports; changed parameters/return types, default values changed, new required options, stricter validation.\n+- Protocol/schema: request/response fields added/removed/renamed, enum changes, JSON shape changes, ID formats, pagination defaults.\n+- Config/CLI/env: renamed flags, default behavior flips, removed fallbacks, environment variable changes, logging levels tightened.\n+- Dependencies/platform: Python version requirement changes, dependency major bumps, `pyproject.toml`/`uv.lock` changes, removed or renamed extras.\n+- Persistence/data: migration scripts missing, data model changes, stored file formats, cache keys altered without invalidation.\n+- Docs/examples drift: examples still reflect old behavior or lack migration note.\n+\n+## Regression risk clues\n+\n+- Large refactors with light test deltas or deleted tests; new `skip`/`todo` markers.\n+- Concurrency/timing: new async flows, asyncio event-loop changes, retries, timeouts, debounce/caching changes, race-prone patterns.\n+- Error handling: catch blocks removed, swallowed errors, broader catch-all added without logging, stricter throws without caller updates.\n+- Stateful components: mutable shared state, global singletons, lifecycle changes (init/teardown), resource cleanup removal.\n+- Third-party changes: swapped core libraries, feature flags toggled, observability removed or gated.\n+\n+## Improvement opportunities\n+\n+- Missing coverage for new code paths; add focused tests.\n+- Performance: obvious N+1 loops, repeated I/O without caching, excessive serialization.\n+- Developer ergonomics: unclear naming, missing inline docs for public APIs, missing examples for new features.\n+- Release hygiene: add migration/upgrade note when behavior changes; ensure changelog/notes capture user-facing shifts.\n+\n+## Evidence to capture in the review output\n+\n+- BASE tag and TARGET ref used for the diff; confirm tags fetched.\n+- High-level diff stats and key directories touched.\n+- Concrete files/commits that indicate breaking changes or risk, with brief rationale.\n+- Tests or commands suggested to validate suspected risks.\n+- Explicit release gate call (ship/block) with conditions to unblock.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/0fc86aaace286201ddc6d3ce348992484b0b88fa/.codex%2Fskills%2Ffinal-release-review%2Freferences%2Freview-checklist.md",
+        "sha": "1d3c029709635663736ce66eb422ccf00252b9e0",
+        "status": "added"
+      },
+      {
+        "additions": 17,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/0fc86aaace286201ddc6d3ce348992484b0b88fa/.codex%2Fskills%2Ffinal-release-review%2Fscripts%2Ffind_latest_release_tag.sh",
+        "changes": 17,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Ffinal-release-review%2Fscripts%2Ffind_latest_release_tag.sh?ref=0fc86aaace286201ddc6d3ce348992484b0b88fa",
+        "deletions": 0,
+        "filename": ".codex/skills/final-release-review/scripts/find_latest_release_tag.sh",
+        "patch": "@@ -0,0 +1,17 @@\n+#!/usr/bin/env bash\n+set -euo pipefail\n+\n+remote=\"${1:-origin}\"\n+pattern=\"${2:-v*}\"\n+\n+# Sync tags from the remote to ensure the latest release tag is available locally.\n+git fetch \"$remote\" --tags --prune --quiet\n+\n+latest_tag=$(git tag -l \"$pattern\" --sort=-v:refname | head -n1)\n+\n+if [[ -z \"$latest_tag\" ]]; then\n+  echo \"No tags found matching pattern '$pattern' after fetching from $remote.\" >&2\n+  exit 1\n+fi\n+\n+echo \"$latest_tag\"",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/0fc86aaace286201ddc6d3ce348992484b0b88fa/.codex%2Fskills%2Ffinal-release-review%2Fscripts%2Ffind_latest_release_tag.sh",
+        "sha": "f36ae497b05bdb63c4f48fe65e47dc2808881ec5",
+        "status": "added"
+      },
+      {
+        "additions": 42,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/0fc86aaace286201ddc6d3ce348992484b0b88fa/.codex%2Fskills%2Ftest-coverage-improver%2FSKILL.md",
+        "changes": 42,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/.codex%2Fskills%2Ftest-coverage-improver%2FSKILL.md?ref=0fc86aaace286201ddc6d3ce348992484b0b88fa",
+        "deletions": 0,
+        "filename": ".codex/skills/test-coverage-improver/SKILL.md",
+        "patch": "@@ -0,0 +1,42 @@\n+---\n+name: test-coverage-improver\n+description: 'Improve test coverage in the OpenAI Agents Python repository: run `make coverage`, inspect coverage artifacts, identify low-coverage files, propose high-impact tests, and confirm with the user before writing tests.'\n+---\n+\n+# Test Coverage Improver\n+\n+## Overview\n+\n+Use this skill whenever coverage needs assessment or improvement (coverage regressions, failing thresholds, or user requests for stronger tests). It runs the coverage suite, analyzes results, highlights the biggest gaps, and prepares test additions while confirming with the user before changing code.\n+\n+## Quick Start\n+\n+1. From the repo root run `make coverage` to regenerate `.coverage` data and `coverage.xml`.\n+2. Collect artifacts: `.coverage` and `coverage.xml`, plus the console output from `coverage report -m` for drill-downs.\n+3. Summarize coverage: total percentages, lowest files, and uncovered lines/paths.\n+4. Draft test ideas per file: scenario, behavior under test, expected outcome, and likely coverage gain.\n+5. Ask the user for approval to implement the proposed tests; pause until they agree.\n+6. After approval, write the tests in `tests/`, rerun `make coverage`, and then run `$code-change-verification` before marking work complete.\n+\n+## Workflow Details\n+\n+- **Run coverage**: Execute `make coverage` at repo root. Avoid watch flags and keep prior coverage artifacts only if comparing trends.\n+- **Parse summaries efficiently**:\n+  - Prefer the console output from `coverage report -m` for file-level totals; fallback to `coverage.xml` for tooling or spreadsheets.\n+  - Use `uv run coverage html` to generate `htmlcov/index.html` if you need an interactive drill-down.\n+- **Prioritize targets**:\n+  - Public APIs or shared utilities in `src/agents/` before examples or docs.\n+  - Files with low statement coverage or newly added code at 0%.\n+  - Recent bug fixes or risky code paths (error handling, retries, timeouts, concurrency).\n+- **Design impactful tests**:\n+  - Hit uncovered paths: error cases, boundary inputs, optional flags, and cancellation/timeouts.\n+  - Cover combinational logic rather than trivial happy paths.\n+  - Place tests under `tests/` and avoid flaky async timing.\n+- **Coordinate with the user**: Present a numbered, concise list of proposed test additions and expected coverage gains. Ask explicitly before editing code or fixtures.\n+- **After implementation**: Rerun coverage, report the updated summary, and note any remaining low-coverage areas.\n+\n+## Notes\n+\n+- Keep any added comments or code in English.\n+- Do not create `scripts/`, `references/`, or `assets/` unless needed later.\n+- If coverage artifacts are missing or stale, rerun `pnpm test:coverage` instead of guessing.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/0fc86aaace286201ddc6d3ce348992484b0b88fa/.codex%2Fskills%2Ftest-coverage-improver%2FSKILL.md",
+        "sha": "2dff569bd5a3590f11b3b93c01db5c4d9d5879c6",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:43.074906Z"
+}

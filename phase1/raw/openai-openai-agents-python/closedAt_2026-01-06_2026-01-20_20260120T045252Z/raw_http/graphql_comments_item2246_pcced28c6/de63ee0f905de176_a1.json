@@ -1,0 +1,106 @@
+{
+  "finished_at": "2026-01-20T04:54:13.513615Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "de63ee0f905de176",
+    "tag": "graphql_comments_item2246_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetItemCommentsPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n      ... on PullRequest {\n        comments(first: 100, after: $after) {\n          pageInfo { hasNextPage endCursor }\n          nodes {\n            id\n            databaseId\n            url\n            body\n            createdAt\n            updatedAt\n            author {\n              __typename\n              login\n              url\n              avatarUrl\n              ... on User { id databaseId }\n              ... on Organization { id databaseId }\n              ... on Bot { id databaseId }\n              ... on Mannequin { id databaseId }\n            }\n            authorAssociation\n          }\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2246,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "2296",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:13 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DAFA:3782ED:1628118:1F328EB:696F0A75",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4893",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "107",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "Issue",
+            "comments": {
+              "nodes": [
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/252101847?v=4",
+                    "databaseId": 252101847,
+                    "id": "U_kgDODwbE1w",
+                    "login": "vhq5z6hn5w-coder",
+                    "url": "https://github.com/vhq5z6hn5w-coder"
+                  },
+                  "authorAssociation": "NONE",
+                  "body": "This isn’t just a Python/asyncio edge case — it’s a trace integrity break under concurrency.\n\nThe trace lifecycle assumes:\n\t•\tset_current_trace() and reset_current_trace(token) happen in the same logical context\n\t•\tthe token remains valid for the context that will later reset it\n\nUnder asyncio.gather() you get a state where:\n\t•\ttraces are marked as current across concurrent tasks\n\t•\ttokens are created in one context state\n\t•\tbut reset attempts occur after other tasks have mutated the ContextVar state\n\nThat produces a failure mode where:\n\t•\tthe run may succeed\n\t•\tbut tracing becomes non-deterministic / crash-prone\n\t•\tand the only safe workaround is disabling tracing (loss of observability)\n\nStructurally: the system can execute concurrently, but the cleanup responsibility is not context-safe.\n\nAny fix that guarantees trace start/finish happens within the same task-local context (or isolates per-task context) restores continuity without changing model behavior.\n\n- Beaxis",
+                  "createdAt": "2025-12-31T15:41:20Z",
+                  "databaseId": 3702410242,
+                  "id": "IC_kwDOOGidp87crkwC",
+                  "updatedAt": "2025-12-31T16:02:08Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2246#issuecomment-3702410242"
+                },
+                {
+                  "author": {
+                    "__typename": "User",
+                    "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+                    "databaseId": 19658,
+                    "id": "MDQ6VXNlcjE5NjU4",
+                    "login": "seratch",
+                    "url": "https://github.com/seratch"
+                  },
+                  "authorAssociation": "MEMBER",
+                  "body": "https://github.com/openai/openai-agents-python/pull/2260 will be the solution for this; the change will be included in the upcoming release.",
+                  "createdAt": "2026-01-06T02:27:42Z",
+                  "databaseId": 3712857008,
+                  "id": "IC_kwDOOGidp87dTbOw",
+                  "updatedAt": "2026-01-06T02:27:42Z",
+                  "url": "https://github.com/openai/openai-agents-python/issues/2246#issuecomment-3712857008"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "Y3Vyc29yOnYyOpHO3U2zsA==",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:12.840043Z"
+}

@@ -1,0 +1,136 @@
+{
+  "finished_at": "2026-01-20T04:58:00.534010Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "8c26e621da719fbf",
+    "tag": "graphql_core_item2328"
+  },
+  "request": {
+    "body": {
+      "query": "query GetIssueOrPRCore($owner: String!, $name: String!, $number: Int!) {\n  repository(owner: $owner, name: $name) {\n    issueOrPullRequest(number: $number) {\n      __typename\n      ... on Issue {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n      }\n      ... on PullRequest {\n        id\n        databaseId\n        number\n        url\n        title\n        body\n        state\n        isDraft\n        locked\n        author {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        authorAssociation\n        createdAt\n        updatedAt\n        closedAt\n        mergedAt\n        mergedBy {\n          __typename\n          login\n          url\n          avatarUrl\n          ... on User { id databaseId }\n          ... on Organization { id databaseId }\n          ... on Bot { id databaseId }\n          ... on Mannequin { id databaseId }\n        }\n        mergeCommit { oid url }\n        baseRefName\n        headRefName\n        headRefOid\n        additions\n        deletions\n        changedFiles\n        labels(first: 100) { nodes { name color description } }\n        milestone { title description dueOn state number }\n        assignees(first: 100) { nodes { login id databaseId url avatarUrl __typename } }\n        comments { totalCount }\n        reviews { totalCount }\n        files { totalCount }\n      }\n    }\n  }\n}",
+      "variables": {
+        "name": "openai-agents-python",
+        "number": 2328,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "3148",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:58:00 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DCFB:E9ECE:161B1FE:1F26CDD:696F0B57",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4584",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "416",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "issueOrPullRequest": {
+            "__typename": "PullRequest",
+            "additions": 392,
+            "assignees": {
+              "nodes": []
+            },
+            "author": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/74547936?u=7ac3916a77e3c74cec9e28d025fffe53ff80e46d&v=4",
+              "databaseId": 74547936,
+              "id": "MDQ6VXNlcjc0NTQ3OTM2",
+              "login": "wahmd",
+              "url": "https://github.com/wahmd"
+            },
+            "authorAssociation": "CONTRIBUTOR",
+            "baseRefName": "main",
+            "body": "This PR fixes issue #2155 (400 error on tool calls due to missing `reasoning_content` in reconstructed assistant messages.)\r\n\r\n**Root Cause**: When DeepSeek returns a response with `reasoning_content` and `tool_calls`, the SDK converts it to:\r\n- A `ResponseReasoningItem` (stores reasoning in `summary` field)\r\n- A `ResponseFunctionToolCall` (stores tool call)\r\n\r\nOn the next API call, `Converter.items_to_messages()` reconstructs the assistant message with tool calls, but was only handling reasoning content for Anthropic/Claude models (via thinking blocks), not DeepSeek.\r\n\r\n\r\n**Solution**: The fix follows the same pattern as Anthropic's thinking blocks but uses DeepSeek's `reasoning_content` field instead. It:\r\n1. Extracts reasoning text from the `summary` field when processing reasoning items for DeepSeek models\r\n2. Stores it temporarily in `pending_reasoning_content`\r\n3. Adds it to the assistant message when tool calls are processed\r\n\r\n\r\n### Checks\r\n\r\n- [x] I've added new tests \r\n- [x] I've run `make lint` and `make format` (linter shows only import resolution warnings, not code issues)\r\n- [x] I've made sure tests pass\r\n\r\n\r\nNote: The fix works for both code paths:\r\n- **LiteLLM path**: When using `LitellmModel` with `model=\"deepseek/deepseek-reasoner\"`\r\n- **OpenAI ChatCompletions path**: When using `OpenAIChatCompletionsModel` with `model=\"deepseek-reasoner\"` and DeepSeek's OpenAI-compatible endpoint",
+            "changedFiles": 2,
+            "closedAt": "2026-01-19T01:25:44Z",
+            "comments": {
+              "totalCount": 4
+            },
+            "createdAt": "2026-01-18T02:31:32Z",
+            "databaseId": 3184884530,
+            "deletions": 1,
+            "files": {
+              "totalCount": 2
+            },
+            "headRefName": "fix/deepseek-reasoning-content",
+            "headRefOid": "c63270458baf7a5caea180c999dfda795501c15f",
+            "id": "PR_kwDOOGidp8691Xsy",
+            "isDraft": false,
+            "labels": {
+              "nodes": [
+                {
+                  "color": "77cf69",
+                  "description": "",
+                  "name": "feature:chat-completions"
+                },
+                {
+                  "color": "a95c3a",
+                  "description": "",
+                  "name": "feature:lite-llm"
+                }
+              ]
+            },
+            "locked": false,
+            "mergeCommit": {
+              "oid": "8455af0a09d2b392471415ab3c259acb385d2575",
+              "url": "https://github.com/openai/openai-agents-python/commit/8455af0a09d2b392471415ab3c259acb385d2575"
+            },
+            "mergedAt": "2026-01-19T01:25:44Z",
+            "mergedBy": {
+              "__typename": "User",
+              "avatarUrl": "https://avatars.githubusercontent.com/u/19658?u=33a7cbe96e38b9572db1046209104c5c6f19bd7c&v=4",
+              "databaseId": 19658,
+              "id": "MDQ6VXNlcjE5NjU4",
+              "login": "seratch",
+              "url": "https://github.com/seratch"
+            },
+            "milestone": {
+              "description": "",
+              "dueOn": null,
+              "number": 1,
+              "state": "CLOSED",
+              "title": "0.6.x"
+            },
+            "number": 2328,
+            "reviews": {
+              "totalCount": 7
+            },
+            "state": "MERGED",
+            "title": "fix: #2155 DeepSeek reasoning_content missing in tool call messages",
+            "updatedAt": "2026-01-19T01:25:45Z",
+            "url": "https://github.com/openai/openai-agents-python/pull/2328"
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:57:59.517992Z"
+}

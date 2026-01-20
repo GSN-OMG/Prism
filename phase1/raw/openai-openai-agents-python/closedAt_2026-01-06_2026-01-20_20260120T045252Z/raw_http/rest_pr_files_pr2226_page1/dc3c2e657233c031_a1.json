@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:53:56.412519Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "dc3c2e657233c031",
+    "tag": "rest_pr_files_pr2226_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2226/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "5645",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:56 GMT",
+      "etag": "\"64d32f4d766e791add4c8a5b91cc1a29d1a900524bd98653aacc67e3873da08c\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Tue, 06 Jan 2026 02:18:19 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DAD2:2B2B06:1668A3E:1F72E19:696F0A64",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4991",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "9",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 14,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/b3b5bcb81b3d1c21d7d095aa8cde3abc85c840b0/src%2Fagents%2Fresult.py",
+        "changes": 20,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Fresult.py?ref=b3b5bcb81b3d1c21d7d095aa8cde3abc85c840b0",
+        "deletions": 6,
+        "filename": "src/agents/result.py",
+        "patch": "@@ -306,6 +306,7 @@ async def stream_events(self) -> AsyncIterator[StreamEvent]:\n         - A MaxTurnsExceeded exception if the agent exceeds the max_turns limit.\n         - A GuardrailTripwireTriggered exception if a guardrail is tripped.\n         \"\"\"\n+        cancelled = False\n         try:\n             while True:\n                 self._check_errors()\n@@ -320,7 +321,9 @@ async def stream_events(self) -> AsyncIterator[StreamEvent]:\n                 try:\n                     item = await self._event_queue.get()\n                 except asyncio.CancelledError:\n-                    break\n+                    cancelled = True\n+                    self.cancel()\n+                    raise\n \n                 if isinstance(item, QueueCompleteSentinel):\n                     # Await input guardrails if they are still running, so late\n@@ -337,11 +340,16 @@ async def stream_events(self) -> AsyncIterator[StreamEvent]:\n                 yield item\n                 self._event_queue.task_done()\n         finally:\n-            # Ensure main execution completes before cleanup to avoid race conditions\n-            # with session operations\n-            await self._await_task_safely(self._run_impl_task)\n-            # Safely terminate all background tasks after main execution has finished\n-            self._cleanup_tasks()\n+            if cancelled:\n+                # Cancellation should return promptly, so avoid waiting on long-running tasks.\n+                # Tasks have already been cancelled above.\n+                self._cleanup_tasks()\n+            else:\n+                # Ensure main execution completes before cleanup to avoid race conditions\n+                # with session operations\n+                await self._await_task_safely(self._run_impl_task)\n+                # Safely terminate all background tasks after main execution has finished\n+                self._cleanup_tasks()\n \n         if self._stored_exception:\n             raise self._stored_exception",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/b3b5bcb81b3d1c21d7d095aa8cde3abc85c840b0/src%2Fagents%2Fresult.py",
+        "sha": "f5955904cc028fc8fe7e1424bc53078c34e0d61e",
+        "status": "modified"
+      },
+      {
+        "additions": 45,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/b3b5bcb81b3d1c21d7d095aa8cde3abc85c840b0/tests%2Ftest_cancel_streaming.py",
+        "changes": 45,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_cancel_streaming.py?ref=b3b5bcb81b3d1c21d7d095aa8cde3abc85c840b0",
+        "deletions": 0,
+        "filename": "tests/test_cancel_streaming.py",
+        "patch": "@@ -1,13 +1,31 @@\n+import asyncio\n import json\n+import time\n \n import pytest\n+from openai.types.responses import ResponseCompletedEvent\n \n from agents import Agent, Runner\n+from agents.stream_events import RawResponsesStreamEvent\n \n from .fake_model import FakeModel\n from .test_responses import get_function_tool, get_function_tool_call, get_text_message\n \n \n+class SlowCompleteFakeModel(FakeModel):\n+    \"\"\"A FakeModel that delays before emitting the completed event in streaming.\"\"\"\n+\n+    def __init__(self, delay_seconds: float):\n+        super().__init__()\n+        self._delay_seconds = delay_seconds\n+\n+    async def stream_response(self, *args, **kwargs):\n+        async for ev in super().stream_response(*args, **kwargs):\n+            if isinstance(ev, ResponseCompletedEvent) and self._delay_seconds > 0:\n+                await asyncio.sleep(self._delay_seconds)\n+            yield ev\n+\n+\n @pytest.mark.asyncio\n async def test_simple_streaming_with_cancel():\n     model = FakeModel()\n@@ -131,3 +149,30 @@ async def test_cancel_immediate_mode_explicit():\n     assert result.is_complete\n     assert result._event_queue.empty()\n     assert result._cancel_mode == \"immediate\"\n+\n+\n+@pytest.mark.asyncio\n+async def test_stream_events_respects_asyncio_timeout_cancellation():\n+    model = SlowCompleteFakeModel(delay_seconds=0.5)\n+    model.set_next_output([get_text_message(\"Final response\")])\n+    agent = Agent(name=\"TimeoutTester\", model=model)\n+\n+    result = Runner.run_streamed(agent, input=\"Please tell me 5 jokes.\")\n+    event_iter = result.stream_events().__aiter__()\n+\n+    # Consume events until the output item is done so the next event is delayed.\n+    while True:\n+        event = await asyncio.wait_for(event_iter.__anext__(), timeout=1.0)\n+        if (\n+            isinstance(event, RawResponsesStreamEvent)\n+            and event.data.type == \"response.output_item.done\"\n+        ):\n+            break\n+\n+    start = time.perf_counter()\n+    with pytest.raises(asyncio.TimeoutError):\n+        await asyncio.wait_for(event_iter.__anext__(), timeout=0.1)\n+    elapsed = time.perf_counter() - start\n+\n+    assert elapsed < 0.3, \"Cancellation should propagate promptly when waiting for events.\"\n+    result.cancel()",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/b3b5bcb81b3d1c21d7d095aa8cde3abc85c840b0/tests%2Ftest_cancel_streaming.py",
+        "sha": "76b78cb58777bbdf0d5bebe0b7c82f1c55824104",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:55.901821Z"
+}

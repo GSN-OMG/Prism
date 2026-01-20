@@ -1,0 +1,149 @@
+{
+  "finished_at": "2026-01-20T04:53:27.993502Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "b962c0750905ebbc",
+    "tag": "graphql_files_pr2158_pcced28c6"
+  },
+  "request": {
+    "body": {
+      "query": "query GetPRFilesPage($owner: String!, $name: String!, $number: Int!, $after: String) {\n  repository(owner: $owner, name: $name) {\n    pullRequest(number: $number) {\n      files(first: 100, after: $after) {\n        pageInfo { hasNextPage endCursor }\n        nodes {\n          path\n          additions\n          deletions\n          changeType\n        }\n      }\n    }\n  }\n}",
+      "variables": {
+        "after": null,
+        "name": "openai-agents-python",
+        "number": 2158,
+        "owner": "openai"
+      }
+    },
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "POST",
+    "url": "https://api.github.com/graphql"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "content-length": "1435",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:28 GMT",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "repo",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-media-type": "github.v4; format=json",
+      "x-github-request-id": "DAA1:365621:16BCFEC:1FC6A16:696F0A47",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4956",
+      "x-ratelimit-reset": "1768888376",
+      "x-ratelimit-resource": "graphql",
+      "x-ratelimit-used": "44",
+      "x-xss-protection": "0"
+    },
+    "json": {
+      "data": {
+        "repository": {
+          "pullRequest": {
+            "files": {
+              "nodes": [
+                {
+                  "additions": 1,
+                  "changeType": "MODIFIED",
+                  "deletions": 1,
+                  "path": "pyproject.toml"
+                },
+                {
+                  "additions": 131,
+                  "changeType": "MODIFIED",
+                  "deletions": 7,
+                  "path": "src/agents/extensions/models/litellm_model.py"
+                },
+                {
+                  "additions": 1,
+                  "changeType": "MODIFIED",
+                  "deletions": 1,
+                  "path": "src/agents/handoffs/history.py"
+                },
+                {
+                  "additions": 99,
+                  "changeType": "MODIFIED",
+                  "deletions": 24,
+                  "path": "src/agents/models/chatcmpl_converter.py"
+                },
+                {
+                  "additions": 161,
+                  "changeType": "MODIFIED",
+                  "deletions": 55,
+                  "path": "src/agents/models/chatcmpl_stream_handler.py"
+                },
+                {
+                  "additions": 14,
+                  "changeType": "MODIFIED",
+                  "deletions": 3,
+                  "path": "src/agents/models/openai_chatcompletions.py"
+                },
+                {
+                  "additions": 48,
+                  "changeType": "MODIFIED",
+                  "deletions": 0,
+                  "path": "src/agents/models/openai_responses.py"
+                },
+                {
+                  "additions": 5,
+                  "changeType": "MODIFIED",
+                  "deletions": 1,
+                  "path": "tests/test_anthropic_thinking_blocks.py"
+                },
+                {
+                  "additions": 126,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "tests/test_gemini_thought_signatures.py"
+                },
+                {
+                  "additions": 210,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "tests/test_gemini_thought_signatures_stream.py"
+                },
+                {
+                  "additions": 1,
+                  "changeType": "MODIFIED",
+                  "deletions": 1,
+                  "path": "tests/test_model_payload_iterators.py"
+                },
+                {
+                  "additions": 162,
+                  "changeType": "ADDED",
+                  "deletions": 0,
+                  "path": "tests/test_remove_openai_responses_api_incompatible_fields.py"
+                },
+                {
+                  "additions": 144,
+                  "changeType": "MODIFIED",
+                  "deletions": 87,
+                  "path": "uv.lock"
+                }
+              ],
+              "pageInfo": {
+                "endCursor": "MTM",
+                "hasNextPage": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:27.461926Z"
+}

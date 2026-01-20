@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:56:04.828663Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "ea51445452e9592c",
+    "tag": "rest_pr_files_pr2290_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2290/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "7974",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:04 GMT",
+      "etag": "\"e49255e2aaad2e13e35ac7491393ea693917681f340812f3bb60e6a1866860ca\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Sat, 10 Jan 2026 09:29:43 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DBE9:F2819:16A105B:1FAB9C8:696F0AE4",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4959",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "41",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 18,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/fb5a833fdf416f5be5f83ceacb0eebcdf5bf2aa3/src%2Fagents%2Fmodels%2Fchatcmpl_converter.py",
+        "changes": 18,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Fmodels%2Fchatcmpl_converter.py?ref=fb5a833fdf416f5be5f83ceacb0eebcdf5bf2aa3",
+        "deletions": 0,
+        "filename": "src/agents/models/chatcmpl_converter.py",
+        "patch": "@@ -535,6 +535,24 @@ def ensure_assistant_message() -> ChatCompletionAssistantMessageParam:\n                     combined = \"\\n\".join(text_segments)\n                     new_asst[\"content\"] = combined\n \n+                # If we have pending thinking blocks, prepend them to the content\n+                # This is required for Anthropic API with interleaved thinking\n+                if pending_thinking_blocks:\n+                    # If there is a text content, convert it to a list to prepend thinking blocks\n+                    if \"content\" in new_asst and isinstance(new_asst[\"content\"], str):\n+                        text_content = ChatCompletionContentPartTextParam(\n+                            text=new_asst[\"content\"], type=\"text\"\n+                        )\n+                        new_asst[\"content\"] = [text_content]\n+\n+                    if \"content\" not in new_asst or new_asst[\"content\"] is None:\n+                        new_asst[\"content\"] = []\n+\n+                    # Thinking blocks MUST come before any other content\n+                    # We ignore type errors because pending_thinking_blocks is not openai standard\n+                    new_asst[\"content\"] = pending_thinking_blocks + new_asst[\"content\"]  # type: ignore\n+                    pending_thinking_blocks = None  # Clear after using\n+\n                 new_asst[\"tool_calls\"] = []\n                 current_assistant_msg = new_asst\n ",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/fb5a833fdf416f5be5f83ceacb0eebcdf5bf2aa3/src%2Fagents%2Fmodels%2Fchatcmpl_converter.py",
+        "sha": "2d5919f50048dd9a163e0f7b0aeafb6d69fc383f",
+        "status": "modified"
+      },
+      {
+        "additions": 113,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/fb5a833fdf416f5be5f83ceacb0eebcdf5bf2aa3/tests%2Ftest_anthropic_thinking_blocks.py",
+        "changes": 113,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Ftest_anthropic_thinking_blocks.py?ref=fb5a833fdf416f5be5f83ceacb0eebcdf5bf2aa3",
+        "deletions": 0,
+        "filename": "tests/test_anthropic_thinking_blocks.py",
+        "patch": "@@ -246,3 +246,116 @@ def test_anthropic_thinking_blocks_with_tool_calls():\n     tool_calls = assistant_msg.get(\"tool_calls\", [])\n     assert len(cast(list[Any], tool_calls)) == 1, \"Tool calls should be preserved\"\n     assert cast(list[Any], tool_calls)[0][\"function\"][\"name\"] == \"get_weather\"\n+\n+\n+def test_anthropic_thinking_blocks_without_tool_calls():\n+    \"\"\"\n+    Test for models with extended thinking WITHOUT tool calls.\n+\n+    This test verifies that thinking blocks are properly attached to assistant\n+    messages even when there are no tool calls (fixes issue #2195).\n+    \"\"\"\n+    # Create a message with reasoning and thinking blocks but NO tool calls\n+    message = InternalChatCompletionMessage(\n+        role=\"assistant\",\n+        content=\"The weather in Paris is sunny with a temperature of 22°C.\",\n+        reasoning_content=\"The user wants to know about the weather in Paris.\",\n+        thinking_blocks=[\n+            {\n+                \"type\": \"thinking\",\n+                \"thinking\": \"Let me think about the weather in Paris.\",\n+                \"signature\": \"TestSignatureNoTools123\",\n+            }\n+        ],\n+        tool_calls=None,  # No tool calls\n+    )\n+\n+    # Step 1: Convert message to output items\n+    output_items = Converter.message_to_output_items(message)\n+\n+    # Verify reasoning item exists and contains thinking blocks\n+    reasoning_items = [\n+        item for item in output_items if hasattr(item, \"type\") and item.type == \"reasoning\"\n+    ]\n+    assert len(reasoning_items) == 1, \"Should have exactly one reasoning item\"\n+\n+    reasoning_item = reasoning_items[0]\n+\n+    # Verify thinking text is stored in content\n+    assert hasattr(reasoning_item, \"content\") and reasoning_item.content, (\n+        \"Reasoning item should have content\"\n+    )\n+    assert reasoning_item.content[0].type == \"reasoning_text\", (\n+        \"Content should be reasoning_text type\"\n+    )\n+    assert reasoning_item.content[0].text == \"Let me think about the weather in Paris.\", (\n+        \"Thinking text should be preserved\"\n+    )\n+\n+    # Verify signature is stored in encrypted_content\n+    assert hasattr(reasoning_item, \"encrypted_content\"), (\n+        \"Reasoning item should have encrypted_content\"\n+    )\n+    assert reasoning_item.encrypted_content == \"TestSignatureNoTools123\", (\n+        \"Signature should be preserved\"\n+    )\n+\n+    # Verify message item exists\n+    message_items = [\n+        item for item in output_items if hasattr(item, \"type\") and item.type == \"message\"\n+    ]\n+    assert len(message_items) == 1, \"Should have exactly one message item\"\n+\n+    # Step 2: Convert output items back to messages with preserve_thinking_blocks=True\n+    items_as_dicts: list[dict[str, Any]] = []\n+    for item in output_items:\n+        if hasattr(item, \"model_dump\"):\n+            items_as_dicts.append(item.model_dump())\n+        else:\n+            items_as_dicts.append(cast(dict[str, Any], item))\n+\n+    messages = Converter.items_to_messages(\n+        items_as_dicts,  # type: ignore[arg-type]\n+        model=\"anthropic/claude-4-opus\",\n+        preserve_thinking_blocks=True,\n+    )\n+\n+    # Should have one assistant message\n+    assistant_messages = [msg for msg in messages if msg.get(\"role\") == \"assistant\"]\n+    assert len(assistant_messages) == 1, \"Should have exactly one assistant message\"\n+\n+    assistant_msg = assistant_messages[0]\n+\n+    # Content must start with thinking blocks even WITHOUT tool calls\n+    content = assistant_msg.get(\"content\")\n+    assert content is not None, \"Assistant message should have content\"\n+    assert isinstance(content, list), (\n+        f\"Assistant message content should be a list when thinking blocks are present, \"\n+        f\"but got {type(content)}\"\n+    )\n+    assert len(content) >= 2, (\n+        f\"Assistant message should have at least 2 content items \"\n+        f\"(thinking + text), got {len(content)}\"\n+    )\n+\n+    # First content should be thinking block\n+    first_content = content[0]\n+    assert first_content.get(\"type\") == \"thinking\", (\n+        f\"First content must be 'thinking' type for Anthropic compatibility, \"\n+        f\"but got '{first_content.get('type')}'\"\n+    )\n+    assert first_content.get(\"thinking\") == \"Let me think about the weather in Paris.\", (\n+        \"Thinking content should be preserved\"\n+    )\n+    assert first_content.get(\"signature\") == \"TestSignatureNoTools123\", (\n+        \"Signature should be preserved in thinking block\"\n+    )\n+\n+    # Second content should be text\n+    second_content = content[1]\n+    assert second_content.get(\"type\") == \"text\", (\n+        f\"Second content must be 'text' type, but got '{second_content.get('type')}'\"\n+    )\n+    assert (\n+        second_content.get(\"text\") == \"The weather in Paris is sunny with a temperature of 22°C.\"\n+    ), \"Text content should be preserved\"",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/fb5a833fdf416f5be5f83ceacb0eebcdf5bf2aa3/tests%2Ftest_anthropic_thinking_blocks.py",
+        "sha": "24b55f8a067c8eb98dd48d0651ebdb15cdb00951",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:04.322155Z"
+}

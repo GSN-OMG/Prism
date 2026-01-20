@@ -1,0 +1,76 @@
+{
+  "finished_at": "2026-01-20T04:54:43.842728Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "975bcb1000ab825d",
+    "tag": "rest_pr_files_pr2263_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2263/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "1564",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:54:43 GMT",
+      "etag": "\"8a3a1b4c66aa7015180793d5868c9e5983da3407a440c1cd3a7155ae6f30bc6e\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Tue, 06 Jan 2026 15:31:47 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DB31:357DBD:15F6915:1F015A9:696F0A93",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4980",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "20",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 1,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/51ba1523419c09fced42e427d5983dffcdbc7773/pyproject.toml",
+        "changes": 2,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/pyproject.toml?ref=51ba1523419c09fced42e427d5983dffcdbc7773",
+        "deletions": 1,
+        "filename": "pyproject.toml",
+        "patch": "@@ -1,6 +1,6 @@\n [project]\n name = \"openai-agents\"\n-version = \"0.6.4\"\n+version = \"0.6.5\"\n description = \"OpenAI Agents SDK\"\n readme = \"README.md\"\n requires-python = \">=3.9\"",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/51ba1523419c09fced42e427d5983dffcdbc7773/pyproject.toml",
+        "sha": "94ac73f8d5bf6d33946318d0305bf0efcb3e295f",
+        "status": "modified"
+      },
+      {
+        "additions": 1,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/51ba1523419c09fced42e427d5983dffcdbc7773/uv.lock",
+        "changes": 2,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/uv.lock?ref=51ba1523419c09fced42e427d5983dffcdbc7773",
+        "deletions": 1,
+        "filename": "uv.lock",
+        "patch": "@@ -2079,7 +2079,7 @@ wheels = [\n \n [[package]]\n name = \"openai-agents\"\n-version = \"0.6.4\"\n+version = \"0.6.5\"\n source = { editable = \".\" }\n dependencies = [\n     { name = \"griffe\" },",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/51ba1523419c09fced42e427d5983dffcdbc7773/uv.lock",
+        "sha": "c4fd969989e577afdecb0a458a707eaacc6321ab",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:54:43.326828Z"
+}

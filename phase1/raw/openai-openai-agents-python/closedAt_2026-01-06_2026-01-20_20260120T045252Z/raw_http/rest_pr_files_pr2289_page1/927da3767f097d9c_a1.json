@@ -1,0 +1,112 @@
+{
+  "finished_at": "2026-01-20T04:56:01.237183Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "927da3767f097d9c",
+    "tag": "rest_pr_files_pr2289_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2289/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "13486",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:56:01 GMT",
+      "etag": "\"50ba4dfacd51c3f554a049ada76865d6d6a94290540795532c0c048044ab6659\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Sat, 10 Jan 2026 08:08:02 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DBE0:2324B0:16090B6:1F144AD:696F0AE0",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4960",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "40",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 3,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/def168d24062a0894db66d23803f817c6f36ce44/examples%2Fbasic%2Fhello_world_gpt_oss.py",
+        "changes": 5,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Fbasic%2Fhello_world_gpt_oss.py?ref=def168d24062a0894db66d23803f817c6f36ce44",
+        "deletions": 2,
+        "filename": "examples/basic/hello_world_gpt_oss.py",
+        "patch": "@@ -1,12 +1,13 @@\n import asyncio\n-import logging\n \n from openai import AsyncOpenAI\n \n from agents import Agent, OpenAIChatCompletionsModel, Runner, set_tracing_disabled\n \n set_tracing_disabled(True)\n-logging.basicConfig(level=logging.DEBUG)\n+\n+# import logging\n+# logging.basicConfig(level=logging.DEBUG)\n \n # This is an example of how to use gpt-oss with Ollama.\n # Refer to https://cookbook.openai.com/articles/gpt-oss/run-locally-ollama for more details.",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/def168d24062a0894db66d23803f817c6f36ce44/examples%2Fbasic%2Fhello_world_gpt_oss.py",
+        "sha": "aeb599a1df908948e5f676a5d0556dcbaa029802",
+        "status": "modified"
+      },
+      {
+        "additions": 6,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/def168d24062a0894db66d23803f817c6f36ce44/examples%2Fbasic%2Fimage_tool_output.py",
+        "changes": 18,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Fbasic%2Fimage_tool_output.py?ref=def168d24062a0894db66d23803f817c6f36ce44",
+        "deletions": 12,
+        "filename": "examples/basic/image_tool_output.py",
+        "patch": "@@ -4,23 +4,18 @@\n \n return_typed_dict = True\n \n+URL = \"https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=400&q=80\"\n+\n \n @function_tool\n def fetch_random_image() -> ToolOutputImage | ToolOutputImageDict:\n     \"\"\"Fetch a random image.\"\"\"\n \n     print(\"Image tool called\")\n     if return_typed_dict:\n-        return {\n-            \"type\": \"image\",\n-            \"image_url\": \"https://upload.wikimedia.org/wikipedia/commons/0/0c/GoldenGateBridge-001.jpg\",\n-            \"detail\": \"auto\",\n-        }\n-\n-    return ToolOutputImage(\n-        image_url=\"https://upload.wikimedia.org/wikipedia/commons/0/0c/GoldenGateBridge-001.jpg\",\n-        detail=\"auto\",\n-    )\n+        return {\"type\": \"image\", \"image_url\": URL, \"detail\": \"auto\"}\n+\n+    return ToolOutputImage(image_url=URL, detail=\"auto\")\n \n \n async def main():\n@@ -35,8 +30,7 @@ async def main():\n         input=\"Fetch an image using the random_image tool, then describe it\",\n     )\n     print(result.final_output)\n-    \"\"\"The image shows the iconic Golden Gate Bridge, a large suspension bridge painted in a\n-    bright reddish-orange color...\"\"\"\n+    \"\"\"This image features the famous clock tower, commonly known as Big Ben, ...\"\"\"\n \n \n if __name__ == \"__main__\":",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/def168d24062a0894db66d23803f817c6f36ce44/examples%2Fbasic%2Fimage_tool_output.py",
+        "sha": "460ac1fe11aefb9450113a99ce4d464f62ce1b50",
+        "status": "modified"
+      },
+      {
+        "additions": 1,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/def168d24062a0894db66d23803f817c6f36ce44/examples%2Fbasic%2Fremote_image.py",
+        "changes": 2,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Fbasic%2Fremote_image.py?ref=def168d24062a0894db66d23803f817c6f36ce44",
+        "deletions": 1,
+        "filename": "examples/basic/remote_image.py",
+        "patch": "@@ -2,7 +2,7 @@\n \n from agents import Agent, Runner\n \n-URL = \"https://upload.wikimedia.org/wikipedia/commons/0/0c/GoldenGateBridge-001.jpg\"\n+URL = \"https://images.unsplash.com/photo-1505761671935-60b3a7427bad?auto=format&fit=crop&w=400&q=80\"\n \n \n async def main():",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/def168d24062a0894db66d23803f817c6f36ce44/examples%2Fbasic%2Fremote_image.py",
+        "sha": "e4c43e4dc283d87a2e934a9dc92cf7c326028535",
+        "status": "modified"
+      },
+      {
+        "additions": 1,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/def168d24062a0894db66d23803f817c6f36ce44/examples%2Freasoning_content%2Frunner_example.py",
+        "changes": 2,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Freasoning_content%2Frunner_example.py?ref=def168d24062a0894db66d23803f817c6f36ce44",
+        "deletions": 1,
+        "filename": "examples/reasoning_content/runner_example.py",
+        "patch": "@@ -17,7 +17,7 @@\n from agents import Agent, ModelSettings, Runner, trace\n from agents.items import ReasoningItem\n \n-MODEL_NAME = os.getenv(\"EXAMPLE_MODEL_NAME\") or \"gpt-5\"\n+MODEL_NAME = os.getenv(\"EXAMPLE_MODEL_NAME\") or \"gpt-5.2\"\n \n \n async def main():",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/def168d24062a0894db66d23803f817c6f36ce44/examples%2Freasoning_content%2Frunner_example.py",
+        "sha": "3546da35021c88b5d92d3a896dbb2d4f11c3ab6d",
+        "status": "modified"
+      },
+      {
+        "additions": 224,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/def168d24062a0894db66d23803f817c6f36ce44/examples%2Frun_examples.py",
+        "changes": 224,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/examples%2Frun_examples.py?ref=def168d24062a0894db66d23803f817c6f36ce44",
+        "deletions": 0,
+        "filename": "examples/run_examples.py",
+        "patch": "@@ -0,0 +1,224 @@\n+\"\"\"Run multiple example entry points in this repository.\n+\n+This script locates Python files under ``examples/`` that contain a\n+``__main__`` guard and executes them one by one. By default it skips\n+interactive, server-like, audio-heavy, and external-service examples so\n+that automated validation does not hang waiting for input or require\n+hardware. Use flags to opt into those categories when you want to run\n+them.\n+\n+Usage examples:\n+\n+    uv run examples/run_examples.py --dry-run\n+    uv run examples/run_examples.py --filter basic\n+    uv run examples/run_examples.py --include-interactive --include-server\n+\n+By default the script keeps running even if an example fails; use\n+``--fail-fast`` to stop on the first failure.\n+\"\"\"\n+\n+from __future__ import annotations\n+\n+import argparse\n+import re\n+import shlex\n+import subprocess\n+import sys\n+from collections.abc import Iterable, Sequence\n+from dataclasses import dataclass, field\n+from pathlib import Path\n+\n+ROOT_DIR = Path(__file__).resolve().parent.parent\n+EXAMPLES_DIR = ROOT_DIR / \"examples\"\n+MAIN_PATTERN = re.compile(r\"__name__\\s*==\\s*['\\\"]__main__['\\\"]\")\n+\n+\n+@dataclass\n+class ExampleScript:\n+    path: Path\n+    tags: set[str] = field(default_factory=set)\n+\n+    @property\n+    def relpath(self) -> str:\n+        return str(self.path.relative_to(ROOT_DIR))\n+\n+    @property\n+    def module(self) -> str:\n+        relative = self.path.relative_to(ROOT_DIR).with_suffix(\"\")\n+        return \".\".join(relative.parts)\n+\n+    @property\n+    def command(self) -> list[str]:\n+        # Run via module path so relative imports inside examples work.\n+        return [\"uv\", \"run\", \"python\", \"-m\", self.module]\n+\n+\n+def parse_args() -> argparse.Namespace:\n+    parser = argparse.ArgumentParser(description=\"Run example scripts sequentially.\")\n+    parser.add_argument(\n+        \"--filter\",\n+        \"-f\",\n+        action=\"append\",\n+        default=[],\n+        help=\"Case-insensitive substring filter applied to the relative path.\",\n+    )\n+    parser.add_argument(\n+        \"--dry-run\", action=\"store_true\", help=\"List commands without running them.\"\n+    )\n+    parser.add_argument(\n+        \"--include-interactive\",\n+        action=\"store_true\",\n+        help=\"Include examples that prompt for user input or human-in-the-loop approvals.\",\n+    )\n+    parser.add_argument(\n+        \"--include-server\",\n+        action=\"store_true\",\n+        help=\"Include long-running server-style examples (HTTP servers, background services).\",\n+    )\n+    parser.add_argument(\n+        \"--include-audio\",\n+        action=\"store_true\",\n+        help=\"Include voice or realtime audio examples that require a microphone/speaker.\",\n+    )\n+    parser.add_argument(\n+        \"--include-external\",\n+        action=\"store_true\",\n+        help=\"Include examples that rely on extra services like Redis, Dapr, Twilio, or Playwright.\",\n+    )\n+    parser.add_argument(\n+        \"--fail-fast\",\n+        action=\"store_true\",\n+        help=\"Stop after the first failing example.\",\n+    )\n+    parser.add_argument(\n+        \"--verbose\",\n+        action=\"store_true\",\n+        help=\"Show detected tags for each example entry.\",\n+    )\n+    return parser.parse_args()\n+\n+\n+def detect_tags(path: Path, source: str) -> set[str]:\n+    tags: set[str] = set()\n+    lower_source = source.lower()\n+    lower_parts = [part.lower() for part in path.parts]\n+\n+    if re.search(r\"\\binput\\s*\\(\", source):\n+        tags.add(\"interactive\")\n+    if \"prompt_toolkit\" in lower_source or \"questionary\" in lower_source:\n+        tags.add(\"interactive\")\n+    if \"human_in_the_loop\" in lower_source or \"hitl\" in lower_source:\n+        tags.add(\"interactive\")\n+\n+    if any(\"server\" in part for part in lower_parts):\n+        tags.add(\"server\")\n+    if any(keyword in lower_source for keyword in (\"uvicorn\", \"fastapi\", \"websocket\")):\n+        tags.add(\"server\")\n+\n+    if any(part in {\"voice\", \"realtime\"} for part in lower_parts):\n+        tags.add(\"audio\")\n+    if any(keyword in lower_source for keyword in (\"sounddevice\", \"microphone\", \"audioinput\")):\n+        tags.add(\"audio\")\n+\n+    if any(keyword in lower_source for keyword in (\"redis\", \"dapr\", \"twilio\", \"playwright\")):\n+        tags.add(\"external\")\n+\n+    return tags\n+\n+\n+def discover_examples(filters: Iterable[str]) -> list[ExampleScript]:\n+    filters_lower = [f.lower() for f in filters]\n+    examples: list[ExampleScript] = []\n+\n+    for path in EXAMPLES_DIR.rglob(\"*.py\"):\n+        if \"__pycache__\" in path.parts or path.name.startswith(\"__\"):\n+            continue\n+\n+        try:\n+            source = path.read_text(encoding=\"utf-8\")\n+        except OSError:\n+            continue\n+\n+        if not MAIN_PATTERN.search(source):\n+            continue\n+\n+        if filters_lower and not any(\n+            f in str(path.relative_to(ROOT_DIR)).lower() for f in filters_lower\n+        ):\n+            continue\n+\n+        tags = detect_tags(path, source)\n+        examples.append(ExampleScript(path=path, tags=tags))\n+\n+    return sorted(examples, key=lambda item: item.relpath)\n+\n+\n+def should_skip(tags: set[str], allowed_overrides: set[str]) -> tuple[bool, set[str]]:\n+    blocked = {\"interactive\", \"server\", \"audio\", \"external\"} - allowed_overrides\n+    active_blockers = tags & blocked\n+    return (len(active_blockers) > 0, active_blockers)\n+\n+\n+def format_command(cmd: Sequence[str]) -> str:\n+    return shlex.join(cmd)\n+\n+\n+def run_examples(examples: Sequence[ExampleScript], args: argparse.Namespace) -> int:\n+    overrides: set[str] = set()\n+    if args.include_interactive:\n+        overrides.add(\"interactive\")\n+    if args.include_server:\n+        overrides.add(\"server\")\n+    if args.include_audio:\n+        overrides.add(\"audio\")\n+    if args.include_external:\n+        overrides.add(\"external\")\n+\n+    if not examples:\n+        print(\"No example entry points found that match the filters.\")\n+        return 0\n+\n+    print(f\"Found {len(examples)} example entry points under examples/.\")\n+\n+    executed = 0\n+    skipped = 0\n+    failed = 0\n+\n+    for example in examples:\n+        skip, reasons = should_skip(example.tags, overrides)\n+        tag_label = f\" [tags: {', '.join(sorted(example.tags))}]\" if args.verbose else \"\"\n+\n+        if skip:\n+            reason_label = f\" (skipped: {', '.join(sorted(reasons))})\" if reasons else \"\"\n+            print(f\"- SKIP {example.relpath}{tag_label}{reason_label}\")\n+            skipped += 1\n+            continue\n+\n+        print(f\"- RUN  {example.relpath}{tag_label}\")\n+        print(f\"  cmd: {format_command(example.command)}\")\n+\n+        if args.dry_run:\n+            continue\n+\n+        result = subprocess.run(example.command, cwd=ROOT_DIR)\n+        if result.returncode != 0:\n+            print(f\"  !! {example.relpath} exited with {result.returncode}\")\n+            failed += 1\n+            if args.fail_fast:\n+                return result.returncode\n+            continue\n+\n+        executed += 1\n+\n+    print(f\"Done. Ran {executed} example(s), skipped {skipped}, failed {failed}.\")\n+    return 0 if failed == 0 else 1\n+\n+\n+def main() -> int:\n+    args = parse_args()\n+    examples = discover_examples(args.filter)\n+    return run_examples(examples, args)\n+\n+\n+if __name__ == \"__main__\":\n+    sys.exit(main())",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/def168d24062a0894db66d23803f817c6f36ce44/examples%2Frun_examples.py",
+        "sha": "0d51a028f15c2fdc89b514b4395e3e13e6855323",
+        "status": "added"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:56:00.706242Z"
+}

@@ -1,0 +1,439 @@
+{
+  "discovery": {
+    "issue_count": 32,
+    "issues": [
+      {
+        "number": 2335,
+        "url": "https://github.com/openai/openai-agents-python/issues/2335"
+      },
+      {
+        "number": 2333,
+        "url": "https://github.com/openai/openai-agents-python/issues/2333"
+      },
+      {
+        "number": 2317,
+        "url": "https://github.com/openai/openai-agents-python/issues/2317"
+      },
+      {
+        "number": 2314,
+        "url": "https://github.com/openai/openai-agents-python/issues/2314"
+      },
+      {
+        "number": 2313,
+        "url": "https://github.com/openai/openai-agents-python/issues/2313"
+      },
+      {
+        "number": 2301,
+        "url": "https://github.com/openai/openai-agents-python/issues/2301"
+      },
+      {
+        "number": 2296,
+        "url": "https://github.com/openai/openai-agents-python/issues/2296"
+      },
+      {
+        "number": 2294,
+        "url": "https://github.com/openai/openai-agents-python/issues/2294"
+      },
+      {
+        "number": 2293,
+        "url": "https://github.com/openai/openai-agents-python/issues/2293"
+      },
+      {
+        "number": 2291,
+        "url": "https://github.com/openai/openai-agents-python/issues/2291"
+      },
+      {
+        "number": 2285,
+        "url": "https://github.com/openai/openai-agents-python/issues/2285"
+      },
+      {
+        "number": 2266,
+        "url": "https://github.com/openai/openai-agents-python/issues/2266"
+      },
+      {
+        "number": 2265,
+        "url": "https://github.com/openai/openai-agents-python/issues/2265"
+      },
+      {
+        "number": 2259,
+        "url": "https://github.com/openai/openai-agents-python/issues/2259"
+      },
+      {
+        "number": 2257,
+        "url": "https://github.com/openai/openai-agents-python/issues/2257"
+      },
+      {
+        "number": 2252,
+        "url": "https://github.com/openai/openai-agents-python/issues/2252"
+      },
+      {
+        "number": 2246,
+        "url": "https://github.com/openai/openai-agents-python/issues/2246"
+      },
+      {
+        "number": 2232,
+        "url": "https://github.com/openai/openai-agents-python/issues/2232"
+      },
+      {
+        "number": 2222,
+        "url": "https://github.com/openai/openai-agents-python/issues/2222"
+      },
+      {
+        "number": 2211,
+        "url": "https://github.com/openai/openai-agents-python/issues/2211"
+      },
+      {
+        "number": 2206,
+        "url": "https://github.com/openai/openai-agents-python/issues/2206"
+      },
+      {
+        "number": 2204,
+        "url": "https://github.com/openai/openai-agents-python/issues/2204"
+      },
+      {
+        "number": 2195,
+        "url": "https://github.com/openai/openai-agents-python/issues/2195"
+      },
+      {
+        "number": 2171,
+        "url": "https://github.com/openai/openai-agents-python/issues/2171"
+      },
+      {
+        "number": 2155,
+        "url": "https://github.com/openai/openai-agents-python/issues/2155"
+      },
+      {
+        "number": 2137,
+        "url": "https://github.com/openai/openai-agents-python/issues/2137"
+      },
+      {
+        "number": 2109,
+        "url": "https://github.com/openai/openai-agents-python/issues/2109"
+      },
+      {
+        "number": 2061,
+        "url": "https://github.com/openai/openai-agents-python/issues/2061"
+      },
+      {
+        "number": 2010,
+        "url": "https://github.com/openai/openai-agents-python/issues/2010"
+      },
+      {
+        "number": 2009,
+        "url": "https://github.com/openai/openai-agents-python/issues/2009"
+      },
+      {
+        "number": 1830,
+        "url": "https://github.com/openai/openai-agents-python/issues/1830"
+      },
+      {
+        "number": 1609,
+        "url": "https://github.com/openai/openai-agents-python/issues/1609"
+      }
+    ],
+    "pr_count": 74,
+    "prs": [
+      {
+        "number": 2338,
+        "url": "https://github.com/openai/openai-agents-python/pull/2338"
+      },
+      {
+        "number": 2337,
+        "url": "https://github.com/openai/openai-agents-python/pull/2337"
+      },
+      {
+        "number": 2336,
+        "url": "https://github.com/openai/openai-agents-python/pull/2336"
+      },
+      {
+        "number": 2334,
+        "url": "https://github.com/openai/openai-agents-python/pull/2334"
+      },
+      {
+        "number": 2332,
+        "url": "https://github.com/openai/openai-agents-python/pull/2332"
+      },
+      {
+        "number": 2331,
+        "url": "https://github.com/openai/openai-agents-python/pull/2331"
+      },
+      {
+        "number": 2330,
+        "url": "https://github.com/openai/openai-agents-python/pull/2330"
+      },
+      {
+        "number": 2329,
+        "url": "https://github.com/openai/openai-agents-python/pull/2329"
+      },
+      {
+        "number": 2328,
+        "url": "https://github.com/openai/openai-agents-python/pull/2328"
+      },
+      {
+        "number": 2327,
+        "url": "https://github.com/openai/openai-agents-python/pull/2327"
+      },
+      {
+        "number": 2326,
+        "url": "https://github.com/openai/openai-agents-python/pull/2326"
+      },
+      {
+        "number": 2325,
+        "url": "https://github.com/openai/openai-agents-python/pull/2325"
+      },
+      {
+        "number": 2324,
+        "url": "https://github.com/openai/openai-agents-python/pull/2324"
+      },
+      {
+        "number": 2323,
+        "url": "https://github.com/openai/openai-agents-python/pull/2323"
+      },
+      {
+        "number": 2322,
+        "url": "https://github.com/openai/openai-agents-python/pull/2322"
+      },
+      {
+        "number": 2320,
+        "url": "https://github.com/openai/openai-agents-python/pull/2320"
+      },
+      {
+        "number": 2319,
+        "url": "https://github.com/openai/openai-agents-python/pull/2319"
+      },
+      {
+        "number": 2318,
+        "url": "https://github.com/openai/openai-agents-python/pull/2318"
+      },
+      {
+        "number": 2316,
+        "url": "https://github.com/openai/openai-agents-python/pull/2316"
+      },
+      {
+        "number": 2315,
+        "url": "https://github.com/openai/openai-agents-python/pull/2315"
+      },
+      {
+        "number": 2312,
+        "url": "https://github.com/openai/openai-agents-python/pull/2312"
+      },
+      {
+        "number": 2311,
+        "url": "https://github.com/openai/openai-agents-python/pull/2311"
+      },
+      {
+        "number": 2310,
+        "url": "https://github.com/openai/openai-agents-python/pull/2310"
+      },
+      {
+        "number": 2309,
+        "url": "https://github.com/openai/openai-agents-python/pull/2309"
+      },
+      {
+        "number": 2307,
+        "url": "https://github.com/openai/openai-agents-python/pull/2307"
+      },
+      {
+        "number": 2306,
+        "url": "https://github.com/openai/openai-agents-python/pull/2306"
+      },
+      {
+        "number": 2305,
+        "url": "https://github.com/openai/openai-agents-python/pull/2305"
+      },
+      {
+        "number": 2304,
+        "url": "https://github.com/openai/openai-agents-python/pull/2304"
+      },
+      {
+        "number": 2303,
+        "url": "https://github.com/openai/openai-agents-python/pull/2303"
+      },
+      {
+        "number": 2302,
+        "url": "https://github.com/openai/openai-agents-python/pull/2302"
+      },
+      {
+        "number": 2300,
+        "url": "https://github.com/openai/openai-agents-python/pull/2300"
+      },
+      {
+        "number": 2299,
+        "url": "https://github.com/openai/openai-agents-python/pull/2299"
+      },
+      {
+        "number": 2298,
+        "url": "https://github.com/openai/openai-agents-python/pull/2298"
+      },
+      {
+        "number": 2295,
+        "url": "https://github.com/openai/openai-agents-python/pull/2295"
+      },
+      {
+        "number": 2292,
+        "url": "https://github.com/openai/openai-agents-python/pull/2292"
+      },
+      {
+        "number": 2290,
+        "url": "https://github.com/openai/openai-agents-python/pull/2290"
+      },
+      {
+        "number": 2289,
+        "url": "https://github.com/openai/openai-agents-python/pull/2289"
+      },
+      {
+        "number": 2288,
+        "url": "https://github.com/openai/openai-agents-python/pull/2288"
+      },
+      {
+        "number": 2287,
+        "url": "https://github.com/openai/openai-agents-python/pull/2287"
+      },
+      {
+        "number": 2286,
+        "url": "https://github.com/openai/openai-agents-python/pull/2286"
+      },
+      {
+        "number": 2284,
+        "url": "https://github.com/openai/openai-agents-python/pull/2284"
+      },
+      {
+        "number": 2283,
+        "url": "https://github.com/openai/openai-agents-python/pull/2283"
+      },
+      {
+        "number": 2282,
+        "url": "https://github.com/openai/openai-agents-python/pull/2282"
+      },
+      {
+        "number": 2281,
+        "url": "https://github.com/openai/openai-agents-python/pull/2281"
+      },
+      {
+        "number": 2280,
+        "url": "https://github.com/openai/openai-agents-python/pull/2280"
+      },
+      {
+        "number": 2279,
+        "url": "https://github.com/openai/openai-agents-python/pull/2279"
+      },
+      {
+        "number": 2278,
+        "url": "https://github.com/openai/openai-agents-python/pull/2278"
+      },
+      {
+        "number": 2277,
+        "url": "https://github.com/openai/openai-agents-python/pull/2277"
+      },
+      {
+        "number": 2276,
+        "url": "https://github.com/openai/openai-agents-python/pull/2276"
+      },
+      {
+        "number": 2275,
+        "url": "https://github.com/openai/openai-agents-python/pull/2275"
+      },
+      {
+        "number": 2274,
+        "url": "https://github.com/openai/openai-agents-python/pull/2274"
+      },
+      {
+        "number": 2272,
+        "url": "https://github.com/openai/openai-agents-python/pull/2272"
+      },
+      {
+        "number": 2271,
+        "url": "https://github.com/openai/openai-agents-python/pull/2271"
+      },
+      {
+        "number": 2270,
+        "url": "https://github.com/openai/openai-agents-python/pull/2270"
+      },
+      {
+        "number": 2268,
+        "url": "https://github.com/openai/openai-agents-python/pull/2268"
+      },
+      {
+        "number": 2267,
+        "url": "https://github.com/openai/openai-agents-python/pull/2267"
+      },
+      {
+        "number": 2263,
+        "url": "https://github.com/openai/openai-agents-python/pull/2263"
+      },
+      {
+        "number": 2262,
+        "url": "https://github.com/openai/openai-agents-python/pull/2262"
+      },
+      {
+        "number": 2261,
+        "url": "https://github.com/openai/openai-agents-python/pull/2261"
+      },
+      {
+        "number": 2260,
+        "url": "https://github.com/openai/openai-agents-python/pull/2260"
+      },
+      {
+        "number": 2255,
+        "url": "https://github.com/openai/openai-agents-python/pull/2255"
+      },
+      {
+        "number": 2254,
+        "url": "https://github.com/openai/openai-agents-python/pull/2254"
+      },
+      {
+        "number": 2245,
+        "url": "https://github.com/openai/openai-agents-python/pull/2245"
+      },
+      {
+        "number": 2243,
+        "url": "https://github.com/openai/openai-agents-python/pull/2243"
+      },
+      {
+        "number": 2229,
+        "url": "https://github.com/openai/openai-agents-python/pull/2229"
+      },
+      {
+        "number": 2227,
+        "url": "https://github.com/openai/openai-agents-python/pull/2227"
+      },
+      {
+        "number": 2226,
+        "url": "https://github.com/openai/openai-agents-python/pull/2226"
+      },
+      {
+        "number": 2225,
+        "url": "https://github.com/openai/openai-agents-python/pull/2225"
+      },
+      {
+        "number": 2224,
+        "url": "https://github.com/openai/openai-agents-python/pull/2224"
+      },
+      {
+        "number": 2218,
+        "url": "https://github.com/openai/openai-agents-python/pull/2218"
+      },
+      {
+        "number": 2158,
+        "url": "https://github.com/openai/openai-agents-python/pull/2158"
+      },
+      {
+        "number": 2157,
+        "url": "https://github.com/openai/openai-agents-python/pull/2157"
+      },
+      {
+        "number": 2059,
+        "url": "https://github.com/openai/openai-agents-python/pull/2059"
+      },
+      {
+        "number": 2041,
+        "url": "https://github.com/openai/openai-agents-python/pull/2041"
+      }
+    ]
+  },
+  "repo": "openai/openai-agents-python",
+  "window": {
+    "closedAt_end": "2026-01-20",
+    "closedAt_start": "2026-01-06"
+  }
+}

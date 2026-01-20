@@ -1,0 +1,112 @@
+{
+  "finished_at": "2026-01-20T04:53:11.890538Z",
+  "meta": {
+    "attempt": 1,
+    "request_fingerprint": "4a93c6402ec94ff7",
+    "tag": "rest_pr_files_pr2059_page1"
+  },
+  "request": {
+    "body": null,
+    "headers": {
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    },
+    "method": "GET",
+    "url": "https://api.github.com/repos/openai/openai-agents-python/pulls/2059/files?per_page=100&page=1"
+  },
+  "response": {
+    "headers": {
+      "access-control-allow-origin": "*",
+      "access-control-expose-headers": "ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset",
+      "cache-control": "private, max-age=60, s-maxage=60",
+      "content-length": "12813",
+      "content-security-policy": "default-src 'none'",
+      "content-type": "application/json; charset=utf-8",
+      "date": "Tue, 20 Jan 2026 04:53:11 GMT",
+      "etag": "\"8a8d718ada90e680dd8d5b7a19042721522dfcbda3dc14387ff174863a4fe125\"",
+      "github-authentication-token-expiration": "2026-02-19 04:41:20 UTC",
+      "last-modified": "Mon, 19 Jan 2026 15:15:36 GMT",
+      "referrer-policy": "origin-when-cross-origin, strict-origin-when-cross-origin",
+      "server": "github.com",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "vary": "Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With",
+      "x-accepted-oauth-scopes": "",
+      "x-content-type-options": "nosniff",
+      "x-frame-options": "deny",
+      "x-github-api-version-selected": "2022-11-28",
+      "x-github-media-type": "github.v3; format=json",
+      "x-github-request-id": "DA7D:3CEC4D:15B9295:1EC24EC:696F0A37",
+      "x-oauth-scopes": "repo",
+      "x-ratelimit-limit": "5000",
+      "x-ratelimit-remaining": "4997",
+      "x-ratelimit-reset": "1768885989",
+      "x-ratelimit-resource": "core",
+      "x-ratelimit-used": "3",
+      "x-xss-protection": "0"
+    },
+    "json": [
+      {
+        "additions": 14,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/ec558230cde6d6ca49048d9d0ad204312dd1249c/src%2Fagents%2Frealtime%2F_util.py",
+        "changes": 17,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Frealtime%2F_util.py?ref=ec558230cde6d6ca49048d9d0ad204312dd1249c",
+        "deletions": 3,
+        "filename": "src/agents/realtime/_util.py",
+        "patch": "@@ -2,8 +2,19 @@\n \n from .config import RealtimeAudioFormat\n \n+PCM16_SAMPLE_RATE_HZ = 24_000\n+PCM16_SAMPLE_WIDTH_BYTES = 2\n+G711_SAMPLE_RATE_HZ = 8_000\n+\n \n def calculate_audio_length_ms(format: RealtimeAudioFormat | None, audio_bytes: bytes) -> float:\n-    if format and isinstance(format, str) and format.startswith(\"g711\"):\n-        return (len(audio_bytes) / 8000) * 1000\n-    return (len(audio_bytes) / 24 / 2) * 1000\n+    if not audio_bytes:\n+        return 0.0\n+\n+    normalized_format = format.lower() if isinstance(format, str) else None\n+\n+    if normalized_format and normalized_format.startswith(\"g711\"):\n+        return (len(audio_bytes) / G711_SAMPLE_RATE_HZ) * 1000\n+\n+    samples = len(audio_bytes) / PCM16_SAMPLE_WIDTH_BYTES\n+    return (samples / PCM16_SAMPLE_RATE_HZ) * 1000",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/ec558230cde6d6ca49048d9d0ad204312dd1249c/src%2Fagents%2Frealtime%2F_util.py",
+        "sha": "4de38f06fc3e7d575ca5b978fb36bb72da940abb",
+        "status": "modified"
+      },
+      {
+        "additions": 20,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/ec558230cde6d6ca49048d9d0ad204312dd1249c/src%2Fagents%2Frealtime%2Fopenai_realtime.py",
+        "changes": 23,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/src%2Fagents%2Frealtime%2Fopenai_realtime.py?ref=ec558230cde6d6ca49048d9d0ad204312dd1249c",
+        "deletions": 3,
+        "filename": "src/agents/realtime/openai_realtime.py",
+        "patch": "@@ -691,10 +691,30 @@ async def _handle_ws_event(self, event: dict[str, Any]):\n             last_audio = self._audio_state_tracker.get_last_audio_item()\n             if last_audio is not None:\n                 item_id, content_index = last_audio\n+                playback_state = self._get_playback_state()\n+                playback_item_id = playback_state.get(\"current_item_id\")\n+                playback_content_index = playback_state.get(\"current_item_content_index\") or 0\n+                playback_elapsed_ms = playback_state.get(\"elapsed_ms\")\n                 await self._emit_event(\n                     RealtimeModelAudioInterruptedEvent(item_id=item_id, content_index=content_index)\n                 )\n \n+                elapsed_override = getattr(parsed, \"audio_end_ms\", None)\n+                if elapsed_override is None or elapsed_override <= 0:\n+                    effective_elapsed_ms = playback_elapsed_ms\n+                else:\n+                    effective_elapsed_ms = float(elapsed_override)\n+\n+                if playback_item_id and effective_elapsed_ms is not None:\n+                    truncated_ms = max(int(round(effective_elapsed_ms)), 0)\n+                    await self._send_raw_message(\n+                        _ConversionHelper.convert_interrupt(\n+                            playback_item_id,\n+                            playback_content_index,\n+                            truncated_ms,\n+                        )\n+                    )\n+\n                 # Reset trackers so subsequent playback state queries don't\n                 # reference audio that has been interrupted client‑side.\n                 self._audio_state_tracker.on_interrupted()\n@@ -713,9 +733,6 @@ async def _handle_ws_event(self, event: dict[str, Any]):\n                 )\n                 if not automatic_response_cancellation_enabled:\n                     await self._cancel_response()\n-            # Avoid sending conversation.item.truncate here. When the session's\n-            # turn_detection.interrupt_response is enabled (GA default), the server emits\n-            # conversation.item.truncated after the VAD start and takes care of history updates.\n         elif parsed.type == \"response.created\":\n             self._ongoing_response = True\n             await self._emit_event(RealtimeModelTurnStartedEvent())",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/ec558230cde6d6ca49048d9d0ad204312dd1249c/src%2Fagents%2Frealtime%2Fopenai_realtime.py",
+        "sha": "613ad3db36c5c9cd3ebb20a354a6fd16022817d8",
+        "status": "modified"
+      },
+      {
+        "additions": 24,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/ec558230cde6d6ca49048d9d0ad204312dd1249c/tests%2Frealtime%2Ftest_openai_realtime.py",
+        "changes": 32,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Frealtime%2Ftest_openai_realtime.py?ref=ec558230cde6d6ca49048d9d0ad204312dd1249c",
+        "deletions": 8,
+        "filename": "tests/realtime/test_openai_realtime.py",
+        "patch": "@@ -516,7 +516,7 @@ async def test_transcription_related_and_timeouts_and_speech_started(self, model\n \n         # Prepare tracker state to simulate ongoing audio\n         model._audio_state_tracker.set_audio_format(\"pcm16\")\n-        model._audio_state_tracker.on_audio_delta(\"i1\", 0, b\"aaaa\")\n+        model._audio_state_tracker.on_audio_delta(\"i1\", 0, b\"a\" * 48)\n         model._ongoing_response = True\n \n         # Patch sending to avoid websocket dependency\n@@ -537,6 +537,17 @@ async def test_transcription_related_and_timeouts_and_speech_started(self, model\n             }\n         )\n \n+        truncate_events = [\n+            call.args[0]\n+            for call in model._send_raw_message.await_args_list\n+            if getattr(call.args[0], \"type\", None) == \"conversation.item.truncate\"\n+        ]\n+        assert truncate_events\n+        truncate_event = truncate_events[0]\n+        assert truncate_event.item_id == \"i1\"\n+        assert truncate_event.content_index == 0\n+        assert truncate_event.audio_end_ms == 1\n+\n         # Output transcript delta\n         await model._handle_ws_event(\n             {\n@@ -836,23 +847,27 @@ async def test_audio_timing_calculation_accuracy(self, model):\n         for event in audio_deltas:\n             await model._handle_ws_event(event)\n \n-        # Should accumulate audio length: 8 bytes / 24 / 2 * 1000 = milliseconds\n-        # Total: 8 bytes / 24 / 2 * 1000\n-        expected_length = (8 / 24 / 2) * 1000\n+        # Should accumulate audio length: 8 bytes -> 4 samples -> (4 / 24000) * 1000 ≈ 0.167 ms\n+        expected_length = (8 / (24_000 * 2)) * 1000\n \n         # Test through the actual audio state tracker\n         audio_state = model._audio_state_tracker.get_state(\"item_1\", 0)\n         assert audio_state is not None\n-        assert abs(audio_state.audio_length_ms - expected_length) < 0.001\n+        assert audio_state.audio_length_ms == pytest.approx(expected_length, rel=0, abs=1e-6)\n \n     def test_calculate_audio_length_ms_pure_function(self, model):\n         \"\"\"Test the pure audio length calculation function.\"\"\"\n         from agents.realtime._util import calculate_audio_length_ms\n \n         # Test various audio buffer sizes for pcm16 format\n-        assert calculate_audio_length_ms(\"pcm16\", b\"test\") == (4 / 24 / 2) * 1000  # 4 bytes\n+        expected_pcm = (len(b\"test\") / (24_000 * 2)) * 1000\n+        assert calculate_audio_length_ms(\"pcm16\", b\"test\") == pytest.approx(\n+            expected_pcm, rel=0, abs=1e-6\n+        )  # 4 bytes\n         assert calculate_audio_length_ms(\"pcm16\", b\"\") == 0  # empty\n-        assert calculate_audio_length_ms(\"pcm16\", b\"a\" * 48) == 1000.0  # exactly 1000ms worth\n+        assert calculate_audio_length_ms(\"pcm16\", b\"a\" * 48) == pytest.approx(\n+            (48 / (24_000 * 2)) * 1000, rel=0, abs=1e-6\n+        )  # exactly 1ms worth\n \n         # Test g711 format\n         assert calculate_audio_length_ms(\"g711_ulaw\", b\"test\") == (4 / 8000) * 1000  # 4 bytes\n@@ -879,7 +894,8 @@ async def test_handle_audio_delta_state_management(self, model):\n         # Test that audio state is tracked correctly\n         audio_state = model._audio_state_tracker.get_state(\"test_item\", 5)\n         assert audio_state is not None\n-        assert audio_state.audio_length_ms == (4 / 24 / 2) * 1000  # 4 bytes in milliseconds\n+        expected_ms = (len(b\"test\") / (24_000 * 2)) * 1000\n+        assert audio_state.audio_length_ms == pytest.approx(expected_ms, rel=0, abs=1e-6)\n \n         # Test that last audio item is tracked\n         last_item = model._audio_state_tracker.get_last_audio_item()",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/ec558230cde6d6ca49048d9d0ad204312dd1249c/tests%2Frealtime%2Ftest_openai_realtime.py",
+        "sha": "ed801c0b59ea60b4ee93ef2896046dd759f2e940",
+        "status": "modified"
+      },
+      {
+        "additions": 6,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/ec558230cde6d6ca49048d9d0ad204312dd1249c/tests%2Frealtime%2Ftest_playback_tracker.py",
+        "changes": 11,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Frealtime%2Ftest_playback_tracker.py?ref=ec558230cde6d6ca49048d9d0ad204312dd1249c",
+        "deletions": 5,
+        "filename": "tests/realtime/test_playback_tracker.py",
+        "patch": "@@ -64,9 +64,9 @@ def test_audio_state_accumulation_across_deltas(self):\n \n         state = tracker.get_state(\"item_1\", 0)\n         assert state is not None\n-        # Should accumulate: 8 bytes / 24 / 2 * 1000 = 166.67ms\n-        expected_length = (8 / 24 / 2) * 1000\n-        assert abs(state.audio_length_ms - expected_length) < 0.01\n+        # Should accumulate: 8 bytes -> 4 samples -> (4 / 24000) * 1000 ≈ 0.167ms\n+        expected_length = (8 / (24_000 * 2)) * 1000\n+        assert state.audio_length_ms == pytest.approx(expected_length, rel=0, abs=1e-6)\n \n     def test_state_cleanup_on_interruption(self):\n         \"\"\"Test both trackers properly reset state on interruption.\"\"\"\n@@ -105,8 +105,9 @@ def test_audio_length_calculation_with_different_formats(self):\n         # Test PCM format (24kHz, default)\n         pcm_bytes = b\"test\"  # 4 bytes\n         pcm_length = calculate_audio_length_ms(\"pcm16\", pcm_bytes)\n-        assert pcm_length == (4 / 24 / 2) * 1000  # ~83.33ms\n+        expected_pcm = (len(pcm_bytes) / (24_000 * 2)) * 1000\n+        assert pcm_length == pytest.approx(expected_pcm, rel=0, abs=1e-6)\n \n         # Test None format (defaults to PCM)\n         none_length = calculate_audio_length_ms(None, pcm_bytes)\n-        assert none_length == pcm_length\n+        assert none_length == pytest.approx(expected_pcm, rel=0, abs=1e-6)",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/ec558230cde6d6ca49048d9d0ad204312dd1249c/tests%2Frealtime%2Ftest_playback_tracker.py",
+        "sha": "135034ec204809c1b4f938dd2c574098f638bd8d",
+        "status": "modified"
+      },
+      {
+        "additions": 3,
+        "blob_url": "https://github.com/openai/openai-agents-python/blob/ec558230cde6d6ca49048d9d0ad204312dd1249c/tests%2Frealtime%2Ftest_playback_tracker_manual_unit.py",
+        "changes": 6,
+        "contents_url": "https://api.github.com/repos/openai/openai-agents-python/contents/tests%2Frealtime%2Ftest_playback_tracker_manual_unit.py?ref=ec558230cde6d6ca49048d9d0ad204312dd1249c",
+        "deletions": 3,
+        "filename": "tests/realtime/test_playback_tracker_manual_unit.py",
+        "patch": "@@ -5,16 +5,16 @@ def test_playback_tracker_on_play_bytes_and_state():\n     tr = RealtimePlaybackTracker()\n     tr.set_audio_format(\"pcm16\")  # PCM path\n \n-    # 48k bytes -> (48000 / 24 / 2) * 1000 = 1,000,000ms per current util\n+    # 48k bytes -> (48000 / (24000 * 2)) * 1000 = 1_000ms\n     tr.on_play_bytes(\"item1\", 0, b\"x\" * 48000)\n     st = tr.get_state()\n     assert st[\"current_item_id\"] == \"item1\"\n-    assert st[\"elapsed_ms\"] and abs(st[\"elapsed_ms\"] - 1_000_000.0) < 1e-6\n+    assert st[\"elapsed_ms\"] and abs(st[\"elapsed_ms\"] - 1_000.0) < 1e-6\n \n     # Subsequent play on same item accumulates\n     tr.on_play_ms(\"item1\", 0, 500.0)\n     st2 = tr.get_state()\n-    assert st2[\"elapsed_ms\"] and abs(st2[\"elapsed_ms\"] - 1_000_500.0) < 1e-6\n+    assert st2[\"elapsed_ms\"] and abs(st2[\"elapsed_ms\"] - 1_500.0) < 1e-6\n \n     # Interruption clears state\n     tr.on_interrupted()",
+        "raw_url": "https://github.com/openai/openai-agents-python/raw/ec558230cde6d6ca49048d9d0ad204312dd1249c/tests%2Frealtime%2Ftest_playback_tracker_manual_unit.py",
+        "sha": "ff901dd84cc7bd907f1d9c0a8a5890e4f7624841",
+        "status": "modified"
+      }
+    ],
+    "status": 200
+  },
+  "started_at": "2026-01-20T04:53:11.333115Z"
+}
