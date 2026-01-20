@@ -15,6 +15,7 @@ export function pageLayout(opts: { title: string; body: string }): string {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${escapeHtml(opts.title)}</title>
     <link rel="stylesheet" href="/assets/styles.css" />
+    <script src="/assets/app.js" defer></script>
   </head>
   <body>
     <div class="container">
