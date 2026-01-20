@@ -11,7 +11,7 @@ BEGIN
   BEGIN
     CREATE EXTENSION IF NOT EXISTS vector;
   EXCEPTION
-    WHEN undefined_file THEN
+    WHEN undefined_file OR feature_not_supported THEN
       RAISE NOTICE 'pgvector extension not installed; lessons.embedding will use float8[] fallback.';
   END;
 END $$;
@@ -155,4 +155,3 @@ CREATE INDEX IF NOT EXISTS idx_case_events_case_ts ON case_events(case_id, ts);
 CREATE INDEX IF NOT EXISTS idx_case_events_case_seq ON case_events(case_id, seq);
 CREATE INDEX IF NOT EXISTS idx_prompt_updates_status_created_at ON prompt_updates(status, created_at);
 CREATE INDEX IF NOT EXISTS idx_lessons_role ON lessons(role);
-

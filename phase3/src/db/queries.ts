@@ -335,6 +335,15 @@ export async function applyPromptUpdate(
     const newVersion = maxVersion + 1;
     const newRolePromptId = randomUUID();
 
+    await client.query(
+      `
+      UPDATE role_prompts
+      SET is_active = false
+      WHERE role = $1 AND is_active = true;
+      `,
+      [update.role],
+    );
+
     const inserted = await client.query<RolePromptRow>(
       `
       INSERT INTO role_prompts (id, role, version, prompt, is_active)
@@ -342,15 +351,6 @@ export async function applyPromptUpdate(
       RETURNING *;
       `,
       [newRolePromptId, update.role, newVersion, proposedPrompt],
-    );
-
-    await client.query(
-      `
-      UPDATE role_prompts
-      SET is_active = false
-      WHERE role = $1 AND id <> $2 AND is_active = true;
-      `,
-      [update.role, newRolePromptId],
     );
 
     const updated = await client.query<PromptUpdateRow>(
