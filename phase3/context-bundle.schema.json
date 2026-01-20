@@ -8,6 +8,19 @@
     "version": {
       "type": "string"
     },
+    "agents": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/agent"
+      },
+      "description": "Agents involved in the case (including court agents if you want to audit them)."
+    },
+    "result": {
+      "$ref": "#/$defs/result"
+    },
+    "feedback": {
+      "$ref": "#/$defs/feedback"
+    },
     "source": {
       "type": "object",
       "additionalProperties": true,
@@ -35,6 +48,69 @@
     }
   },
   "$defs": {
+    "agent": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string" },
+        "role": { "type": "string", "description": "Free-form role name." },
+        "prompt": { "$ref": "#/$defs/prompt" },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "prompt": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": "string" },
+        "version": { "type": "string" },
+        "content": { "type": "string" },
+        "meta": {
+          "type": "object",
+          "additionalProperties": true
+        }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "status": { "type": "string", "description": "Example: success, failure, partial." },
+        "summary": { "type": "string" },
+        "metrics": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        }
+      }
+    },
+    "feedback": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "summary": { "type": "string" },
+        "items": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "object", "additionalProperties": true }
+            ]
+          }
+        }
+      }
+    },
     "event": {
       "type": "object",
       "additionalProperties": true,
