@@ -104,7 +104,7 @@ class CourtOrchestratorTests(unittest.IsolatedAsyncioTestCase):
     async def test_runs_and_persists_artifacts_and_updates(self) -> None:
         storage = InMemoryStorage()
         redactor = Redactor(
-            load_redaction_policy("phase3/redaction-policy.default.json")
+            load_redaction_policy("redaction-policy.default.json")
         )
         agent_runner = FakeAgentRunner()
         orchestrator = CourtOrchestrator(
@@ -158,7 +158,7 @@ class CourtOrchestratorTests(unittest.IsolatedAsyncioTestCase):
     async def test_partial_failure_still_runs_judge(self) -> None:
         storage = InMemoryStorage()
         redactor = Redactor(
-            load_redaction_policy("phase3/redaction-policy.default.json")
+            load_redaction_policy("redaction-policy.default.json")
         )
         agent_runner = FakeAgentRunner(fail_stages={"defense"})
         orchestrator = CourtOrchestrator(

@@ -56,10 +56,10 @@ class RedactionResult:
 def _find_repo_root(start: Path | None = None) -> Path:
     here = (start or Path(__file__)).resolve()
     for candidate in (here,) + tuple(here.parents):
-        if (candidate / "phase3" / "redaction-policy.default.json").exists():
+        if (candidate / "redaction-policy.default.json").exists():
             return candidate
     raise FileNotFoundError(
-        "Unable to locate repo root containing phase3/redaction-policy.default.json"
+        "Unable to locate repo root containing redaction-policy.default.json"
     )
 
 
@@ -136,7 +136,7 @@ def load_redaction_policy(path: str | Path) -> RedactionPolicy:
 
 def load_default_redaction_policy() -> RedactionPolicy:
     root = _find_repo_root()
-    return load_redaction_policy(root / "phase3" / "redaction-policy.default.json")
+    return load_redaction_policy(root / "redaction-policy.default.json")
 
 
 def redact_json(value: Any, *, policy: RedactionPolicy) -> RedactionResult:
@@ -221,7 +221,7 @@ def main(argv: list[str] | None = None) -> int:
         type=str,
         default=os.environ.get(
             "REDACTION_POLICY_PATH",
-            str(_find_repo_root() / "phase3" / "redaction-policy.default.json"),
+            str(_find_repo_root() / "redaction-policy.default.json"),
         ),
         help="Path to redaction policy JSON file",
     )

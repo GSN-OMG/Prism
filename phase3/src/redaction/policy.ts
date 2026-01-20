@@ -41,7 +41,7 @@ function resolvePolicyPath(rawPath: string): string {
 }
 
 export function defaultRedactionPolicyPath(): string {
-  const raw = process.env.REDACTION_POLICY_PATH ?? 'phase3/redaction-policy.default.json';
+  const raw = process.env.REDACTION_POLICY_PATH ?? 'redaction-policy.default.json';
   return resolvePolicyPath(raw);
 }
 

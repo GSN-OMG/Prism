@@ -5,7 +5,7 @@ import { assertNoSensitiveData, UnredactedDataError } from '../src/redaction/gua
 import { loadRedactionPolicy } from '../src/redaction/policy.js';
 import { redactJson, redactText } from '../src/redaction/redact.js';
 
-const policyPath = path.resolve(process.cwd(), 'phase3/redaction-policy.default.json');
+const policyPath = path.resolve(process.cwd(), 'redaction-policy.default.json');
 const policy = loadRedactionPolicy(policyPath);
 
 describe('redaction (TS)', () => {

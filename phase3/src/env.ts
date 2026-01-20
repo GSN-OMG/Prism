@@ -7,7 +7,7 @@ const EnvSchema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
   DATABASE_URL: z.string().min(1).optional(),
   SEED_DEMO_DATA: z.string().optional(),
-  REDACTION_POLICY_PATH: z.string().min(1).default('phase3/redaction-policy.default.json'),
+  REDACTION_POLICY_PATH: z.string().min(1).default('redaction-policy.default.json'),
   OPENAI_API_KEY: z.string().min(1).optional(),
   GITHUB_TOKEN: z.string().min(1).optional(),
 });

@@ -11,11 +11,11 @@
 
 ## 권장 환경변수(예시)
 
-- 예시는 `phase3/.env.example` 참고.
+- 예시는 `.env.example` 참고.
 - `OPENAI_API_KEY` (절대 커밋 금지)
 - `GITHUB_TOKEN` (절대 커밋 금지)
 - `DATABASE_URL`
-- `REDACTION_POLICY_PATH=phase3/redaction-policy.default.json`
+- `REDACTION_POLICY_PATH=redaction-policy.default.json`
 
 ## 체크리스트
 

@@ -54,7 +54,7 @@ class PostgresStorage:
         *,
         database_url_env: str = "DATABASE_URL",
         redaction_policy_path_env: str = "REDACTION_POLICY_PATH",
-        default_redaction_policy_path: str = "phase3/redaction-policy.default.json",
+        default_redaction_policy_path: str = "redaction-policy.default.json",
     ) -> "PostgresStorage":
         database_url = os.environ.get(database_url_env)
         if not database_url:

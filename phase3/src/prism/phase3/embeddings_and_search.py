@@ -87,7 +87,7 @@ def _redaction_policy_from_env():
     from prism.redaction.guard import load_redaction_policy
 
     path = os.environ.get(
-        "REDACTION_POLICY_PATH", "phase3/redaction-policy.default.json"
+        "REDACTION_POLICY_PATH", "redaction-policy.default.json"
     )
     return load_redaction_policy(path)
 

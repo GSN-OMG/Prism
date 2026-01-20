@@ -5,7 +5,7 @@
 ## 범위
 
 - 입력: `owner/repo`, `type(issue|pull_request)`, `number`, (선택) 수집 기간/페이지 제한
-- 출력: `ContextBundle` JSON (`phase3/context-bundle.schema.json` 준수)
+- 출력: `ContextBundle` JSON (`context-bundle.schema.json` 준수)
 - (선택) 바로 DB에 적재: `cases`, `case_events`
 
 ## 비범위(초기)
@@ -71,4 +71,3 @@
 - PR 1건을 입력하면 `ContextBundle` 생성 가능
 - `events[]`에 최소: opened, comment, review, ci 결과(있다면) 이벤트가 들어감
 - `result.metrics.time_to_first_response_sec`와 `time_to_merge_sec` 중 가능한 항목 계산
-

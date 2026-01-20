@@ -8,7 +8,7 @@ from prism.redaction.guard import (
 
 
 def test_guard_detects_openai_key_like() -> None:
-    policy = load_redaction_policy("phase3/redaction-policy.default.json")
+    policy = load_redaction_policy("redaction-policy.default.json")
     payload = {"msg": "my key is sk-proj-abcdefghijklmnopqrstuvwx1234567890"}
     try:
         assert_no_sensitive_data(payload, policy=policy)
@@ -20,7 +20,7 @@ def test_guard_detects_openai_key_like() -> None:
 
 
 def test_guard_detects_nested_email() -> None:
-    policy = load_redaction_policy("phase3/redaction-policy.default.json")
+    policy = load_redaction_policy("redaction-policy.default.json")
     payload = {"events": [{"content": "contact me at test@example.com"}]}
     try:
         assert_no_sensitive_data(payload, policy=policy)
@@ -32,6 +32,6 @@ def test_guard_detects_nested_email() -> None:
 
 
 def test_guard_allows_redacted_placeholder() -> None:
-    policy = load_redaction_policy("phase3/redaction-policy.default.json")
+    policy = load_redaction_policy("redaction-policy.default.json")
     payload = {"msg": "token=***REDACTED:secret***"}
     assert_no_sensitive_data(payload, policy=policy)

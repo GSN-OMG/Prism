@@ -55,8 +55,8 @@
   - 활성 정책(`is_active`) 1개
   - 정책 `version` 고정
   - 케이스에 적용된 정책 버전 기록
-  - 구조 검증을 위해 JSON Schema 제공(예: `phase3/redaction-policy.schema.json`)
-- 디폴트 정책 파일(초안): `phase3/redaction-policy.default.json`
+  - 구조 검증을 위해 JSON Schema 제공(예: `redaction-policy.schema.json`)
+- 디폴트 정책 파일(초안): `redaction-policy.default.json`
 - 업데이트 방식(MVP): 정책 파일을 수정하고 **재시작 시 반영**한다(DB 즉시 갱신/핫리로드는 추후).
 
 ### 예시(초안) — JSON

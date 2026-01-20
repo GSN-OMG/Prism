@@ -4,14 +4,14 @@
 
 ## 입력/출력
 
-- 입력: 임의의 JSON 오브젝트(주로 `ContextBundle`) + `RedactionPolicy` JSON (`phase3/redaction-policy.schema.json`)
+- 입력: 임의의 JSON 오브젝트(주로 `ContextBundle`) + `RedactionPolicy` JSON (`redaction-policy.schema.json`)
 - 출력:
   - redacted JSON(원본 구조 유지)
   - (선택) 레포트: 적용된 규칙 이름/횟수, policy version
 
 ## 정책
 
-- 디폴트 정책 파일: `phase3/redaction-policy.default.json`
+- 디폴트 정책 파일: `redaction-policy.default.json`
 - 정책 업데이트(MVP): 파일 수정 후 재시작
 
 ## 마스킹 대상(필수)
@@ -46,4 +46,3 @@
 
 - `ContextBundle`을 입력하면 redacted 버전을 반환한다.
 - redacted 데이터만 DB에 적재되도록 파이프라인이 강제된다.
-
