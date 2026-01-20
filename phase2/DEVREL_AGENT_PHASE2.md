@@ -1,7 +1,7 @@
 # Phase 2 작업 노트 (Agents)
 
 이 문서는 Phase 2(Agents) 구현을 위한 작업 노트입니다. 전체 설계는 루트의
-`DEVREL_AGENT_IMPLEMENTATION.md`를 기준으로 합니다.
+`phase2/DEVREL_AGENT_IMPLEMENTATION.md`를 기준으로 합니다.
 
 ## 목표
 
@@ -24,4 +24,3 @@
 - `response.py`: 이슈 답변 초안 생성 (또는 추가 정보 요청)
 - `docs.py`: 반복 질문/패턴 기반 문서 갭 후보 생성
 - `promotion.py`: 기여자 활동 기반 승격 추천 데이터 생성
-
