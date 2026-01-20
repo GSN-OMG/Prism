@@ -121,9 +121,119 @@ graph TD
 
 ## 설치 및 실행
 
+### 사전 요구사항
+
+- **Node.js** >= 18.x
+- **Python** >= 3.11
+- **PostgreSQL** >= 15 (pgvector 확장 포함)
+
+### 1. 저장소 클론
+
 ```bash
-(작성중)
+git clone https://github.com/GSN-OMG/Prism.git
+cd Prism
 ```
+
+### 2. 환경 변수 설정
+
+`phase2/prism-devrel/.env` 파일을 생성하고 다음 내용을 설정합니다:
+
+```bash
+# OpenAI API Key (필수)
+OPENAI_API_KEY=sk-proj-xxxxx
+
+# GitHub Token (이슈 생성용)
+GITHUB_TOKEN=ghp_xxxxx
+
+# Tavily API Key (외부 검색용, 선택)
+TAVILY_API_KEY=tvly-xxxxx
+
+# LLM 설정
+OPENAI_JUDGE_MODEL=gpt-4.1-mini
+RUN_LLM_JUDGE=1
+```
+
+### 3. 백엔드 설치 및 실행 (FastAPI)
+
+```bash
+cd phase2/prism-devrel
+
+# Python 가상환경 생성 및 활성화
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+# 의존성 설치
+pip install -e ".[api]"
+
+# 환경 변수 로드 후 서버 실행
+export $(cat .env | grep -v '^#' | xargs)
+python -m uvicorn devrel.api.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+백엔드 서버: http://localhost:8000
+
+### 4. 프론트엔드 설치 및 실행 (Next.js)
+
+```bash
+cd frontend
+
+# 의존성 설치
+npm install
+
+# 개발 서버 실행
+npm run dev
+```
+
+프론트엔드: http://localhost:3000
+
+### 5. PostgreSQL 설정 (RAG 기능용)
+
+```bash
+# Docker를 사용한 PostgreSQL + pgvector 설정
+docker run -d \
+  --name prism-postgres \
+  -e POSTGRES_USER=prism \
+  -e POSTGRES_PASSWORD=prism \
+  -e POSTGRES_DB=prism \
+  -p 5433:5432 \
+  pgvector/pgvector:pg16
+
+# 마이그레이션 실행
+cd phase1
+python scripts/migrate.py
+```
+
+### 빠른 시작 (Quick Start)
+
+모든 서비스를 한 번에 실행하려면:
+
+```bash
+# 터미널 1: 백엔드
+cd phase2/prism-devrel
+export $(cat .env | grep -v '^#' | xargs)
+python -m uvicorn devrel.api.main:app --port 8000 --reload
+
+# 터미널 2: 프론트엔드
+cd frontend
+npm run dev
+```
+
+브라우저에서 http://localhost:3000 접속 후:
+1. 이슈 제목과 내용 입력
+2. "Create Issue & Run Agents" 클릭
+3. 5개의 에이전트가 순차 실행
+4. 각 에이전트 결과에 대해 Human Review 수행
+5. "Start Court" 클릭하여 회고 법정 실행
+
+### API 엔드포인트
+
+| 엔드포인트 | 설명 |
+|-----------|------|
+| `GET /health` | 서버 상태 확인 |
+| `POST /api/github/issues` | GitHub 이슈 생성 |
+| `POST /api/agents/run` | 에이전트 파이프라인 실행 |
+| `POST /api/court/run` | 회고 법정 실행 |
+| `POST /api/court/run/stream` | 회고 법정 실시간 스트리밍 |
 
 ## 향후 계획
 
