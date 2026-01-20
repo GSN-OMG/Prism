@@ -9,6 +9,8 @@ from .types import (
     AssignmentOutput,
     AssignmentReason,
     Contributor,
+    EnhancedIssueAnalysis,
+    ExternalInsight,
     Issue,
     IssueAnalysisOutput,
     IssueType,
@@ -100,6 +102,53 @@ def analyze_issue_llm(llm: LlmClient, issue: Issue) -> IssueAnalysisOutput:
     )
     data = llm.generate_json(task=LlmTask.ISSUE_TRIAGE, system=system, user=user, json_schema=schema)
     return issue_analysis_from_dict(data)
+
+
+def analyze_issue_with_tavily(
+    llm: LlmClient,
+    issue: Issue,
+    repo_name: str,
+    tavily_api_key: str | None = None,
+) -> EnhancedIssueAnalysis:
+    """Analyze issue with external insights from Tavily.
+
+    Args:
+        llm: LLM client
+        issue: Issue to analyze
+        repo_name: Repository name (e.g., "openai/openai-agents-python")
+        tavily_api_key: Tavily API key (or set TAVILY_API_KEY env var)
+    """
+    from devrel.search.tavily_client import TavilyClient
+
+    # 1. Basic issue analysis
+    base_analysis = analyze_issue_llm(llm, issue)
+
+    # 2. Search for external insights
+    tavily = TavilyClient(api_key=tavily_api_key)
+    insight = tavily.search_issue_context(
+        issue_title=issue.title,
+        issue_body=issue.body,
+        repo_name=repo_name,
+    )
+
+    # 3. Convert to ExternalInsight objects
+    external_insights = []
+    for result in insight.results[:5]:
+        external_insights.append(
+            ExternalInsight(
+                source=result.title,
+                url=result.url,
+                summary=result.content[:300] if result.content else "",
+                relevance_score=result.score,
+            )
+        )
+
+    return EnhancedIssueAnalysis(
+        analysis=base_analysis,
+        external_insights=tuple(external_insights),
+        related_repos=insight.related_repos,
+        tavily_answer=insight.answer,
+    )
 
 
 def recommend_assignee(

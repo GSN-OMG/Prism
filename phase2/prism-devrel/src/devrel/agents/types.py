@@ -46,6 +46,44 @@ class IssueAnalysisOutput:
 
 
 @dataclass(frozen=True, slots=True)
+class ExternalInsight:
+    """External insight from Tavily search."""
+    source: str
+    url: str
+    summary: str
+    relevance_score: float
+
+
+@dataclass(frozen=True, slots=True)
+class EnhancedIssueAnalysis:
+    """Issue analysis with external insights."""
+    analysis: IssueAnalysisOutput
+    external_insights: tuple[ExternalInsight, ...]
+    related_repos: tuple[str, ...]
+    tavily_answer: str | None
+
+
+@dataclass(frozen=True, slots=True)
+class ExternalDocReference:
+    """Reference to external documentation."""
+    repo: str
+    doc_path: str
+    url: str
+    description: str
+    relevance: float
+
+
+@dataclass(frozen=True, slots=True)
+class EnhancedDocGapOutput:
+    """Doc gap analysis with external repo comparisons."""
+    gap_analysis: "DocGapOutput"
+    external_references: tuple[ExternalDocReference, ...]
+    similar_repos: tuple[str, ...]
+    best_practices: str | None
+    tavily_answer: str | None
+
+
+@dataclass(frozen=True, slots=True)
 class Contributor:
     login: str
     areas: tuple[str, ...] = ()

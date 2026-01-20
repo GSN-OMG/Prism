@@ -6,8 +6,14 @@ from dataclasses import dataclass
 from devrel.llm.client import JsonSchema, LlmClient
 from devrel.llm.model_selector import LlmTask
 
-from .types import DocGapOutput, Issue, Priority
-from .types import doc_gap_output_from_dict
+from .types import (
+    DocGapOutput,
+    EnhancedDocGapOutput,
+    ExternalDocReference,
+    Issue,
+    Priority,
+    doc_gap_output_from_dict,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -121,3 +127,64 @@ def detect_doc_gaps_llm(llm: LlmClient, issues: list[Issue]) -> DocGapOutput:
     user = f"Issues:\n{json.dumps(payload, ensure_ascii=False)}"
     data = llm.generate_json(task=LlmTask.DOCS, system=system, user=user, json_schema=schema)
     return doc_gap_output_from_dict(data)
+
+
+def detect_doc_gaps_with_tavily(
+    llm: LlmClient,
+    issues: list[Issue],
+    repo_name: str,
+    tavily_api_key: str | None = None,
+) -> EnhancedDocGapOutput:
+    """Detect documentation gaps with external repo comparison via Tavily.
+
+    Args:
+        llm: LLM client
+        issues: List of issues to analyze
+        repo_name: Target repository name (e.g., "openai/openai-agents-python")
+        tavily_api_key: Tavily API key (or set TAVILY_API_KEY env var)
+    """
+    from devrel.search.tavily_client import TavilyClient
+
+    # 1. Basic doc gap analysis
+    base_gap = detect_doc_gaps_llm(llm, issues)
+
+    # 2. Search for similar repos and best practices
+    tavily = TavilyClient(api_key=tavily_api_key)
+
+    # Search for similar repos with good documentation
+    similar_insight = tavily.search_similar_repos(
+        repo_name=repo_name,
+        topic=f"{base_gap.gap_topic} documentation",
+    )
+
+    # Search for documentation best practices
+    best_practices_insight = tavily.search_docs_best_practices(
+        topic=base_gap.gap_topic,
+        repo_type="python agent framework",
+    )
+
+    # 3. Extract external doc references
+    external_refs = []
+    for result in similar_insight.results[:5]:
+        if "github.com" in result.url:
+            parts = result.url.replace("https://github.com/", "").split("/")
+            repo = f"{parts[0]}/{parts[1]}" if len(parts) >= 2 else ""
+            doc_path = "/".join(parts[2:]) if len(parts) > 2 else ""
+
+            external_refs.append(
+                ExternalDocReference(
+                    repo=repo,
+                    doc_path=doc_path,
+                    url=result.url,
+                    description=result.content[:200] if result.content else "",
+                    relevance=result.score,
+                )
+            )
+
+    return EnhancedDocGapOutput(
+        gap_analysis=base_gap,
+        external_references=tuple(external_refs),
+        similar_repos=similar_insight.related_repos,
+        best_practices=best_practices_insight.answer,
+        tavily_answer=similar_insight.answer,
+    )
